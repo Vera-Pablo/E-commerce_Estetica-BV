@@ -16,10 +16,10 @@
                     Descubre nuestros productos profesionales y agenda tu próximo servicio con nosotros.
                 </p>
                 <div class="d-flex gap-3">
-                    <a href="<?= base_url('productos') ?>" class="btn btn-outline-light btn-lg" >
+                    <a href="<?= base_url('catalog') ?>" class="btn btn-outline-light btn-lg" >
                         <i class="bi bi-bag me-2"></i>Ver Productos
                     </a>
-                    <a href="<?= base_url('turnos') ?>" class="btn btn-outline-light btn-lg">
+                    <a href="<?= base_url('services') ?>" class="btn btn-outline-light btn-lg">
                         <i class="bi bi-calendar-check me-2"></i>Reservar Turno
                     </a>
                 </div>
@@ -32,67 +32,8 @@
     <div class="container">
         <h2 class="text-center mb-5 fw-bold">Productos Destacados</h2>
         <div class="row g-4">
-            
-            <!-- Producto 1 -->
-            <div class="col-md-4">
-                <div class="card h-100">
-                    <div class="position-relative">
-                        <img src="https://via.placeholder.com/400x300/8b5cf6/ffffff?text=Shampoo" class="card-img-top" alt="Producto">
-                        <span class="position-absolute top-0 end-0 badge bg-danger m-3">-20%</span>
-                    </div>
-                    <div class="card-body">
-                        <h5 class="card-title">Shampoo Hidratante</h5>
-                        <p class="card-text text-muted">Hidratación profunda con aceite de argán</p>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <span class="text-muted text-decoration-line-through">$550</span>
-                                <span class="fs-4 fw-bold text-primary ms-2">$450</span>
-                            </div>
-                            <button class="btn btn-primary btn-sm">
-                                <i class="bi bi-cart-plus"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Producto 2 -->
-            <div class="col-md-4">
-                <div class="card h-100">
-                    <img src="https://via.placeholder.com/400x300/ec4899/ffffff?text=Tinte" class="card-img-top" alt="Producto">
-                    <div class="card-body">
-                        <h5 class="card-title">Tinte Profesional</h5>
-                        <p class="card-text text-muted">Coloración permanente de alta duración</p>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="fs-4 fw-bold text-primary">$1,200</span>
-                            <button class="btn btn-primary btn-sm">
-                                <i class="bi bi-cart-plus"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Producto 3 -->
-            <div class="col-md-4">
-                <div class="card h-100">
-                    <img src="https://via.placeholder.com/400x300/10b981/ffffff?text=Tratamiento" class="card-img-top" alt="Producto">
-                    <div class="card-body">
-                        <h5 class="card-title">Keratina Brasileña</h5>
-                        <p class="card-text text-muted">Sistema de alisado profesional</p>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="fs-4 fw-bold text-primary">$3,500</span>
-                            <button class="btn btn-primary btn-sm">
-                                <i class="bi bi-cart-plus"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-        </div>
-        
-        <div class="text-center mt-5">
+            <!-- Aqui van los productos aleatorios en formato carrusel -->
+           
             <a href="<?= base_url('productos') ?>" class="btn btn-outline-dark btn-lg">
                 Ver Todos los Productos
                 <i class="bi bi-arrow-right ms-2"></i>
