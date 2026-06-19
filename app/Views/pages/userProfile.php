@@ -37,7 +37,6 @@
             <div class="col-md-6">
                 <h2 class="mb-4">Acciones</h2>
                 <a href="<?= base_url('my_orders') ?>" class="btn btn-primary mb-3">Mis Pedidos</a>
-                <!-- <a href="<?= base_url('') ?>" class="btn btn-secondary mb-3">Editar Perfil</a> -->
                 <button type="button" class="btn btn-secondary mb-3" data-bs-toggle="modal" data-bs-target="#editProfileModal">
                     <i class="fas fa-edit"></i> Editar Perfil
                 </button>
@@ -46,5 +45,41 @@
         </div>
     </div>
 </section>
+
+<!-- Modal Edit Profile -->
+<div class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="editProfileModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editProfileModalLabel">Editar Perfil</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="<?= base_url('updateProfile') ?>" method="post">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Nombre</label>
+                        <input type="text" class="form-control" id="name" name="name" value="<?= esc(session()->get('name')) ?>" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="last_name" class="form-label">Apellido</label>
+                        <input type="text" class="form-control" id="last_name" name="last_name" value="<?= esc(session()->get('last_name')) ?>" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="phone" class="form-label">Teléfono</label>
+                        <input type="text" class="form-control" id="phone" name="phone" value="<?= esc(session()->get('phone')) ?>" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="email" name="email" value="<?= esc(session()->get('email')) ?>" required>  
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
 <?= $this->endSection() ?>

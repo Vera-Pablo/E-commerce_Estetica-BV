@@ -78,5 +78,6 @@
     <!-- Scripts adicionales por página -->
     <?= $this->renderSection('scripts') ?>
     
+    
 </body>
 </html>

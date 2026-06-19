@@ -10,8 +10,10 @@ class CategoryModel extends model{
     protected $useAutoIncrement = true;
     protected $returnType = Category::class;
     protected$useSoftDeletes = false;
-    protected $allowedFields = ['name', 'slug', 'description', 'is_active']; 
-    protected $useTimestamps = false;
+    protected $allowedFields = ['name', 'slug', 'description', 'is_active', 'created_at', 'updated_at']; 
+    protected $useTimestamps = true;
+    protected $createdField = 'created_at';
+    protected $updatedField = 'updated_at';
 
     
     public function getCategoriesForMenu(){
