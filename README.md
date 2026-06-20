@@ -1,68 +1,85 @@
-# CodeIgniter 4 Application Starter
+# Estética BV
 
-## What is CodeIgniter?
+![PHP Version](https://img.shields.io/badge/PHP-8.1+-blue.svg)
+![CodeIgniter 4](https://img.shields.io/badge/CodeIgniter-4.x-EE4323.svg?logo=codeigniter&logoColor=white)
+![License](https://img.shields.io/badge/License-MIT-green.svg)
 
-CodeIgniter is a PHP full-stack web framework that is light, fast, flexible and secure.
-More information can be found at the [official site](https://codeigniter.com).
+## 📌 ¿Qué hace el proyecto?
+Estética BV es una aplicación web integral desarrollada en PHP (con el framework CodeIgniter 4) diseñada para administrar y facilitar las operaciones de un centro de estética o salón de belleza. El sistema incluye un panel de administración para gestionar productos, categorías, órdenes y usuarios, brindando una experiencia fluida tanto para los clientes que desean interactuar con el negocio, como para el personal que lo administra.
 
-This repository holds a composer-installable app starter.
-It has been built from the
-[development repository](https://github.com/codeigniter4/CodeIgniter4).
+## 🚀 ¿Por qué el proyecto es útil?
+Este proyecto soluciona la necesidad de digitalizar y automatizar la gestión de un centro de estética. Es útil porque:
+- **Centraliza la información:** Permite tener un registro organizado de usuarios, pedidos y catálogo de productos/servicios en un solo lugar.
+- **Optimiza el tiempo:** Automatiza procesos manuales y facilita la administración diaria a través de un panel de control intuitivo.
+- **Mejora la experiencia del cliente:** Brinda a los usuarios una plataforma en línea accesible y moderna para interactuar con los servicios del centro.
 
-More information about the plans for version 4 can be found in [CodeIgniter 4](https://forum.codeigniter.com/forumdisplay.php?fid=28) on the forums.
+---
 
-You can read the [user guide](https://codeigniter.com/user_guide/)
-corresponding to the latest version of the framework.
+## ✨ Características Principales
+- 🔐 **Autenticación y Autorización:** Roles diferenciados (Administrador y Cliente) y protección de rutas.
+- 📦 **Gestión de Inventario:** Panel CRUD (Crear, Leer, Actualizar, Borrar) para productos y categorías.
+- 🛒 **Sistema de Órdenes:** Seguimiento completo de pedidos de clientes.
+- 👥 **Gestión de Usuarios:** Administración de perfiles y cuentas de clientes.
+- 📱 **Diseño Responsivo:** Interfaz adaptable a computadoras, tablets y celulares.
 
-## Installation & updates
+## 💻 Tecnologías Utilizadas
+- **Backend:** PHP 8.1+, CodeIgniter 4
+- **Frontend:** HTML5, CSS3, JavaScript
+- **Base de Datos:** MySQL / MariaDB
+- **Control de Versiones:** Git & GitHub
 
-`composer create-project codeigniter4/appstarter` then `composer update` whenever
-there is a new release of the framework.
+---
 
-When updating, check the release notes to see if there are any changes you might need to apply
-to your `app` folder. The affected files can be copied or merged from
-`vendor/codeigniter4/framework/app`.
+## 🛠️ ¿Cómo empezar con el proyecto? (Instalación)
+Para ejecutar este proyecto en tu entorno local, sigue estos pasos:
 
-## Setup
+1. **Requisitos previos:** Asegúrate de tener instalado PHP (v8.1 o superior), Composer, y un servidor web con base de datos (como XAMPP, WAMP o LAMP).
+2. **Clonar el repositorio:**
+   ->bash
+     git clone https://github.com/Vera-Pablo/Estetica.git
+     cd Estetica-BV
+3. **Instalar dependencias**
+     composer install
+4. **Configurar el entorno**
+    Copia el archivo "env" y renómbralo a ".env".
+    Configura las variables de entorno dentro del .env, especialmente los datos de conexión a la       base de datos:
+      CI_ENVIRONMENT = development
+      database.default.hostname = localhost
+      database.default.database = nombre_de_tu_bd
+      database.default.username = root
+      database.default.password = 
+5. **Ejecutar las migraciones y seeders (si aplica)**
+    ->bash
+     php spark migrate
+6. **Iniciar el servidor de desarrollo**
+    ->bash
+     php spark serve
+   El proyecto estará disponible en http://localhost:8080.
 
-Copy `env` to `.env` and tailor for your app, specifically the baseURL
-and any database settings.
+---
 
-## Important Change with index.php
+## 📁 Estructura Principal del Proyecto
+Las áreas más relevantes del código se encuentran en:
+  -app/Controllers/Admin/ - Controladores del panel de administración (Dashboard, Productos, Órdenes, Usuarios).
+  -app/Views/admin/ - Vistas y plantillas de la interfaz del administrador.
+  -app/Models/ - Modelos de acceso a la base de datos.
+  -app/Filters/ - Filtros de seguridad (ej. AdminFilter.php).
 
-`index.php` is no longer in the root of the project! It has been moved inside the *public* folder,
-for better security and separation of components.
+---
+##🤝 ¿Dónde obtener ayuda y cómo contribuir?
+Si encuentras algún problema, tienes dudas o quieres sugerir una nueva funcionalidad:
 
-This means that you should configure your web server to "point" to your project's *public* folder, and
-not to the project root. A better practice would be to configure a virtual host to point there. A poor practice would be to point your web server to the project root and expect to enter *public/...*, as the rest of your logic and the
-framework are exposed.
+Issues en GitHub: Abre un nuevo issue en la sección de Issues del repositorio detallando tu problema o sugerencia.
+¡Las contribuciones son bienvenidas! Si deseas contribuir al código:
 
-**Please** read the user guide for a better explanation of how CI4 works!
+1. Haz un Fork del proyecto.
+2. Crea una nueva rama (git checkout -b feature/NuevaFuncionalidad).
+3. Haz un commit de tus cambios (git commit -m 'Añadida NuevaFuncionalidad').
+4. Haz push a la rama (git push origin feature/NuevaFuncionalidad).
+5. Abre un Pull Request.
 
-## Repository Management
 
-We use GitHub issues, in our main repository, to track **BUGS** and to track approved **DEVELOPMENT** work packages.
-We use our [forum](http://forum.codeigniter.com) to provide SUPPORT and to discuss
-FEATURE REQUESTS.
-
-This repository is a "distribution" one, built by our release preparation script.
-Problems with it can be raised on our forum, or as issues in the main repository.
-
-## Server Requirements
-
-PHP version 8.1 or higher is required, with the following extensions installed:
-
-- [intl](http://php.net/manual/en/intl.requirements.php)
-- [mbstring](http://php.net/manual/en/mbstring.installation.php)
-
-> [!WARNING]
-> - The end of life date for PHP 7.4 was November 28, 2022.
-> - The end of life date for PHP 8.0 was November 26, 2023.
-> - If you are still using PHP 7.4 or 8.0, you should upgrade immediately.
-> - The end of life date for PHP 8.1 will be December 31, 2025.
-
-Additionally, make sure that the following extensions are enabled in your PHP:
-
-- json (enabled by default - don't turn it off)
-- [mysqlnd](http://php.net/manual/en/mysqlnd.install.php) if you plan to use MySQL
-- [libcurl](http://php.net/manual/en/curl.requirements.php) if you plan to use the HTTP\CURLRequest library
+---
+## 👨‍💻 ¿Quién mantiene el proyecto?
+Este proyecto es desarrollado y mantenido activamente por:
+-> Vera-Pablo
