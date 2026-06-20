@@ -66,7 +66,7 @@ Las áreas más relevantes del código se encuentran en:
   -app/Filters/ - Filtros de seguridad (ej. AdminFilter.php).
 
 ---
-##🤝 ¿Dónde obtener ayuda y cómo contribuir?
+## 🤝 ¿Dónde obtener ayuda y cómo contribuir?
 Si encuentras algún problema, tienes dudas o quieres sugerir una nueva funcionalidad:
 
 Issues en GitHub: Abre un nuevo issue en la sección de Issues del repositorio detallando tu problema o sugerencia.
