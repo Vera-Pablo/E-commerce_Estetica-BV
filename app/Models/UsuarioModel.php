@@ -1,0 +1,28 @@
+<?php
+
+namespace App\Models;
+
+use CodeIgniter\Model;
+
+class UsuarioModel extends Model
+{
+    protected $table            = 'usuario';
+    protected $primaryKey       = 'id_usuario';
+    protected $useAutoIncrement = true;
+    protected $returnType       = 'array';
+    protected $useSoftDeletes   = false;
+    protected $protectFields    = true;
+    protected $allowedFields    = ['dni', 'apellido_nombre', 'email', 'password', 'telefono', 'estado_usuario', 'id_rol'];
+
+    protected $useTimestamps = false;
+
+    protected $validationRules = [
+        'dni'             => 'required|integer|exact_length[8]|is_unique[usuario.dni,id_usuario,{id_usuario}]',
+        'apellido_nombre' => 'required|min_length[3]|max_length[255]',
+        'email'           => 'required|valid_email|max_length[255]|is_unique[usuario.email,id_usuario,{id_usuario}]',
+        'password'        => 'required|min_length[8]|max_length[255]',
+        'telefono'        => 'permit_empty|max_length[20]|is_unique[usuario.telefono,id_usuario,{id_usuario}]',
+        'estado_usuario'  => 'permit_empty|integer|in_list[0,1]',
+        'id_rol'          => 'required|integer',
+    ];
+}
