@@ -1,18 +1,5 @@
 # Documentación
 
-<aside>
-<img src="https://app.notion.com/icons/document_lightgray.svg" alt="https://app.notion.com/icons/document_lightgray.svg" width="40px" />
-
-**Versión: 1.2.1**
-
-**Fecha: 21/7/2026**
-
-**Autor: Vera Pablo G.**
-
-**Cambios: Tipo de dato en las tablas (usuario-producto-detalle_venta-venta) para la integridad de los datos y nombre de campo para diferenciación.**
-
-</aside>
-
 ---
 
 ## Capítulo I: Generalidades del Proyecto

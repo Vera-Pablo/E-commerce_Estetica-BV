@@ -14,21 +14,9 @@ class UsuarioModel extends Model
     protected $protectFields    = true;
     protected $allowedFields    = ['dni', 'apellido_nombre', 'email', 'password', 'telefono', 'estado_usuario', 'id_rol'];
 
-    protected bool $allowEmptyInserts = false;
-    protected bool $updateOnlyChanged = true;
-
-    protected array $casts = [];
-    protected array $castHandlers = [];
-
-    // Dates
     protected $useTimestamps = false;
-    protected $dateFormat    = 'datetime';
-    protected $createdField  = 'created_at';
-    protected $updatedField  = 'updated_at';
-    protected $deletedField  = 'deleted_at';
 
-    // Validation
-    protected $validationRules      = [
+    protected $validationRules = [
         'dni'             => 'required|integer|exact_length[8]|is_unique[usuario.dni,id_usuario,{id_usuario}]',
         'apellido_nombre' => 'required|min_length[3]|max_length[255]',
         'email'           => 'required|valid_email|max_length[255]|is_unique[usuario.email,id_usuario,{id_usuario}]',
@@ -37,18 +25,4 @@ class UsuarioModel extends Model
         'estado_usuario'  => 'permit_empty|integer|in_list[0,1]',
         'id_rol'          => 'required|integer',
     ];
-    protected $validationMessages   = [];
-    protected $skipValidation       = false;
-    protected $cleanValidationRules = true;
-
-    // Callbacks
-    protected $allowCallbacks = true;
-    protected $beforeInsert   = [];
-    protected $afterInsert    = [];
-    protected $beforeUpdate   = [];
-    protected $afterUpdate    = [];
-    protected $beforeFind     = [];
-    protected $afterFind      = [];
-    protected $beforeDelete   = [];
-    protected $afterDelete    = [];
 }
