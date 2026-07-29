@@ -7,6 +7,13 @@ use CodeIgniter\Router\RouteCollection;
  */
 
 // Public Auth Routes
+$routes->get('/', 'Home::index');
+$routes->get('quienes-somos', 'Home::quienesSomos');
+$routes->get('comercializacion', 'Home::comercializacion');
+$routes->get('contacto', 'Home::contacto');
+$routes->get('terminos-de-uso', 'Home::terminosDeUso');
+
+
 $routes->get('login', 'Auth\AuthController::login');
 $routes->post('login', 'Auth\AuthController::loginProcess');
 
@@ -23,12 +30,6 @@ $routes->get('auth/google/callback', 'Auth\AuthController::googleCallback');
 
 $routes->get('logout', 'Auth\AuthController::logout');
 
-// Public Pages
-$routes->get('/', 'Home::index');
-$routes->get('quienes-somos', 'Home::quienesSomos');
-$routes->get('comercializacion', 'Home::comercializacion');
-$routes->get('contacto', 'Home::contacto');
-$routes->get('terminos-de-uso', 'Home::terminosDeUso');
 
 // Admin Protected Routes
 $routes->group('admin', ['filter' => 'admin'], static function ($routes) {

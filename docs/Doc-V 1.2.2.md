@@ -1,5 +1,18 @@
 # Documentación
 
+<aside>
+<img src="https://app.notion.com/icons/document_lightgray.svg" alt="https://app.notion.com/icons/document_lightgray.svg" width="40px" />
+
+**Versión: 1.2.2**
+
+**Fecha: 28/7/2026**
+
+**Autor: Vera Pablo G.**
+
+**Cambios: Actualización de la arquitectura de directorio (sección 3.5) para reflejar la estructura real del proyecto.**
+
+</aside>
+
 ---
 
 ## Capítulo I: Generalidades del Proyecto
@@ -96,7 +109,7 @@ El desarrollo del sistema "Estética - BV" se fundamenta en la arquitectura de s
 
 ### 3.2 Diagrama Estructural MVC
 
-![1.1 Figura: Diagrama de Arquitectura (MVC)](Diagrama_de_Arquitectura.png)
+![1.1 Figura: Diagrama de Arquitectura (MVC)](img/Diagrama_de_Arquitectura.png)
 
 1.1 Figura: Diagrama de Arquitectura (MVC)
 
@@ -112,7 +125,7 @@ A nivel de infraestructura, "Estética - BV" implementa una arquitectura web cl�
 
 ### 3.4 Diagrama de Arquitectura de despliegue (Cliente-Servidor)
 
-![1.2 Figura: Diagrama de Arquitectura de desliegue (Cliente - Servidor)](Diagrama_de_Arquitectura_de_despliegue.png)
+![1.2 Figura: Diagrama de Arquitectura de desliegue (Cliente - Servidor)](img/Diagrama_de_Arquitectura_de_despliegue.png)
 
 1.2 Figura: Diagrama de Arquitectura de desliegue (Cliente - Servidor)
 
@@ -121,27 +134,67 @@ A nivel de infraestructura, "Estética - BV" implementa una arquitectura web cl�
 ```markdown
 estetica-bv/
 │
-├── app/                    <-- [CAPA SERVIDOR] Contiene el núcleo de la aplicación (MVC)
-│   ├── Config/             <-- Archivos de configuración (Rutas, Conexión a BD, Filtros)
-│   ├── Controllers/        <-- Clases Controladoras (Ej. AdminController, ShopController)
-│   ├── Models/             <-- Clases de Base de Datos (Ej. ProductoModel, VentaModel)
-│   └── Views/              <-- Archivos PHP/HTML para la interfaz
-│       ├── admin/          <-- Vistas privadas del panel de administración
-│       └── public/         <-- Vistas públicas (Catálogo, Carrito, Login)
+├── app/                              <-- [CAPA SERVIDOR] Núcleo de la aplicación (MVC)
+│   ├── Config/                       <-- Configuración (Rutas, BD, Filtros)
+│   ├── Controllers/                  <-- Controladores
+│   │   ├── Admin/                    <-- Panel de administración
+│   │   │   └── Dashboard.php
+│   │   ├── Auth/                     <-- Autenticación
+│   │   │   └── AuthController.php
+│   │   └── Home.php                  <-- Página principal
+│   ├── Database/                     <-- Migraciones y Seeders
+│   │   ├── Migrations/               <-- Creación de tablas
+│   │   └── Seeds/                    <-- Datos de prueba
+│   ├── Filters/                      <-- Filtros de seguridad
+│   │   ├── AdminFilter.php           <-- Restringe acceso a admin
+│   │   └── CustomerFilter.php        <-- Restringe acceso a clientes autenticados
+│   ├── Helpers/                      <-- Funciones auxiliares globales
+│   ├── Language/                     <-- Internacionalización
+│   │   └── en/                       <-- Traducciones al inglés
+│   ├── Libraries/                    <-- Librerías personalizadas
+│   │   ├── EmailService.php          <-- Envío de correos (activación, recuperación)
+│   │   └── TokenService.php          <-- Creación y verificación de tokens
+│   ├── Models/                       <-- Acceso a base de datos
+│   │   ├── CategoriaModel.php
+│   │   ├── ProductoModel.php
+│   │   ├── UsuarioModel.php
+│   │   └── ... (10 modelos total)
+│   ├── ThirdParty/                   <-- Librerías externas no-Composer
+│   └── Views/                        <-- Plantillas de interfaz
+│       ├── Layouts/                  <-- Layouts base (Administrador, Cliente)
+│       └── welcome_message.php
 │
-├── public/                 <-- [CAPA CLIENTE] Única carpeta accesible desde el navegador
-│   ├── index.php           <-- Punto de entrada de la aplicación (Front Controller)
-│   ├── assets/             <-- Recursos estáticos públicos
-│   │   ├── css/            <-- Hojas de estilo personalizadas y Bootstrap
-│   │   ├── js/             <-- Scripts del lado del cliente
-│   │   └── img/            <-- Imágenes de los productos del catálogo
-│   └── .htaccess           <-- Reglas del servidor Apache (URLs amigables)
+├── public/                           <-- [CAPA CLIENTE] Única carpeta accesible
+│   ├── index.php                     <-- Front Controller (punto de entrada)
+│   ├── home.php                      <-- Página alternativa estática
+│   ├── assets/                       <-- Recursos estáticos
+│   │   ├── css/                      <-- Estilos personalizados
+│   │   │   └── base.css
+│   │   ├── images/                   <-- Imágenes (banners, productos, equipo)
+│   │   │   ├── banners/
+│   │   │   └── team/
+│   │   └── js/                       <-- Scripts del lado del cliente
+│   │       └── toast.js
+│   └── .htaccess                     <-- Reglas Apache (URLs amigables)
 │
-├── docs/                   <-- Documentación del proyecto.
-│   └── img/                <-- Imagenes de diagramas, graficos, etc.
-├── system/                 <-- Archivos del framework CodeIgniter 4 (No se modifican)
-├── writable/               <-- Carpeta de escritura para logs, caché y sesiones
-└── .env                    <-- Variables de entorno (Credenciales de DB y entorno de desarrollo)
+├── docs/                             <-- Documentación del proyecto
+│   ├── Documentación.md
+│   ├── Doc-V 1.2.2.md
+│   └── img/                          <-- Diagramas y gráficos
+│       ├── Diagrama_de_Arquitectura.png
+│       ├── Diagrama_de_Arquitectura_de_despliegue.png
+│       └── Diagrama_Entidad_Relaciones.png
+│
+├── system/                           <-- Framework CodeIgniter 4 (No modificar)
+├── tests/                            <-- Tests unitarios y de integración
+├── vendor/                           <-- Dependencias Composer
+├── writable/                         <-- Logs, caché y sesiones
+├── .env                              <-- Variables de entorno (credenciales DB)
+├── builds                            <-- Script toggle release/development CI4
+├── composer.json                     <-- Dependencias PHP
+├── phpunit.xml.dist                  <-- Configuración PHPUnit
+├── preload.php                       <-- Precarga OPCache
+└── spark                             <-- CLI de CodeIgniter
 ```
 
 **Justificación de la estructura:**
@@ -157,7 +210,7 @@ estetica-bv/
 
 La persistencia de datos del sistema "Estetica - BV" se gestiona a través de una base de datos relacional. El modelo ha sido diseñado aplicando reglas de normalización para evitar la redundancia de datos y garantizar la integridad referencial. A continuación, se presenta el esquema lógico de la base de datos:
 
-![1.3 Figura: Diagrama de Entidad de Relaciones ](6d46d9bf-73be-45bf-99f4-55be756508e9.png)
+![1.3 Figura: Diagrama de Entidad de Relaciones ](img/Diagrama_Entidad_Relaciones.png)
 
 1.3 Figura: Diagrama de Entidad de Relaciones 
 

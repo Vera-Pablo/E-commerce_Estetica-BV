@@ -6,7 +6,7 @@ class Home extends BaseController
 {
     public function index()
     {
-        return $this->renderPage('Inicio', 'Página Principal');
+        return $this->renderPage('Estética BV - Inicio', 'Estética Integral y Cuidado Personal');
     }
 
     public function quienesSomos()
@@ -31,6 +31,9 @@ class Home extends BaseController
 
     private function renderPage(string $title, string $subtitle)
     {
-        return "<!DOCTYPE html><html lang='es'><head><meta charset='UTF-8'><title>{$title}</title></head><body><h1>{$title}</h1><p>{$subtitle}</p></body></html>";
+        return view('home', [
+            'title'    => $title,
+            'subtitle' => $subtitle,
+        ]);
     }
 }

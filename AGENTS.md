@@ -1,6 +1,6 @@
 # AGENTS.md — Estética BV
 
-Proyecto base CodeIgniter 4 recién instalado. `docs/Documentación.md` v1.2.1 es la especificación.
+Proyecto base CodeIgniter 4 recién instalado. `docs/Doc-V 1.2.2.md` es la especificación.
 
 ## Stack
 - PHP ^8.1, CodeIgniter 4, MySQL (MySQLi), Apache
@@ -37,15 +37,19 @@ php spark make:migration CrearXTabla
 php spark make:seeder XSeeder
 ```
 
-## Estructura de directorios (del doc)
-- `app/Controllers/` — Admin/, Shop/, Auth/
-- `app/Models/` — ProductoModel, UsuarioModel, VentaModel, etc.
-- `app/Views/admin/` — panel admin
-- `app/Views/public/` — catálogo, carrito, login
-- `public/assets/css/`, `public/assets/js/`, `public/assets/img/`
-- `docs/img/` — diagramas (rutas en markdown no incluyen prefijo `img/`)
-- `app/Database/Migrations/`, `app/Database/Seeds/`
+## Estructura de directorios
+- `app/Controllers/Admin/` — Dashboard
+- `app/Controllers/Auth/` — AuthController
+- `app/Models/` — 10 modelos (Categoria, Producto, Usuario, Venta, etc.)
+- `app/Views/Layouts/` — Administrador, Cliente
 - `app/Filters/` — AdminFilter, CustomerFilter
+- `app/Libraries/` — EmailService, TokenService
+- `app/Database/Migrations/` — 10 migraciones
+- `app/Database/Seeds/` — DatabaseSeeder, RolSeeder, UsuarioSeeder, etc.
+- `public/assets/css/base.css`
+- `public/assets/js/toast.js`
+- `public/assets/images/` — banners/, team/
+- `docs/img/` — diagramas (rutas en markdown usan prefijo `img/`)
 
 ## Notas
 - Borrado lógico con TINYINT(1) (`estado_*`)
@@ -53,4 +57,4 @@ php spark make:seeder XSeeder
 - `.env` requiere configuración DB manual (MySQLi, :3306)
 - `writable/` subcarpetas ignoradas por git
 - Fuera de alcance: turnos/reservas, facturación fiscal, envíos
-- El doc referencia imágenes sin prefijo `img/` — los archivos reales están en `docs/img/`
+
