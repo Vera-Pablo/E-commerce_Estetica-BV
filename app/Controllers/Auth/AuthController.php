@@ -24,8 +24,8 @@ class AuthController extends BaseController
                 : redirect()->to('/');
         }
 
-        if (is_file(APPPATH . 'Views/public/login.php')) {
-            return view('public/login');
+        if (is_file(APPPATH . 'Views/public/auth/login.php')) {
+            return view('public/auth/login');
         }
 
         return $this->renderFallbackPage('Iniciar Sesión', 'Formulario de Login');
@@ -77,8 +77,8 @@ class AuthController extends BaseController
             return redirect()->to('/');
         }
 
-        if (is_file(APPPATH . 'Views/public/registro.php')) {
-            return view('public/registro');
+        if (is_file(APPPATH . 'Views/public/auth/registro.php')) {
+            return view('public/auth/registro');
         }
 
         return $this->renderFallbackPage('Registro', 'Formulario de Registro');
@@ -160,8 +160,8 @@ class AuthController extends BaseController
             return redirect()->to('/');
         }
 
-        if (is_file(APPPATH . 'Views/public/recuperar.php')) {
-            return view('public/recuperar');
+        if (is_file(APPPATH . 'Views/public/auth/recuperar.php')) {
+            return view('public/auth/recuperar');
         }
 
         return $this->renderFallbackPage('Recuperar Clave', 'Formulario de Recuperación');
