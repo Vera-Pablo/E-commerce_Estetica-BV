@@ -35,6 +35,11 @@ php spark make:controller Admin\Dashboard
 php spark make:model ProductoModel
 php spark make:migration CrearXTabla
 php spark make:seeder XSeeder
+
+# MCP (Linear + Notion)
+opencode mcp auth linear     # Autenticar Linear (OAuth)
+opencode mcp auth notion     # Autenticar Notion (OAuth)
+opencode mcp list            # Verificar servidores y tools
 ```
 
 ## Estructura de directorios
