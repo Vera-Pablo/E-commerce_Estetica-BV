@@ -21,7 +21,7 @@ class Home extends BaseController
 
     public function contacto()
     {
-        return $this->renderPage('Contacto', 'Contacto de la estética');
+        return view('public/contacto', ['title' => 'Contacto - Estética BV']);
     }
 
     public function terminosDeUso()
