@@ -16,7 +16,7 @@ class Home extends BaseController
 
     public function comercializacion()
     {
-        return $this->renderPage('Comercialización', 'Información sobre ventas y envíos');
+        return view('public/comercializacion', ['title' => 'Comercialización - Estética BV']);
     }
 
     public function contacto()
