@@ -11,7 +11,7 @@ class Home extends BaseController
 
     public function quienesSomos()
     {
-        return $this->renderPage('Quiénes Somos', 'Información sobre Estética BV');
+        return view('public/quienes_somos', ['title' => 'Quiénes Somos - Estética BV']);
     }
 
     public function comercializacion()
