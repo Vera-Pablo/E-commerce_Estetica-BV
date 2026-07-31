@@ -26,7 +26,7 @@ class Home extends BaseController
 
     public function terminosDeUso()
     {
-        return $this->renderPage('Términos de Uso', 'Términos y Condiciones de uso');
+        return view('public/terminos_uso', ['title' => 'Términos de Uso - Estética BV']);
     }
 
     private function renderPage(string $title, string $subtitle)
