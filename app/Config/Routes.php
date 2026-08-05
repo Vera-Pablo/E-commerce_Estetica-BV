@@ -34,4 +34,7 @@ $routes->get('logout', 'Auth\AuthController::logout');
 // Admin Protected Routes
 $routes->group('admin', ['filter' => 'admin'], static function ($routes) {
     $routes->get('dashboard', 'Admin\Dashboard::index');
+    $routes->get('categorias', 'Admin\Categoria::index');
+    $routes->post('categoria/guardar', 'Admin\Categoria::guardar');
+    $routes->post('categoria/editar/(:num)', 'Admin\Categoria::editar/$1');
 });
