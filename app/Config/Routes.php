@@ -41,4 +41,7 @@ $routes->group('admin', ['filter' => 'admin'], static function ($routes) {
     $routes->get('productos', 'Admin\Producto::index');
     $routes->post('producto/guardar', 'Admin\Producto::guardar');
     $routes->post('producto/editar/(:num)', 'Admin\Producto::editar/$1');
+
+    $routes->get('clientes', 'Admin\Usuario::clientes');
+    $routes->post('usuario/cambiar-estado', 'Admin\Usuario::cambiarEstado');
 });
