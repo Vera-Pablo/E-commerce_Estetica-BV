@@ -39,19 +39,13 @@
             </button>
         </div>
 
-        <!-- Alertas de Sesión -->
+        <!-- Elementos ocultos para ToastHelper -->
         <?php if(session()->getFlashdata('success')): ?>
-            <div class="alert alert-success border-0 rounded-3 shadow-sm alert-dismissible fade show" role="alert">
-                <i class="fas fa-check-circle me-2"></i> <?= session()->getFlashdata('success') ?>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
+            <input type="hidden" id="flash-success" value="<?= esc(session()->getFlashdata('success')) ?>">
         <?php endif; ?>
         
         <?php if(session()->getFlashdata('error')): ?>
-            <div class="alert alert-danger border-0 rounded-3 shadow-sm alert-dismissible fade show" role="alert">
-                <i class="fas fa-exclamation-triangle me-2"></i> <?= session()->getFlashdata('error') ?>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
+            <input type="hidden" id="flash-error" value="<?= esc(session()->getFlashdata('error')) ?>">
         <?php endif; ?>
 
         <!-- Search Bar -->
@@ -211,6 +205,8 @@
 
     <!-- Bootstrap 5 JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Toast Helper -->
+    <script src="<?= base_url('assets/js/toast.js') ?>"></script>
     
     <!-- Lógica del Modal -->
     <script>
