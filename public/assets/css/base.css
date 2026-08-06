@@ -140,3 +140,43 @@ h1, h2, h3, h4, h5, h6, .fw-bold, .font-spartan {
     background-color: rgba(255, 0, 0, 0.1);
     border-left: 4px solid #ff6b6b;
 }
+
+/* ========================================================
+   @media print — Recibo de Venta
+   Oculta toda la interfaz web y muestra solo #recibo-print
+   ======================================================== */
+@media print {
+
+    /* Ocultar absolutamente todo */
+    body > *                   { display: none !important; }
+    .modal-backdrop             { display: none !important; }
+
+    /* Mostrar solo el div del recibo */
+    #recibo-print {
+        display: block !important;
+        position: fixed;
+        inset: 0;
+        background: #fff;
+        padding: 32px 40px;
+        font-family: 'Arimo', sans-serif;
+        font-size: 13pt;
+        color: #000;
+        z-index: 9999;
+    }
+
+    /* Tipografías y elementos dentro del recibo */
+    #recibo-print h5,
+    #recibo-print .font-spartan { font-family: 'League Spartan', sans-serif; }
+
+    #recibo-print table         { width: 100%; border-collapse: collapse; }
+    #recibo-print th,
+    #recibo-print td            { border: 1px solid #ccc; padding: 6px 10px; }
+    #recibo-print thead         { background: #222 !important; color: #fff !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    #recibo-print tfoot         { background: #f0f0f0 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+    /* Eliminar sombras y bordes decorativos */
+    #recibo-print .border-bottom { border-bottom: 1px solid #ccc !important; }
+    #recibo-print .badge         { border: 1px solid #999; background: transparent !important; color: #000 !important; }
+    #recibo-print .btn            { display: none !important; }
+}
+

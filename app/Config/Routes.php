@@ -44,4 +44,7 @@ $routes->group('admin', ['filter' => 'admin'], static function ($routes) {
 
     $routes->get('clientes', 'Admin\Usuario::clientes');
     $routes->post('usuario/cambiar-estado', 'Admin\Usuario::cambiarEstado');
+
+    $routes->get('ventas', 'Admin\Venta::index');
+    $routes->get('ventas/detalle/(:num)', 'Admin\Venta::detalle/$1');
 });
