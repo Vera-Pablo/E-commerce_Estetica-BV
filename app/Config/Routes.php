@@ -37,4 +37,8 @@ $routes->group('admin', ['filter' => 'admin'], static function ($routes) {
     $routes->get('categorias', 'Admin\Categoria::index');
     $routes->post('categoria/guardar', 'Admin\Categoria::guardar');
     $routes->post('categoria/editar/(:num)', 'Admin\Categoria::editar/$1');
+
+    $routes->get('productos', 'Admin\Producto::index');
+    $routes->post('producto/guardar', 'Admin\Producto::guardar');
+    $routes->post('producto/editar/(:num)', 'Admin\Producto::editar/$1');
 });
