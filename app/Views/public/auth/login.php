@@ -100,7 +100,7 @@
 
                     <!-- La imagen desaparece en dispositivos móviles (pantallas menores a lg) -->
                     <div class="col-lg-6 mb-5 mb-lg-0 d-none d-lg-block">
-                        <img src="<?= base_url('assets/images/banners/bv.png') ?>" class="w-100 rounded-4 shadow-4" alt="Estética BV" style="box-shadow: 0px 10px 7px rgba(0, 0, 0, 0.26); object-fit: cover; height: 550px;" />
+                        <img src="<?= base_url('assets/images/banners/bv.webp') ?>" class="w-100 rounded-4 shadow-4" alt="Estética BV" style="box-shadow: 0px 10px 7px rgba(0, 0, 0, 0.26); object-fit: cover; height: 550px;" />
                     </div>
                 </div>
             </div>

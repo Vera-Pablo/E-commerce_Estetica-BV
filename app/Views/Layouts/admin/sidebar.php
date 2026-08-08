@@ -10,7 +10,7 @@ $segment = $uri->getSegment(2); // admin/[segmento]
 <div class="d-flex flex-column flex-shrink-0 p-3 admin-sidebar" style="width: 250px;">
     <!-- Superior: Logo y Título -->
     <a href="<?= base_url('admin/dashboard') ?>" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
-        <img src="<?= base_url('assets/images/logos/Logo-BV.png') ?>" alt="Logo Estética BV" style="max-height: 40px; margin-right: 15px;">
+        <img src="<?= base_url('assets/images/logos/Logo-BV.webp') ?>" alt="Logo Estética BV" style="max-height: 40px; margin-right: 15px;">
         <span class="fs-5 fw-bold font-spartan">Panel Admin</span>
     </a>
     
