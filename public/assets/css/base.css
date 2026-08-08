@@ -81,21 +81,21 @@ h1, h2, h3, h4, h5, h6, .fw-bold, .font-spartan {
 }
 
 .carousel-item-1 {
-    background-image: url('../images/banners/estetica.png');
+    background-image: url('../images/banners/estetica.webp');
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center center;
 }
 
 .carousel-item-2 {
-    background-image: url('../images/banners/delivery.png');
+    background-image: url('../images/banners/delivery.webp');
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center center;
 }
 
 .carousel-item-3 {
-    background-image: url('../images/banners/pay.png');
+    background-image: url('../images/banners/pay.webp');
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center center;

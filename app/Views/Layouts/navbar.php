@@ -5,7 +5,7 @@
     <div class="container-fluid px-lg-4">
       <!-- Navbar Brand / Logo -->
       <a class="navbar-brand d-flex align-items-center me-3" href="<?= base_url('/') ?>">
-        <img src="<?= base_url('assets/images/logos/Logo-BV.png') ?>" alt="Estética BV Logo" class="img-fluid" style="max-height: 45px; width: auto;" />
+        <img src="<?= base_url('assets/images/logos/Logo-BV.webp') ?>" alt="Estética BV Logo" class="img-fluid" style="max-height: 45px; width: auto;" />
       </a>
 
       <!-- Mobile Toggler -->

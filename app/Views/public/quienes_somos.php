@@ -28,7 +28,7 @@
         <div class="card mb-4 border-0 card-canva" style="box-shadow: 0px 10px 7px rgba(0, 0, 0, 0.26);">
             <div class="row g-0 align-items-center">
                 <div class="col-md-4">
-                    <img src="<?= base_url('assets/images/banners/estetica.png') ?>" class="img-fluid rounded-start w-100 h-100 object-fit-cover" alt="Nuestra Historia" style="min-height: 250px;">
+                    <img src="<?= base_url('assets/images/banners/estetica.webp') ?>" class="img-fluid rounded-start w-100 h-100 object-fit-cover" alt="Nuestra Historia" style="min-height: 250px;">
                 </div>
                 <div class="col-md-8">
                     <div class="card-body p-4">
@@ -52,7 +52,7 @@
                     </div>
                 </div>
                 <div class="col-md-4">
-                    <img src="<?= base_url('assets/images/team/estilista.png') ?>" class="img-fluid rounded-end w-100 h-100 object-fit-cover" alt="Nuestra Misión" style="min-height: 250px;">
+                    <img src="<?= base_url('assets/images/team/estilista.webp') ?>" class="img-fluid rounded-end w-100 h-100 object-fit-cover" alt="Nuestra Misión" style="min-height: 250px;">
                 </div>
             </div>
         </div>
@@ -61,7 +61,7 @@
         <div class="card mb-4 border-0 card-canva" style="box-shadow: 0px 10px 7px rgba(0, 0, 0, 0.26);">
             <div class="row g-0 align-items-center">
                 <div class="col-md-4">
-                    <img src="<?= base_url('assets/images/team/devs.png') ?>" class="img-fluid rounded-start w-100 h-100 object-fit-cover" alt="Nuestra Visión" style="min-height: 250px;">
+                    <img src="<?= base_url('assets/images/team/devs.webp') ?>" class="img-fluid rounded-start w-100 h-100 object-fit-cover" alt="Nuestra Visión" style="min-height: 250px;">
                 </div>
                 <div class="col-md-8">
                     <div class="card-body p-4">
