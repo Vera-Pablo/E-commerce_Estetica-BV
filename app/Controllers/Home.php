@@ -11,21 +11,25 @@ class Home extends BaseController
 
     public function quienesSomos()
     {
+        $this->cachePage(60);
         return view('public/quienes_somos', ['title' => 'Quiénes Somos - Estética BV']);
     }
 
     public function comercializacion()
     {
+        $this->cachePage(60);
         return view('public/comercializacion', ['title' => 'Comercialización - Estética BV']);
     }
 
     public function contacto()
     {
+        $this->cachePage(60);
         return view('public/contacto', ['title' => 'Contacto - Estética BV']);
     }
 
     public function terminosDeUso()
     {
+        $this->cachePage(60);
         return view('public/terminos_uso', ['title' => 'Términos de Uso - Estética BV']);
     }
 

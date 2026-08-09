@@ -17,7 +17,7 @@
                 <div class="card mb-4 border-0 rounded-4 overflow-hidden" style="box-shadow: 0px 10px 7px rgba(0, 0, 0, 0.26);">
                     <div class="row g-0 align-items-center">
                         <div class="col-md-4 h-100">
-                            <img src="<?= base_url('assets/images/banners/pay.webp') ?>" class="img-fluid w-100 h-100 object-fit-cover" alt="Medios de Pago" style="min-height: 200px;">
+                            <img src="<?= base_url('assets/images/banners/pay.webp') ?>" class="img-fluid w-100 h-100 object-fit-cover" alt="Medios de Pago" style="min-height: 200px;" loading="lazy">
                         </div>
                         <div class="col-md-8">
                             <div class="card-body p-4">
@@ -33,7 +33,7 @@
                 <div class="card mb-4 border-0 rounded-4 overflow-hidden" style="box-shadow: 0px 10px 7px rgba(0, 0, 0, 0.26);">
                     <div class="row g-0 align-items-center">
                         <div class="col-md-4 h-100">
-                            <img src="<?= base_url('assets/images/banners/delivery.webp') ?>" class="img-fluid w-100 h-100 object-fit-cover" alt="Envíos a Domicilio" style="min-height: 200px;">
+                            <img src="<?= base_url('assets/images/banners/delivery.webp') ?>" class="img-fluid w-100 h-100 object-fit-cover" alt="Envíos a Domicilio" style="min-height: 200px;" loading="lazy">
                         </div>
                         <div class="col-md-8">
                             <div class="card-body p-4">
@@ -49,7 +49,7 @@
                 <div class="card mb-4 border-0 rounded-4 overflow-hidden" style="box-shadow: 0px 10px 7px rgba(0, 0, 0, 0.26);">
                     <div class="row g-0 align-items-center">
                         <div class="col-md-4 h-100">
-                            <img src="<?= base_url('assets/images/banners/estetica.webp') ?>" class="img-fluid w-100 h-100 object-fit-cover" alt="Retiro en Sucursal" style="min-height: 200px;">
+                            <img src="<?= base_url('assets/images/banners/estetica.webp') ?>" class="img-fluid w-100 h-100 object-fit-cover" alt="Retiro en Sucursal" style="min-height: 200px;" loading="lazy">
                         </div>
                         <div class="col-md-8">
                             <div class="card-body p-4">
@@ -65,7 +65,7 @@
                 <div class="card mb-4 border-0 rounded-4 overflow-hidden" style="box-shadow: 0px 10px 7px rgba(0, 0, 0, 0.26);">
                     <div class="row g-0 align-items-center">
                         <div class="col-md-4 h-100">
-                            <img src="<?= base_url('assets/images/banners/rule.webp') ?>" class="img-fluid w-100 h-100 object-fit-cover" alt="Políticas de Devolución" style="min-height: 200px; background-color: #f8f9fa;">
+                            <img src="<?= base_url('assets/images/banners/rule.webp') ?>" class="img-fluid w-100 h-100 object-fit-cover" alt="Políticas de Devolución" style="min-height: 200px; background-color: #f8f9fa;" loading="lazy">
                         </div>
                         <div class="col-md-8">
                             <div class="card-body p-4">
