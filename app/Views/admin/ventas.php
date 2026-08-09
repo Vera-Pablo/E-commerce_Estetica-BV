@@ -1,22 +1,5 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= esc($title ?? 'Administrar Ventas') ?></title>
-
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Arimo:wght@400;700&family=League+Spartan:wght@400;700;900&display=swap" rel="stylesheet">
-
-    <!-- Bootstrap 5 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome 6 -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
-    <!-- Base Custom CSS -->
-    <link href="<?= base_url('assets/css/base.css') ?>" rel="stylesheet">
-
+<?= $this->extend('Layouts/admin/base_admin') ?>
+<?= $this->section('styles') ?>
     <style>
         /* ——— Cards ——— */
         .card-hover { transition: transform 0.2s, box-shadow 0.2s; }
@@ -37,16 +20,9 @@
         /* ——— Recibo (solo print) ——— */
         #recibo-print { display: none; }
     </style>
-</head>
-<body class="d-flex" style="background-color: #f8f9fa;">
+<?= $this->endSection() ?>
 
-    <!-- Sidebar -->
-    <?= $this->include('Layouts/admin/sidebar') ?>
-
-    <!-- Contenido Principal -->
-    <main class="flex-grow-1 p-4" style="height: 100vh; overflow-y: auto;">
-
-        <!-- Header -->
+<?= $this->section('content') ?><!-- Header -->
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h1 class="font-spartan fw-bold text-dark m-0">
                 <i class="fas fa-receipt me-2"></i> Gestión de Ventas
@@ -235,95 +211,9 @@
             </div>
         <?php endif; ?>
 
-    </main><!-- /main -->
+<?= $this->endSection() ?>
 
-    <!-- ===== MODAL RECIBO ===== -->
-    <div class="modal fade" id="reciboModal" tabindex="-1" aria-labelledby="reciboModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-lg">
-            <div class="modal-content border-0 rounded-4" style="box-shadow: 0 15px 40px rgba(0,0,0,.35);">
-
-                <div class="modal-header border-bottom-0 pb-0">
-                    <h4 class="modal-title font-spartan fw-bold" id="reciboModalLabel">
-                        <i class="fas fa-file-invoice me-2 text-primary"></i> Recibo de Venta
-                    </h4>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-
-                <div class="modal-body px-4 pb-0" id="recibo-contenido">
-
-                    <!-- Cabecera del recibo -->
-                    <div class="d-flex justify-content-between align-items-start mb-3 border-bottom pb-3">
-                        <div>
-                            <h5 class="font-spartan fw-bold mb-0">Estética BV</h5>
-                            <small class="text-muted">Productos de Belleza y Cosmética</small>
-                        </div>
-                        <div class="text-end">
-                            <div id="r-id" class="fw-bold fs-5 font-spartan"></div>
-                            <small id="r-fecha" class="text-muted"></small>
-                        </div>
-                    </div>
-
-                    <!-- Datos del cliente -->
-                    <div class="row mb-3">
-                        <div class="col-sm-6">
-                            <p class="mb-1 small"><span class="fw-bold">Cliente:</span> <span id="r-nombre"></span></p>
-                            <p class="mb-1 small"><span class="fw-bold">DNI:</span> <span id="r-dni"></span></p>
-                            <p class="mb-0 small"><span class="fw-bold">Email:</span> <span id="r-email"></span></p>
-                        </div>
-                        <div class="col-sm-6 text-sm-end">
-                            <p class="mb-1 small"><span class="fw-bold">Estado:</span> <span id="r-estado" class="badge bg-secondary"></span></p>
-                            <p class="mb-0 small"><span class="fw-bold">Método de pago:</span> <span id="r-pago"></span></p>
-                        </div>
-                    </div>
-
-                    <!-- Tabla de detalle -->
-                    <div class="table-responsive">
-                        <table class="table table-sm table-bordered align-middle mb-0" id="r-tabla-detalle">
-                            <thead class="table-dark">
-                                <tr>
-                                    <th>Producto</th>
-                                    <th class="text-center">Cant.</th>
-                                    <th class="text-end">P. Unit.</th>
-                                    <th class="text-end">Subtotal</th>
-                                </tr>
-                            </thead>
-                            <tbody id="r-items">
-                                <!-- Inyectado por JS -->
-                            </tbody>
-                            <tfoot>
-                                <tr class="table-light fw-bold">
-                                    <td colspan="3" class="text-end">TOTAL</td>
-                                    <td class="text-end" id="r-total"></td>
-                                </tr>
-                            </tfoot>
-                        </table>
-                    </div>
-
-                    <p class="text-center text-muted small mt-3 mb-0">
-                        <i class="fas fa-heart text-danger me-1"></i> Gracias por tu compra en Estética BV
-                    </p>
-
-                </div><!-- /recibo-contenido -->
-
-                <div class="modal-footer border-top-0 pt-3">
-                    <button type="button" class="btn btn-custom-back rounded-3 px-4" data-bs-dismiss="modal">Cerrar</button>
-                    <button type="button" class="btn btn-custom-nav rounded-3 px-4" onclick="imprimirRecibo()">
-                        <i class="fas fa-print me-2"></i> Imprimir Recibo
-                    </button>
-                </div>
-
-            </div>
-        </div>
-    </div>
-
-    <!-- Contenedor de impresión (fuera del modal, se muestra solo en @media print) -->
-    <div id="recibo-print"></div>
-
-    <!-- Bootstrap 5 JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Toast Helper -->
-    <script src="<?= base_url('assets/js/toast.js') ?>"></script>
-
+<?= $this->section('scripts') ?>
     <script>
         const reciboModal = new bootstrap.Modal(document.getElementById('reciboModal'));
         const baseUrl = '<?= base_url('admin/ventas/detalle/') ?>';
@@ -388,6 +278,4 @@
             window.print();
         }
     </script>
-
-</body>
-</html>
+<?= $this->endSection() ?>

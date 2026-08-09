@@ -1,35 +1,12 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= esc($title ?? 'Administrar Categorías') ?></title>
-    
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Arimo:wght@400;700&family=League+Spartan:wght@400;700;900&display=swap" rel="stylesheet">
-
-    <!-- Bootstrap 5 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome 6 -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
-    <!-- Base Custom CSS -->
-    <link href="<?= base_url('assets/css/base.css') ?>" rel="stylesheet">
-    
+<?= $this->extend('Layouts/admin/base_admin') ?>
+<?= $this->section('styles') ?>
     <style>
         .card-hover { transition: transform 0.2s, box-shadow 0.2s; }
         .card-hover:hover { transform: translateY(-3px); box-shadow: 0px 12px 10px rgba(0, 0, 0, 0.35) !important; }
     </style>
-</head>
-<body class="d-flex" style="background-color: #f8f9fa;">
-    
-    <!-- Sidebar Component -->
-    <?= $this->include('Layouts/admin/sidebar') ?>
+<?= $this->endSection() ?>
 
-    <!-- Contenido Principal -->
-    <main class="flex-grow-1 p-4" style="height: 100vh; overflow-y: auto;">
-        
+<?= $this->section('content') ?>
         <!-- Header Section -->
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h1 class="font-spartan fw-bold text-dark m-0">
@@ -115,50 +92,9 @@
                 <p class="text-muted">No hay resultados para mostrar. Intenta crear una nueva.</p>
             </div>
         <?php endif; ?>
-    </main>
+<?= $this->endSection() ?>
 
-    <!-- Modal Bootstrap para Crear / Editar -->
-    <div class="modal fade" id="categoriaModal" tabindex="-1" aria-labelledby="categoriaModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content border-0 rounded-4" style="box-shadow: 0px 15px 15px rgba(0,0,0,0.4);">
-                <form id="categoriaForm" action="<?= base_url('admin/categoria/guardar') ?>" method="POST">
-                    <div class="modal-header border-bottom-0 pb-0">
-                        <h4 class="modal-title font-spartan fw-bold" id="categoriaModalLabel">Nueva Categoría</h4>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body pt-4">
-                        <div class="mb-4">
-                            <label for="nombre_categoria" class="form-label fw-bold">Nombre de la Categoría <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control rounded-3" id="nombre_categoria" name="nombre_categoria" placeholder="Ej. Cremas Faciales" required>
-                        </div>
-                        
-                        <div class="mb-4">
-                            <label for="descripcion_categoria" class="form-label fw-bold">Descripción</label>
-                            <textarea class="form-control rounded-3" id="descripcion_categoria" name="descripcion_categoria" rows="3" placeholder="Opcional. Breve descripción de los productos..."></textarea>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label for="estado_categoria" class="form-label fw-bold">Estado del Registro</label>
-                            <select class="form-select rounded-3" id="estado_categoria" name="estado_categoria" required>
-                                <option value="1">Activa (Visible)</option>
-                                <option value="0">Inactiva (Oculta / Borrado Lógico)</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="modal-footer border-top-0 pt-0">
-                        <button type="button" class="btn btn-custom-back rounded-3 px-4" data-bs-dismiss="modal">Cancelar</button>
-                        <button type="submit" class="btn btn-custom-nav rounded-3 px-4"><i class="fas fa-save me-2"></i> Guardar</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- Bootstrap 5 JS Bundle -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Toast Helper -->
-    <script src="<?= base_url('assets/js/toast.js') ?>"></script>
-    
+<?= $this->section('scripts') ?>
     <!-- Lógica del Modal -->
     <script>
         const categoriaModal = new bootstrap.Modal(document.getElementById('categoriaModal'));
@@ -196,5 +132,4 @@
             categoriaModal.show();
         }
     </script>
-</body>
-</html>
+<?= $this->endSection() ?>
