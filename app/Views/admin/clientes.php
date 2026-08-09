@@ -1,22 +1,5 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= esc($title ?? 'Administrar Clientes') ?></title>
-    
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Arimo:wght@400;700&family=League+Spartan:wght@400;700;900&display=swap" rel="stylesheet">
-
-    <!-- Bootstrap 5 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome 6 -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
-    <!-- Base Custom CSS -->
-    <link href="<?= base_url('assets/css/base.css') ?>" rel="stylesheet">
-    
+<?= $this->extend('Layouts/admin/base_admin') ?>
+<?= $this->section('styles') ?>
     <style>
         .card-hover { transition: transform 0.2s, box-shadow 0.2s; }
         .card-hover:hover { transform: translateY(-3px); box-shadow: 0px 12px 10px rgba(0, 0, 0, 0.35) !important; }
@@ -35,15 +18,9 @@
             .client-avatar-container { border-bottom-left-radius: 0; border-top-right-radius: var(--bs-border-radius-xl); min-height: 120px; }
         }
     </style>
-</head>
-<body class="d-flex" style="background-color: #f8f9fa;">
-    
-    <!-- Sidebar Component -->
-    <?= $this->include('Layouts/admin/sidebar') ?>
+<?= $this->endSection() ?>
 
-    <!-- Contenido Principal -->
-    <main class="flex-grow-1 p-4" style="height: 100vh; overflow-y: auto;">
-        
+<?= $this->section('content') ?>
         <!-- Header Section -->
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h1 class="font-spartan fw-bold text-dark m-0">
@@ -124,64 +101,9 @@
                 <p class="text-muted">No hay resultados para mostrar en el sistema.</p>
             </div>
         <?php endif; ?>
-    </main>
+<?= $this->endSection() ?>
 
-    <!-- Modal Bootstrap para Ver / Cambiar Estado del Cliente -->
-    <div class="modal fade" id="clienteModal" tabindex="-1" aria-labelledby="clienteModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content border-0 rounded-4" style="box-shadow: 0px 15px 15px rgba(0,0,0,0.4);">
-                
-                <div class="modal-header border-bottom-0 pb-0">
-                    <h4 class="modal-title font-spartan fw-bold" id="clienteModalLabel"><i class="fas fa-user me-2 text-primary"></i>Detalles del Cliente</h4>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                
-                <div class="modal-body pt-4">
-                    <ul class="list-group list-group-flush rounded-3 border">
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            <strong>DNI</strong>
-                            <span id="modal-dni" class="text-muted"></span>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            <strong>Nombre Completo</strong>
-                            <span id="modal-nombre" class="text-muted"></span>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            <strong>Correo Electrónico</strong>
-                            <span id="modal-email" class="text-muted"></span>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            <strong>Teléfono</strong>
-                            <span id="modal-telefono" class="text-muted"></span>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            <strong>Estado Actual</strong>
-                            <span id="modal-estado"></span>
-                        </li>
-                    </ul>
-                </div>
-                
-                <div class="modal-footer border-top-0 d-flex justify-content-between pt-0 mt-3">
-                    <button type="button" class="btn btn-secondary rounded-3 px-4" data-bs-dismiss="modal">Cerrar</button>
-                    
-                    <form id="cambiarEstadoForm" action="<?= base_url('admin/usuario/cambiar-estado') ?>" method="POST" class="m-0">
-                        <input type="hidden" name="id_usuario" id="input_id_usuario" value="">
-                        <input type="hidden" name="estado_usuario" id="input_estado_usuario" value="">
-                        <button type="submit" id="btn-cambiar-estado" class="btn rounded-3 px-4 fw-bold">
-                            <!-- El texto y color se cambian con JS -->
-                        </button>
-                    </form>
-                </div>
-
-            </div>
-        </div>
-    </div>
-
-    <!-- Bootstrap 5 JS Bundle -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Toast Helper -->
-    <script src="<?= base_url('assets/js/toast.js') ?>"></script>
-    
+<?= $this->section('scripts') ?>
     <!-- Lógica del Modal -->
     <script>
         const clienteModal = new bootstrap.Modal(document.getElementById('clienteModal'));
@@ -225,5 +147,4 @@
             clienteModal.show();
         }
     </script>
-</body>
-</html>
+<?= $this->endSection() ?>

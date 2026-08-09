@@ -1,22 +1,5 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= esc($title ?? 'Administrar Productos') ?></title>
-    
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Arimo:wght@400;700&family=League+Spartan:wght@400;700;900&display=swap" rel="stylesheet">
-
-    <!-- Bootstrap 5 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome 6 -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
-    <!-- Base Custom CSS -->
-    <link href="<?= base_url('assets/css/base.css') ?>" rel="stylesheet">
-    
+<?= $this->extend('Layouts/admin/base_admin') ?>
+<?= $this->section('styles') ?>
     <style>
         .card-hover { transition: transform 0.2s, box-shadow 0.2s; }
         .card-hover:hover { transform: translateY(-3px); box-shadow: 0px 12px 10px rgba(0, 0, 0, 0.35) !important; }
@@ -25,15 +8,9 @@
             .product-img { border-bottom-left-radius: 0; border-top-right-radius: var(--bs-border-radius-xl); }
         }
     </style>
-</head>
-<body class="d-flex" style="background-color: #f8f9fa;">
-    
-    <!-- Sidebar Component -->
-    <?= $this->include('Layouts/admin/sidebar') ?>
+<?= $this->endSection() ?>
 
-    <!-- Contenido Principal -->
-    <main class="flex-grow-1 p-4" style="height: 100vh; overflow-y: auto;">
-        
+<?= $this->section('content') ?>
         <!-- Header Section -->
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h1 class="font-spartan fw-bold text-dark m-0">
@@ -139,80 +116,9 @@
                 <p class="text-muted">No hay resultados para mostrar. Intenta crear uno nuevo.</p>
             </div>
         <?php endif; ?>
-    </main>
+<?= $this->endSection() ?>
 
-    <!-- Modal Bootstrap para Crear / Editar Producto -->
-    <div class="modal fade" id="productoModal" tabindex="-1" aria-labelledby="productoModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-lg">
-            <div class="modal-content border-0 rounded-4" style="box-shadow: 0px 15px 15px rgba(0,0,0,0.4);">
-                <form id="productoForm" action="<?= base_url('admin/producto/guardar') ?>" method="POST">
-                    <div class="modal-header border-bottom-0 pb-0">
-                        <h4 class="modal-title font-spartan fw-bold" id="productoModalLabel">Nuevo Producto</h4>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body pt-4">
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="nombre_producto" class="form-label fw-bold">Nombre del Producto <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control rounded-3" id="nombre_producto" name="nombre_producto" placeholder="Ej. Crema Hidratante" required>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="id_categoria" class="form-label fw-bold">Categoría <span class="text-danger">*</span></label>
-                                <select class="form-select rounded-3" id="id_categoria" name="id_categoria" required>
-                                    <option value="">Seleccione una categoría...</option>
-                                    <?php foreach($categorias as $cat): ?>
-                                        <option value="<?= esc($cat['id_categoria']) ?>"><?= esc($cat['nombre_categoria']) ?></option>
-                                    <?php endforeach; ?>
-                                </select>
-                            </div>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label for="descripcion_producto" class="form-label fw-bold">Descripción</label>
-                            <textarea class="form-control rounded-3" id="descripcion_producto" name="descripcion_producto" rows="3" placeholder="Opcional. Detalles del producto..."></textarea>
-                        </div>
-                        
-                        <div class="row">
-                            <div class="col-md-4 mb-3">
-                                <label for="precio" class="form-label fw-bold">Precio <span class="text-danger">*</span></label>
-                                <div class="input-group">
-                                    <span class="input-group-text rounded-start-3">$</span>
-                                    <input type="number" step="0.01" class="form-control rounded-end-3" id="precio" name="precio" placeholder="0.00" required>
-                                </div>
-                            </div>
-                            <div class="col-md-4 mb-3">
-                                <label for="stock" class="form-label fw-bold">Stock <span class="text-danger">*</span></label>
-                                <input type="number" class="form-control rounded-3" id="stock" name="stock" placeholder="0" min="0" required>
-                            </div>
-                            <div class="col-md-4 mb-3">
-                                <label for="estado_producto" class="form-label fw-bold">Estado</label>
-                                <select class="form-select rounded-3" id="estado_producto" name="estado_producto" required>
-                                    <option value="1">Activo</option>
-                                    <option value="0">Inactivo</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="imagen" class="form-label fw-bold"><i class="fas fa-cloud-upload-alt text-primary"></i> URL Imagen (Cloudinary)</label>
-                            <input type="text" class="form-control rounded-3" id="imagen" name="imagen" placeholder="https://res.cloudinary.com/...">
-                            <small class="text-muted">Pegue aquí el enlace de la imagen alojada en Cloudinary.</small>
-                        </div>
-                    </div>
-                    <div class="modal-footer border-top-0 pt-0">
-                        <button type="button" class="btn btn-custom-back rounded-3 px-4" data-bs-dismiss="modal">Cancelar</button>
-                        <button type="submit" class="btn btn-custom-nav rounded-3 px-4"><i class="fas fa-save me-2"></i> Guardar Cambios</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- Bootstrap 5 JS Bundle -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Toast Helper -->
-    <script src="<?= base_url('assets/js/toast.js') ?>"></script>
-    
+<?= $this->section('scripts') ?>
     <!-- Lógica del Modal -->
     <script>
         const productoModal = new bootstrap.Modal(document.getElementById('productoModal'));
@@ -262,5 +168,4 @@
             productoModal.show();
         }
     </script>
-</body>
-</html>
+<?= $this->endSection() ?>
