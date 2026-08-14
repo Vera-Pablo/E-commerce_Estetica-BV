@@ -3,13 +3,13 @@
 <aside>
 <img src="https://app.notion.com/icons/document_lightgray.svg" alt="https://app.notion.com/icons/document_lightgray.svg" width="40px" />
 
-**Versión: 1.2.2**
+**Versión: 1.3.2**
 
-**Fecha: 28/7/2026**
+**Fecha: 11/8/2026**
 
 **Autor: Vera Pablo G.**
 
-**Cambios: Actualización de la arquitectura de directorio (sección 3.5) para reflejar la estructura real del proyecto.**
+**Cambios: Reestructuración completa del Capítulo VI (Pruebas y Despliegue): corrección del formato del Plan de Pruebas, conversión de los Casos de Prueba a tabla markdown, incorporación de los criterios de aceptación (Definition of Done) y del procedimiento de despliegue; alineado con el nuevo Capítulo VI (Verificación y Pruebas) de `reglas.md`.**
 
 </aside>
 
@@ -134,73 +134,119 @@ A nivel de infraestructura, "Estética - BV" implementa una arquitectura web cl�
 ```markdown
 estetica-bv/
 │
-├── app/                              <-- [CAPA SERVIDOR] Núcleo de la aplicación (MVC)
-│   ├── Config/                       <-- Configuración (Rutas, BD, Filtros)
-│   ├── Controllers/                  <-- Controladores
-│   │   ├── Admin/                    <-- Panel de administración
-│   │   │   └── Dashboard.php
-│   │   ├── Auth/                     <-- Autenticación
-│   │   │   └── AuthController.php
-│   │   └── Home.php                  <-- Página principal
-│   ├── Database/                     <-- Migraciones y Seeders
-│   │   ├── Migrations/               <-- Creación de tablas
-│   │   └── Seeds/                    <-- Datos de prueba
-│   ├── Filters/                      <-- Filtros de seguridad
-│   │   ├── AdminFilter.php           <-- Restringe acceso a admin
-│   │   └── CustomerFilter.php        <-- Restringe acceso a clientes autenticados
-│   ├── Helpers/                      <-- Funciones auxiliares globales
-│   ├── Language/                     <-- Internacionalización
-│   │   └── en/                       <-- Traducciones al inglés
-│   ├── Libraries/                    <-- Librerías personalizadas
-│   │   ├── EmailService.php          <-- Envío de correos (activación, recuperación)
-│   │   └── TokenService.php          <-- Creación y verificación de tokens
-│   ├── Models/                       <-- Acceso a base de datos
+├── .opencode/                          <-- [CONFIG OPENCODE] Skills & Config MCP
+│   └── skills/
+│       ├── crear-issue-linear/         <-- Skill: crear issues en Linear
+│       │   └── SKILL.md
+│       └── crear-tarea-notion/         <-- Skill: crear tareas en Notion
+│           └── SKILL.md
+│
+├── app/                                <-- [CAPA SERVIDOR] Núcleo de la aplicación (MVC)
+│   ├── Config/                         <-- Configuración (Rutas, BD, Filtros)
+│   ├── Controllers/                    <-- Controladores
+│   │   ├── Admin/                      <-- Panel de administración
+│   │   │   ├── Dashboard.php           <-- Panel principal admin
+│   │   │   ├── Categoria.php           <-- CRUD Categorías
+│   │   │   ├── Producto.php            <-- CRUD Productos
+│   │   │   ├── Usuario.php             <-- Gestión Usuarios
+│   │   │   └── Venta.php               <-- Gestión Ventas/Estados
+│   │   ├── Auth/                       <-- Autenticación
+│   │   │   └── AuthController.php      <-- Login, Registro, Recuperación
+│   │   ├── BaseController.php          <-- Controlador base extendido
+│   │   └── Home.php                    <-- Página principal pública
+│   ├── Database/                       <-- Migraciones y Seeders
+│   │   ├── Migrations/                 <-- 10 migraciones (tablas BD)
+│   │   └── Seeds/                      <-- 6 Seeders (datos iniciales)
+│   ├── Filters/                        <-- Filtros de seguridad
+│   │   ├── AdminFilter.php             <-- Restringe acceso a admin
+│   │   └── CustomerFilter.php          <-- Restringe acceso a clientes autenticados
+│   ├── Helpers/                        <-- Funciones auxiliares globales
+│   ├── Language/                       <-- Internacionalización
+│   │   └── en/                         <-- Traducciones al inglés
+│   ├── Libraries/                      <-- Librerías personalizadas
+│   │   ├── EmailService.php            <-- Envío de correos (activación, recuperación)
+│   │   └── TokenService.php            <-- Creación y verificación de tokens
+│   ├── Models/                         <-- 10 Modelos (Acceso a BD)
 │   │   ├── CategoriaModel.php
+│   │   ├── ConsultaModel.php
+│   │   ├── EstadoVentaModel.php
+│   │   ├── FavoritoModel.php
+│   │   ├── MetodoPagoModel.php
 │   │   ├── ProductoModel.php
+│   │   ├── RolModel.php
 │   │   ├── UsuarioModel.php
-│   │   └── ... (10 modelos total)
-│   ├── ThirdParty/                   <-- Librerías externas no-Composer
-│   └── Views/                        <-- Plantillas de interfaz
-│       ├── Layouts/                  <-- Layouts base (Administrador, Cliente)
-│       └── welcome_message.php
+│   │   ├── VentaDetalleModel.php
+│   │   └── VentaModel.php
+│   ├── ThirdParty/                     <-- Librerías externas no-Composer
+│   └── Views/                          <-- Plantillas de interfaz
+│       ├── Layouts/                    <-- Layouts base
+│       │   ├── admin/                  <-- Layouts panel administración
+│       │   │   ├── base_admin.php      <-- Layout base admin
+│       │   │   └── sidebar.php         <-- Sidebar navegación admin
+│       │   ├── base.php                <-- Layout base público
+│       │   ├── footer.php              <-- Footer compartido
+│       │   └── navbar.php              <-- Navbar responsiva
+│       ├── admin/                      <-- Vistas panel administración
+│       │   ├── categorias.php
+│       │   ├── clientes.php
+│       │   ├── productos.php
+│       │   └── ventas.php
+│       ├── public/                     <-- Vistas públicas
+│       │   ├── auth/                   <-- Autenticación
+│       │   │   ├── login.php
+│       │   │   ├── recuperar.php
+│       │   │   └── registro.php
+│       │   ├── comercializacion.php
+│       │   ├── contacto.php
+│       │   ├── quienes_somos.php
+│       │   └── terminos_uso.php
+│       ├── home.php                    <-- Vista principal home
+│       └── welcome_message.php         <-- Vista por defecto CI4
 │
-├── public/                           <-- [CAPA CLIENTE] Única carpeta accesible
-│   ├── index.php                     <-- Front Controller (punto de entrada)
-│   ├── home.php                      <-- Página alternativa estática
-│   ├── assets/                       <-- Recursos estáticos
-│   │   ├── css/                      <-- Estilos personalizados
-│   │   │   └── base.css
-│   │   ├── images/                   <-- Imágenes (banners, productos, equipo)
-│   │   │   ├── banners/
-│   │   │   └── team/
-│   │   └── js/                       <-- Scripts del lado del cliente
-│   │       └── toast.js
-│   └── .htaccess                     <-- Reglas Apache (URLs amigables)
+├── public/                             <-- [CAPA CLIENTE] Única carpeta accesible web
+│   ├── index.php                       <-- Front Controller (punto de entrada)
+│   ├── home.php                        <-- Página alternativa estática
+│   ├── favicon.ico
+│   ├── robots.txt
+│   ├── assets/                         <-- Recursos estáticos
+│   │   ├── css/
+│   │   │   └── base.css                <-- Estilos base (fuentes, botones, navbar, sidebar, print)
+│   │   ├── js/
+│   │   │   └── toast.js                <-- ToastHelper (notificaciones success/error/warning)
+│   │   └── images/                     <-- Imágenes optimizadas WebP
+│   │       ├── banners/                <-- 8 banners carrusel/hero
+│   │       ├── logos/                  <-- Logo-BV.webp
+│   │       └── team/                   <-- 2 imágenes equipo (estilista, devs)
+│   └── .htaccess                       <-- Reglas Apache (URLs amigables, seguridad)
 │
-├── docs/                             <-- Documentación del proyecto
-│   ├── Documentación.md
-│   ├── Doc-V 1.2.2.md
-│   └── img/                          <-- Diagramas y gráficos
+├── docs/                               <-- Documentación del proyecto
+│   ├── Doc-V 1.2.2.md                  <-- Este documento
+│   └── img/                            <-- Diagramas y gráficos
 │       ├── Diagrama_de_Arquitectura.png
 │       ├── Diagrama_de_Arquitectura_de_despliegue.png
 │       └── Diagrama_Entidad_Relaciones.png
 │
-├── system/                           <-- Framework CodeIgniter 4 (No modificar)
-├── tests/                            <-- Tests unitarios y de integración
-├── vendor/                           <-- Dependencias Composer
-├── writable/                         <-- Logs, caché y sesiones
-├── .env                              <-- Variables de entorno (credenciales DB)
-├── builds                            <-- Script toggle release/development CI4
-├── composer.json                     <-- Dependencias PHP
-├── phpunit.xml.dist                  <-- Configuración PHPUnit
-├── preload.php                       <-- Precarga OPCache
-└── spark                             <-- CLI de CodeIgniter
+├── system/                             <-- Framework CodeIgniter 4 (No modificar)
+├── tests/                              <-- Tests unitarios y de integración (PHPUnit)
+├── vendor/                             <-- Dependencias Composer
+├── writable/                           <-- Logs, caché, sesiones, uploads, debugbar
+├── .env                                <-- Variables de entorno (credenciales DB)
+├── builds                              <-- Script toggle release/development CI4
+├── composer.json                       <-- Dependencias PHP
+├── composer.lock
+├── opencode.json                       <-- Config OpenCode (MCP Linear/Notion remotos)
+├── phpunit.xml.dist                    <-- Configuración PHPUnit
+├── preload.php                         <-- Precarga OPCache
+├── spark                               <-- CLI de CodeIgniter
+└── README.md
 ```
 
 **Justificación de la estructura:**
 
-- **Seguridad:** El servidor Apache se configura para que su "Document Root" apunte exclusivamente a la carpeta `/public`. De esta manera, todo el código crítico (contraseñas en `.env`, lógica en `/app`) queda protegido fuera del alcance de internet.
-- **Mantenibilidad:** Refleja con exactitud el patrón MVC, permitiendo al equipo de desarrollo localizar rápidamente dónde se gestionan las bases de datos (`Models`), la lógica de seguridad (`Controllers`) o el diseño de la pantalla (`Views`).
+- **Seguridad:** El servidor Apache se configura para que su "Document Root" apunte exclusivamente a la carpeta `/public`. De esta manera, todo el código crítico (contraseñas en `.env`, lógica en `/app`, skills en `/.opencode`) queda protegido fuera del alcance de internet.
+- **Mantenibilidad:** Refleja con exactitud el patrón MVC, permitiendo al equipo de desarrollo localizar rápidamente dónde se gestionan las bases de datos (`Models`), la lógica de seguridad (`Controllers/Filters`) o el diseño de la pantalla (`Views/Layouts`).
+- **Escalabilidad Frontend:** Separación clara en `public/assets/` entre estilos base (`base.css`: tipografías Arimo/League Spartan, botones personalizados, navbar con blur, sidebar admin, estilos `@media print` para recibos) y scripts (`toast.js`: clase ToastHelper con notificaciones Bootstrap 5 tipadas success/error/warning + auto-disparo desde flash data CI4).
+- **Integración MCP:** Carpeta `/.opencode/` con skills para automatización de issues (Linear) y tareas (Notion) usando servidores remotos OAuth (`mcp.linear.app`, `mcp.notion.com`), configurados en `opencode.json`.
 
 ---
 
@@ -378,4 +424,62 @@ Considerando el ciclo de vida corto y la infraestructura del proyecto, se han id
 
 ---
 
-## Capítulo VI:
+## Capítulo VI: Pruebas y Despliegue
+
+### 6.1 Plan de Pruebas (QA)
+
+Aunque el alcance académico del proyecto no exige una fase formal de aseguramiento de calidad automatizada, se aplicará una estrategia de **Pruebas Funcionales Manuales (Caja Negra)** para garantizar la estabilidad de los flujos críticos del E-commerce antes de dar el proyecto por finalizado.
+
+El objetivo del plan de QA es validar que los Requerimientos Funcionales (RF) se cumplan exactamente como fueron definidos, priorizando la experiencia del cliente y la seguridad del panel de administración.
+
+Tipos de pruebas a ejecutar:
+
+1. **Pruebas de Autenticación y Autorización:** Verificar que las contraseñas se almacenen hasheadas y que un usuario con rol "Cliente" no pueda acceder a las rutas del controlador de "Administrador".
+
+2. **Pruebas de Flujo de Compra (End-to-End):** Validar el ciclo completo: desde que un usuario anónimo se registra, añade productos al carrito, procesa el pago en la pasarela simulada, hasta que la venta se registra en la base de datos restando el stock correctamente.
+
+3. **Pruebas de CRUD Administrativo:** Asegurar que las operaciones de creación, edición y borrado lógico (desactivación) de productos y categorías funcionen sin arrojar excepciones de base de datos.
+
+4. **Pruebas de Interfaz (UI/UX):** Comprobar que el diseño mediante Bootstrap responde correctamente en resoluciones móviles (Smartphones) y de escritorio.
+
+5. **Pruebas de Seguridad:** Verificar el escapado de salida (`esc()`), el token anti-CSRF y el uso de contraseñas hasheadas, conforme a lo definido en el Capítulo IV de `reglas.md`.
+
+> **Nota:** El detalle de la obligatoriedad, los checklist de flujos y los criterios de aceptación (Definition of Done) que se aplican a cada issue se encuentran en el **Capítulo VI (Verificación y Pruebas)** del documento `reglas.md`.
+
+### 6.2 Casos de Pruebas Principales
+
+Para mantener un registro ordenado, se documentarán los escenarios críticos bajo la siguiente estructura de Casos de Prueba (Test Cases):
+
+| ID | Escenario a Probar | Pasos de Ejecución | Resultado Esperado | Estado |
+| --- | --- | --- | --- | --- |
+| **QA-01** | Seguridad de Rutas Admin | 1. Iniciar sesión con un usuario "Cliente". 2. Escribir manualmente en la URL la ruta del panel `/admin/productos`. | El sistema debe bloquear el acceso, redirigir al cliente al inicio y mostrar un mensaje de "Acceso Denegado". | Pendiente |
+| **QA-02** | Cálculo del Carrito | 1. Agregar 2 unidades del Producto A ($100). 2. Agregar 1 unidad del Producto B ($50). 3. Ir al carrito. | El sistema debe mostrar un subtotal correcto y un Total a pagar de $250. | Pendiente |
+| **QA-03** | Control de Stock Post-Venta | 1. Verificar que el Producto X tiene stock 5. 2. Comprar 2 unidades del Producto X. 3. Revisar la tabla de productos. | El stock del Producto X debe actualizarse automáticamente a 3. | Pendiente |
+| **QA-04** | Restricción de Borrado | 1. Intentar eliminar una categoría que contiene productos asignados. | El sistema debe impedir la acción para mantener la integridad (RF-06) y mostrar una alerta. | Pendiente |
+| **QA-05** | Registro y Activación de Usuario | 1. Registrar un usuario nuevo. 2. Verificar el envío del correo de activación (EmailService). 3. Activar la cuenta con el token. 4. Iniciar sesión. | El sistema debe crear el usuario, enviar el correo de activación y permitir el ingreso solo tras activar la cuenta. | Pendiente |
+| **QA-06** | Historial de Compras | 1. Iniciar sesión como cliente. 2. Acceder al perfil. 3. Revisar el historial de ventas. | El sistema debe listar las compras del cliente en orden ascendente (RF-17) con sus detalles. | Pendiente |
+
+### 6.3 Criterios de Aceptación (Definition of Done)
+
+Una issue se considera completa únicamente cuando cumple simultáneamente:
+
+- La funcionalidad implementada satisface el Requerimiento Funcional o condición asociado.
+- Se ejecutaron las pruebas de los flujos relacionados (según `reglas.md` Capítulo VI) con resultado **OK**.
+- No se introdujeron regresiones en los flujos existentes.
+- Se cumplen las reglas de estilo, optimización, ciberseguridad y limpieza de `reglas.md`.
+- El resultado de las pruebas quedó documentado en la issue de Linear.
+
+### 6.4 Despliegue
+
+El sistema se desplegará en el entorno local de desarrollo sobre **Apache y MySQL** (Ubuntu vía WSL), conforme a la arquitectura de despliegue Cliente-Servidor descrita en las secciones **3.3** y **3.4**.
+
+Procedimiento de puesta en funcionamiento:
+
+1. **Configurar el Document Root de Apache** para que apunte exclusivamente a la carpeta `public/`, garantizando que el código crítico (`app/`, `.env`) quede fuera del alcance web.
+2. **Configurar la base de datos** en el archivo `.env` (motor MySQLi, host `localhost`, puerto `3306`).
+3. **Ejecutar las migraciones** para crear las 10 tablas: `php spark migrate`.
+4. **Cargar los datos iniciales** con los Seeders: `php spark db:seed DatabaseSeeder`.
+5. **Arrancar el servidor de desarrollo** en el puerto `:8080`: `php spark serve`.
+6. **Verificar el acceso** recorriendo los flujos principales del catálogo público y del panel de administración, comprobando que respondan sin errores.
+
+Requisitos de entorno: PHP 8.1+, CodeIgniter 4, Apache, MySQL (motor MySQLi), Git y Composer.

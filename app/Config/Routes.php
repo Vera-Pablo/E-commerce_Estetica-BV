@@ -13,6 +13,8 @@ $routes->get('comercializacion', 'Home::comercializacion');
 $routes->get('contacto', 'Home::contacto');
 $routes->get('terminos-de-uso', 'Home::terminosDeUso');
 
+$routes->get('catalogo', 'Catalogo::index');
+$routes->get('catalogo/filtrar', 'Catalogo::filtrar');
 
 $routes->get('login', 'Auth\AuthController::login');
 $routes->post('login', 'Auth\AuthController::loginProcess');
