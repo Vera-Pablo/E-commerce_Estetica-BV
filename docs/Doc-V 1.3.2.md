@@ -3,13 +3,13 @@
 <aside>
 <img src="https://app.notion.com/icons/document_lightgray.svg" alt="https://app.notion.com/icons/document_lightgray.svg" width="40px" />
 
-**Versión: 1.3.2**
+**Versión: 1.3.3**
 
-**Fecha: 11/8/2026**
+**Fecha: 17/8/2026**
 
 **Autor: Vera Pablo G.**
 
-**Cambios: Reestructuración completa del Capítulo VI (Pruebas y Despliegue): corrección del formato del Plan de Pruebas, conversión de los Casos de Prueba a tabla markdown, incorporación de los criterios de aceptación (Definition of Done) y del procedimiento de despliegue; alineado con el nuevo Capítulo VI (Verificación y Pruebas) de `reglas.md`.**
+**Cambios: Actualizacion de plan de despliegue sección 6.4 item 4,5,6 **
 
 </aside>
 
@@ -479,7 +479,7 @@ Procedimiento de puesta en funcionamiento:
 2. **Configurar la base de datos** en el archivo `.env` (motor MySQLi, host `localhost`, puerto `3306`).
 3. **Ejecutar las migraciones** para crear las 10 tablas: `php spark migrate`.
 4. **Cargar los datos iniciales** con los Seeders: `php spark db:seed DatabaseSeeder`.
-5. **Arrancar el servidor de desarrollo** en el puerto `:8080`: `php spark serve`.
-6. **Verificar el acceso** recorriendo los flujos principales del catálogo público y del panel de administración, comprobando que respondan sin errores.
+5. **Arrancar los servicios** de manera manual (ej. `sudo service apache2 start` y `sudo service mysql start`).
+6. **Verificar el acceso** ingresando a `http://localhost/` y recorriendo los flujos principales del catálogo público y del panel de administración, comprobando que respondan sin errores.
 
 Requisitos de entorno: PHP 8.1+, CodeIgniter 4, Apache, MySQL (motor MySQLi), Git y Composer.
