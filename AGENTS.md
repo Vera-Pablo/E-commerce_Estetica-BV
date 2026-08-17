@@ -27,7 +27,8 @@ Proyecto CodeIgniter 4. `docs/Doc-V 1.3.2.md` es la especificación del sistema 
 ## Comandos
 ```
 composer install
-php spark serve              # dev :8080
+sudo service mysql start     # arrancar base de datos WSL
+sudo service apache2 start   # dev :80 (WSL)
 php spark migrate            # migraciones
 php spark db:seed DatabaseSeeder
 composer test                # phpunit
