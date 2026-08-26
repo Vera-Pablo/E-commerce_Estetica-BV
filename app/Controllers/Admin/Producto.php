@@ -39,8 +39,16 @@ class Producto extends BaseController
         }
         
         $productos = $productoModel->findAll();
-        $categorias = $categoriaModel->where('estado_categoria', 1)->findAll(); // Solo activas para el select
         
+        // Caché de categorías activas para evitar consultas repetidas a MySQL
+        $cache = \Config\Services::cache();
+        $categorias = $cache->get('categorias_activas_admin');
+        if ($categorias === null) {
+            $categorias = $categoriaModel->where('estado_categoria', 1)->findAll();
+            // Guardar en caché por 1 hora (3600 segundos)
+            $cache->save('categorias_activas_admin', $categorias, 3600);
+        }
+
         return view('admin/productos', [
             'title'        => 'Administrar Productos - Panel Admin',
             'productos'    => $productos,
