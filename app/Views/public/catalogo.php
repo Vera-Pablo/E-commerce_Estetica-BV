@@ -64,10 +64,10 @@
                     <div class="col-12 col-sm-6 col-md-4 col-xl-3">
                         <a href="<?= base_url('producto/' . esc($prod['id_producto'])) ?>" class="text-decoration-none text-dark">
                             <div class="card h-100 border-0 rounded-4 card-hover" style="box-shadow: 0px 10px 7px rgba(0, 0, 0, 0.26);">
-                                <img src="<?= esc($prod['imagen'] ?: 'https://res.cloudinary.com/dvugj0uul/image/upload/v1700000000/placeholder.png') ?>" 
+                                <img src="<?= esc(cloudinary_thumb($prod['imagen'] ?? null)) ?>" 
                                      class="card-img-top product-img bg-light" 
                                      alt="Imagen de <?= esc($prod['nombre_producto']) ?>" 
-                                     loading="lazy" width="100%" height="250">
+                                     loading="lazy" decoding="async" width="100%" height="250">
                                 <div class="card-body text-center p-4 d-flex flex-column justify-content-between">
                                     <h5 class="card-title font-spartan fw-bold mb-3"><?= esc($prod['nombre_producto']) ?></h5>
                                     <p class="card-text text-primary fw-bold fs-5 mb-0">$ <?= number_format((float)$prod['precio'], 2, ',', '.') ?></p>
@@ -165,10 +165,11 @@ document.addEventListener('DOMContentLoaded', function() {
             card.style.boxShadow = '0px 10px 7px rgba(0, 0, 0, 0.26)';
 
             const img = document.createElement('img');
-            img.src = prod.imagen ? prod.imagen : 'https://res.cloudinary.com/dvugj0uul/image/upload/v1700000000/placeholder.png';
+            img.src = prod.imagen;
             img.className = 'card-img-top product-img bg-light';
             img.alt = `Imagen de ${prod.nombre_producto}`;
             img.loading = 'lazy';
+            img.decoding = 'async';
             
             const cardBody = document.createElement('div');
             cardBody.className = 'card-body text-center p-4 d-flex flex-column justify-content-between';

@@ -64,7 +64,7 @@
                     <div class="card border-0 rounded-4 h-100 card-hover mb-3" style="box-shadow: 0px 10px 7px rgba(0, 0, 0, 0.26); cursor: pointer;" onclick='abrirModalEditar(<?= json_encode($prod, JSON_HEX_APOS | JSON_HEX_QUOT) ?>)'>
                         <div class="row g-0 h-100">
                             <div class="col-md-4">
-                                <img src="<?= esc($prod['imagen'] ?: 'https://res.cloudinary.com/dvugj0uul/image/upload/v1700000000/placeholder.png') ?>" class="img-fluid rounded-start product-img bg-light" alt="Imagen Producto" loading="lazy">
+                                <img src="<?= esc(cloudinary_thumb($prod['imagen'] ?? null)) ?>" class="img-fluid rounded-start product-img bg-light" alt="Imagen Producto" loading="lazy" decoding="async">
                             </div>
                             <div class="col-md-8">
                                 <div class="card-body d-flex flex-column h-100 p-4">
