@@ -106,6 +106,39 @@ Abre tu navegador y accede a:
 
 ---
 
+## ⚡ Optimización de Producción
+
+Para entornos de producción se recomiendan los siguientes pasos de optimización del backend:
+
+### 1. Classmap de Composer Optimizado
+Genera el mapa de clases estático para eliminar búsquedas recursivas en disco:
+```bash
+composer dump-autoload -o
+```
+
+### 2. Compilación de Namespaces y Rutas (CodeIgniter 4)
+El comando `spark optimize` compila namespaces de servicios, rutas y configuraciones en un solo archivo, reduciendo el overhead de bootstrap:
+```bash
+php spark optimize
+```
+> **Nota:** Este comando genera/actualiza `writable/cache/optimize.php` y `writable/cache/routes.php`. Ejecútalo después de cada despliegue en producción.
+
+### 3. OPcache en php.ini (Producción)
+Asegúrate de que OPcache esté habilitado y configurado agresivamente:
+```ini
+opcache.enable=1
+opcache.enable_cli=0
+opcache.memory_consumption=256
+opcache.interned_strings_buffer=16
+opcache.max_accelerated_files=20000
+opcache.validate_timestamps=0
+opcache.save_comments=1
+opcache.fast_shutdown=1
+```
+Con `validate_timestamps=0`, los cambios en código requieren reiniciar Apache/opcache o ejecutar `php spark optimize` nuevamente.
+
+---
+
 ## 📁 Estructura del Proyecto
 
 ```text
