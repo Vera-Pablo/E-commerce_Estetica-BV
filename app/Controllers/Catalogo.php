@@ -61,6 +61,11 @@ class Catalogo extends BaseController
 
         $resultados = $builder->findAll();
 
+        // Aplicar transformación Cloudinary a las imágenes
+        array_walk($resultados, function (&$prod) {
+            $prod['imagen'] = cloudinary_thumb($prod['imagen'] ?? null);
+        });
+
         return $this->response->setJSON($resultados);
     }
 }
