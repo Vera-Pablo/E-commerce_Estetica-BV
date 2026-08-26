@@ -1,18 +1,11 @@
 # Documentación
-
-<aside>
-<img src="https://app.notion.com/icons/document_lightgray.svg" alt="https://app.notion.com/icons/document_lightgray.svg" width="40px" />
-
 **Versión: 1.3.3**
 
-**Fecha: 17/8/2026**
+**Fecha: 26/8/2026**
 
 **Autor: Vera Pablo G.**
 
-**Cambios: Actualizacion de plan de despliegue sección 6.4 item 4,5,6 **
-
-</aside>
-
+**Cambios: Migración de WSL Ubuntu -> Windows XAMPP | sección 3.2 - 3.3 - 3.4 | sección 4.1 | sección 5.3 | sección 6.4 - 6.5 - 6.6 **
 ---
 
 ## Capítulo I: Generalidades del Proyecto
@@ -109,29 +102,25 @@ El desarrollo del sistema "Estética - BV" se fundamenta en la arquitectura de s
 
 ### 3.2 Diagrama Estructural MVC
 
-![1.1 Figura: Diagrama de Arquitectura (MVC)](img/Diagrama_de_Arquitectura.png)
-
-1.1 Figura: Diagrama de Arquitectura (MVC)
+(img/Diagrama_de_Arquitectura.png)
 
 ### 3.3 Arquitectura de Despliegue (Cliente-Servidor)
 
 A nivel de infraestructura, "Estética - BV" implementa una arquitectura web clásica de tipo **Cliente-Servidor**. Esta topología garantiza que la carga de procesamiento principal, las reglas de seguridad y la persistencia de los datos ocurran en un entorno controlado (el servidor), mientras que el cliente se encarga únicamente de la presentación y la interacción.
 
 - **Capa Cliente (Frontend):** Constituida por cualquier navegador web estándar que ejecute el usuario (Chrome, Firefox, Safari) desde una computadora o dispositivo móvil. Esta capa interpreta el HTML, CSS y JavaScript para mostrar la interfaz responsiva de la estética.
-- **Capa Servidor (Backend):** Alojada en un entorno de desarrollo sobre Ubuntu (vía WSL en Windows). Está compuesta por:
+- **Capa Servidor (Backend):** Alojada en un entorno de desarrollo Windows con distribución XAMPP. Está compuesta por:
     - **Servidor Web (Apache):** Recibe las peticiones HTTP/HTTPS, gestiona las conexiones y deriva la ejecución al intérprete de PHP.
     - **Aplicación (PHP 8.1+ & CodeIgniter 4):** Procesa la lógica de negocio, encripta las contraseñas, calcula los totales del carrito y simula la pasarela de pago.
     - **Motor de Base de Datos (MySQL):** Almacena de forma persistente y relacional toda la información de usuarios, inventario, categorías, consultas y ventas.
 
 ### 3.4 Diagrama de Arquitectura de despliegue (Cliente-Servidor)
 
-![1.2 Figura: Diagrama de Arquitectura de desliegue (Cliente - Servidor)](img/Diagrama_de_Arquitectura_de_despliegue.png)
+(img/Diagrama_de_Arquitectura_de_despliegue.png)
 
-1.2 Figura: Diagrama de Arquitectura de desliegue (Cliente - Servidor)
 
 ### 3.5 Arquitectura de Directorio
 
-```markdown
 estetica-bv/
 │
 ├── .opencode/                          <-- [CONFIG OPENCODE] Skills & Config MCP
@@ -221,10 +210,11 @@ estetica-bv/
 │
 ├── docs/                               <-- Documentación del proyecto
 │   ├── Doc-V 1.2.2.md                  <-- Este documento
-│   └── img/                            <-- Diagramas y gráficos
+│   ├── img/                            <-- Diagramas y gráficos
 │       ├── Diagrama_de_Arquitectura.png
 │       ├── Diagrama_de_Arquitectura_de_despliegue.png
 │       └── Diagrama_Entidad_Relaciones.png
+│   └── reglas.md                       <-- Contexto y reglas de diseño, arquitectura y seguridad.
 │
 ├── system/                             <-- Framework CodeIgniter 4 (No modificar)
 ├── tests/                              <-- Tests unitarios y de integración (PHPUnit)
@@ -256,9 +246,7 @@ estetica-bv/
 
 La persistencia de datos del sistema "Estetica - BV" se gestiona a través de una base de datos relacional. El modelo ha sido diseñado aplicando reglas de normalización para evitar la redundancia de datos y garantizar la integridad referencial. A continuación, se presenta el esquema lógico de la base de datos:
 
-![1.3 Figura: Diagrama de Entidad de Relaciones ](img/Diagrama_Entidad_Relaciones.png)
-
-1.3 Figura: Diagrama de Entidad de Relaciones 
+(img/Diagrama_Entidad_Relaciones.png)
 
 ### 4.2 Diccionario de datos
 
@@ -404,7 +392,7 @@ El entorno de trabajo para la construcción del software está compuesto por el 
 
 - **Entorno de Desarrollo Integrado (IDE):** Visual Studio Code.
 - **Control de Versiones:** Git y GitHub.
-- **Servidor Local:** Apache y MySQL ejecutándose de forma nativa en Ubuntu mediante WSL (Windows Subsystem for Linux).
+- **Servidor Local:** Apache y MySQL ejecutándose de forma nativa en XAMPP mediante Windows.
 - **Gestión de Base de Datos:** Cliente SQL de escritorio interactuando directamente con el motor MySQL en WSL, prescindiendo de interfaces web pesadas.
 - **Modelado y Diagramación:**
     - *ERDPlus:* Para el diseño y exportación del Diagrama de Entidad-Relación (DER).
@@ -471,7 +459,7 @@ Una issue se considera completa únicamente cuando cumple simultáneamente:
 
 ### 6.4 Despliegue
 
-El sistema se desplegará en el entorno local de desarrollo sobre **Apache y MySQL** (Ubuntu vía WSL), conforme a la arquitectura de despliegue Cliente-Servidor descrita en las secciones **3.3** y **3.4**.
+El sistema se desplegará en el entorno local de desarrollo sobre **Apache y MySQL** mediante XAMPP, conforme a la arquitectura de despliegue Cliente-Servidor descrita en las secciones **3.3** y **3.4**.
 
 Procedimiento de puesta en funcionamiento:
 
