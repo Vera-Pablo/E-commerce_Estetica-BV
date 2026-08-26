@@ -17,6 +17,37 @@
     <!-- Base Custom CSS -->
     <link href="<?= base_url('assets/css/base.css') ?>" rel="stylesheet">
 
+    <!-- Speculation Rules API -->
+    <script type="speculationrules">
+    {
+      "prefetch": [
+        {
+          "source": "document",
+          "where": {
+            "and": [
+              { "href_matches": "/*" },
+              {
+                "not": {
+                  "or": [
+                    { "href_matches": "/logout" },
+                    { "href_matches": "/*/guardar" },
+                    { "href_matches": "/*/editar/*" },
+                    { "href_matches": "/*/cambiar-estado" },
+                    { "href_matches": "/auth/*" },
+                    { "href_matches": "/registro/validar/*" },
+                    { "href_matches": "/recuperar/confirmar/*" },
+                    { "href_matches": "/*#*" }
+                  ]
+                }
+              }
+            ]
+          },
+          "eagerness": "moderate"
+        }
+      ]
+    }
+    </script>
+
     <?= $this->renderSection('styles') ?>
 </head>
 <body class="d-flex" style="background-color: #f8f9fa;">
@@ -33,6 +64,8 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <!-- Toast Helper JS -->
     <script src="<?= base_url('assets/js/toast.js') ?>"></script>
+    <!-- Instant Page Prefetch Fallback -->
+    <script src="<?= base_url('assets/js/instantpage.js') ?>" type="module" defer></script>
 
     <?= $this->renderSection('scripts') ?>
 </body>

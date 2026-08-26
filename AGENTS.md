@@ -1,9 +1,9 @@
 # AGENTS.md — Estética BV
 
-Proyecto CodeIgniter 4. `docs/Doc-V 1.3.2.md` es la especificación del sistema y `docs/reglas.md` define reglas **obligatorias** de desarrollo (estilo, seguridad, testing, issues). Ante conflicto entre fuentes prevalece `reglas.md` (Cap. VII).
+Proyecto CodeIgniter 4. `docs/Doc-V...` es la especificación del sistema y `docs/reglas.md` define reglas **obligatorias** de desarrollo (estilo, seguridad, testing, issues). Ante conflicto entre fuentes prevalece `reglas.md` (Cap. VII).
 
 ## Stack
-- PHP ^8.1, CodeIgniter 4, MySQL (MySQLi), Apache
+- PHP ^8.1, CodeIgniter 4, MySQL (MySQLi), Apache en entorno XAMPP
 - Frontend: HTML5, CSS3, JS, Bootstrap 5, Font Awesome, Google Fonts (Arimo + League Spartan)
 - Sesiones + bcrypt para auth; OAuth Google y email (activación/recuperación) ya implementados
 - MCP remotos: Linear + Notion (configurados en `opencode.json`)
@@ -27,8 +27,8 @@ Proyecto CodeIgniter 4. `docs/Doc-V 1.3.2.md` es la especificación del sistema 
 ## Comandos
 ```
 composer install
-sudo service mysql start     # arrancar base de datos WSL
-sudo service apache2 start   # dev :80 (WSL)
+# arrancar pache desde panel XAMPP
+# arrancar base de datos desde panel XAMPP
 php spark migrate            # migraciones
 php spark db:seed DatabaseSeeder
 composer test                # phpunit
