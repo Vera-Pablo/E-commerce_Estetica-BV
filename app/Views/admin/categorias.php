@@ -92,6 +92,44 @@
                 <p class="text-muted">No hay resultados para mostrar. Intenta crear una nueva.</p>
             </div>
         <?php endif; ?>
+
+        <!-- Modal Crear/Editar Categoría -->
+        <div class="modal fade" id="categoriaModal" tabindex="-1" aria-labelledby="categoriaModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content rounded-4 border-0">
+                    <div class="modal-header border-0">
+                        <h5 class="modal-title font-spartan fw-bold" id="categoriaModalLabel">
+                            <i class="fas fa-plus-circle text-primary me-2"></i>Nueva Categoría
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                    </div>
+                    <form id="categoriaForm" method="post" action="">
+                        <?= csrf_field() ?>
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label for="nombre_categoria" class="form-label fw-bold">Nombre</label>
+                                <input type="text" class="form-control rounded-3 border-secondary" id="nombre_categoria" name="nombre_categoria" maxlength="255" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="descripcion_categoria" class="form-label fw-bold">Descripción</label>
+                                <textarea class="form-control rounded-3 border-secondary" id="descripcion_categoria" name="descripcion_categoria" rows="3" maxlength="500"></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label for="estado_categoria" class="form-label fw-bold">Estado</label>
+                                <select class="form-select rounded-3 border-secondary" id="estado_categoria" name="estado_categoria">
+                                    <option value="1">Activa</option>
+                                    <option value="0">Inactiva</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="modal-footer border-0">
+                            <button type="button" class="btn btn-secondary rounded-3" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-custom-nav rounded-3 fw-bold">Guardar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
 <?= $this->endSection() ?>
 
 <?= $this->section('scripts') ?>

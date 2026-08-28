@@ -116,6 +116,65 @@
                 <p class="text-muted">No hay resultados para mostrar. Intenta crear uno nuevo.</p>
             </div>
         <?php endif; ?>
+
+        <!-- Modal Crear/Editar Producto -->
+        <div class="modal fade" id="productoModal" tabindex="-1" aria-labelledby="productoModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content rounded-4 border-0">
+                    <div class="modal-header border-0">
+                        <h5 class="modal-title font-spartan fw-bold" id="productoModalLabel">Nuevo Producto</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                    </div>
+                    <form id="productoForm" method="post" action="">
+                        <?= csrf_field() ?>
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label for="nombre_producto" class="form-label fw-bold">Nombre</label>
+                                <input type="text" class="form-control rounded-3 border-secondary" id="nombre_producto" name="nombre_producto" maxlength="255" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="id_categoria" class="form-label fw-bold">Categoría</label>
+                                <select class="form-select rounded-3 border-secondary" id="id_categoria" name="id_categoria" required>
+                                    <option value="">Seleccione una categoría</option>
+                                    <?php foreach($categorias as $c): ?>
+                                        <option value="<?= esc($c['id_categoria']) ?>"><?= esc($c['nombre_categoria']) ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="descripcion_producto" class="form-label fw-bold">Descripción</label>
+                                <textarea class="form-control rounded-3 border-secondary" id="descripcion_producto" name="descripcion_producto" rows="3" maxlength="500"></textarea>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <label for="precio" class="form-label fw-bold">Precio</label>
+                                    <input type="number" step="0.01" min="0" class="form-control rounded-3 border-secondary" id="precio" name="precio" required>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label for="stock" class="form-label fw-bold">Stock</label>
+                                    <input type="number" min="0" class="form-control rounded-3 border-secondary" id="stock" name="stock" required>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label for="estado_producto" class="form-label fw-bold">Estado</label>
+                                    <select class="form-select rounded-3 border-secondary" id="estado_producto" name="estado_producto">
+                                        <option value="1">Activo</option>
+                                        <option value="0">Inactivo</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="imagen" class="form-label fw-bold">Imagen (URL Cloudinary)</label>
+                                <input type="url" class="form-control rounded-3 border-secondary" id="imagen" name="imagen" maxlength="500">
+                            </div>
+                        </div>
+                        <div class="modal-footer border-0">
+                            <button type="button" class="btn btn-secondary rounded-3" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-custom-nav rounded-3 fw-bold">Guardar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
 <?= $this->endSection() ?>
 
 <?= $this->section('scripts') ?>
