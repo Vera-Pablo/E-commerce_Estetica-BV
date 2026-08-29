@@ -1,13 +1,5 @@
 <?= $this->extend('Layouts/base') ?>
 
-<?= $this->section('styles') ?>
-<style>
-    .card-hover { transition: transform 0.2s, box-shadow 0.2s; }
-    .card-hover:hover { transform: translateY(-3px); box-shadow: 0px 12px 10px rgba(0, 0, 0, 0.35) !important; }
-    .product-img { object-fit: cover; height: 250px; width: 100%; border-top-left-radius: var(--bs-border-radius-xl); border-top-right-radius: var(--bs-border-radius-xl); }
-</style>
-<?= $this->endSection() ?>
-
 <?= $this->section('content') ?>
     <?= $this->include('Layouts/navbar') ?>
 
