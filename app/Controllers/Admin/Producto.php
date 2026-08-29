@@ -6,14 +6,8 @@ use App\Controllers\BaseController;
 use App\Models\ProductoModel;
 use App\Models\CategoriaModel;
 
-class Producto extends BaseController
-{
-    /**
-     * Muestra la lista de productos. Soporta búsqueda por nombre y filtro de stock.
-     * Ruta: GET /admin/productos
-     */
-    public function index()
-    {
+class Producto extends BaseController{
+    public function index(){
         $productoModel = new ProductoModel();
         $categoriaModel = new CategoriaModel();
         
@@ -58,12 +52,7 @@ class Producto extends BaseController
         ]);
     }
 
-    /**
-     * Guarda un nuevo producto en la base de datos usando Cloudinary URL.
-     * Ruta: POST /admin/producto/guardar
-     */
-    public function guardar()
-    {
+    public function guardar(){
         $productoModel = new ProductoModel();
         
         $data = [
@@ -90,11 +79,11 @@ class Producto extends BaseController
      * 
      * @param int $id_producto
      */
-    public function editar($id_producto)
-    {
+    public function editar($id_producto){
         $productoModel = new ProductoModel();
         
         $data = [
+            'id_producto'          => (int)$id_producto,
             'nombre_producto'      => $this->request->getPost('nombre_producto'),
             'descripcion_producto' => $this->request->getPost('descripcion_producto'),
             'precio'               => $this->request->getPost('precio'),

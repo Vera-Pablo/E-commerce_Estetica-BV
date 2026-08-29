@@ -52,4 +52,6 @@ $routes->group('admin', ['filter' => 'admin'], static function ($routes) {
 
     $routes->get('ventas', 'Admin\Venta::index');
     $routes->get('ventas/detalle/(:num)', 'Admin\Venta::detalle/$1');
+
+    
 });

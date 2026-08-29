@@ -1,24 +1,4 @@
 <?= $this->extend('Layouts/admin/base_admin') ?>
-<?= $this->section('styles') ?>
-    <style>
-        .card-hover { transition: transform 0.2s, box-shadow 0.2s; }
-        .card-hover:hover { transform: translateY(-3px); box-shadow: 0px 12px 10px rgba(0, 0, 0, 0.35) !important; }
-        .client-avatar-container { 
-            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%); 
-            display: flex; 
-            align-items: center; 
-            justify-content: center;
-            border-top-left-radius: var(--bs-border-radius-xl); 
-            border-bottom-left-radius: var(--bs-border-radius-xl); 
-            height: 100%; 
-            min-height: 180px; 
-            color: white; 
-        }
-        @media (max-width: 767.98px) {
-            .client-avatar-container { border-bottom-left-radius: 0; border-top-right-radius: var(--bs-border-radius-xl); min-height: 120px; }
-        }
-    </style>
-<?= $this->endSection() ?>
 
 <?= $this->section('content') ?>
         <!-- Header Section -->
@@ -41,7 +21,7 @@
         <div class="card mb-4 border-0 rounded-4" style="box-shadow: 0px 10px 7px rgba(0, 0, 0, 0.26);">
             <div class="card-body">
                 <form action="<?= base_url('admin/clientes') ?>" method="GET" class="d-flex flex-wrap align-items-center gap-3">
-                    <div class="input-group" style="max-width: 500px;">
+                    <div class="input-group" style="max-width: 600px;">
                         <input id="search-input" name="search" type="search" class="form-control rounded-start-3 border-secondary" placeholder="Buscar cliente por nombre o apellido..." value="<?= esc($search ?? '') ?>" />
                         
                         <button id="search-button" type="submit" class="btn btn-custom-nav rounded-end-3 px-4" title="Buscar">
@@ -61,33 +41,29 @@
         <?php if(!empty($clientes)): ?>
             <div class="row g-4">
                 <?php foreach($clientes as $cliente): ?>
-                <div class="col-xl-6">
-                    <div class="card border-0 rounded-4 h-100 card-hover mb-3" style="box-shadow: 0px 10px 7px rgba(0, 0, 0, 0.26); cursor: pointer;" onclick='abrirModalCliente(<?= json_encode($cliente, JSON_HEX_APOS | JSON_HEX_QUOT) ?>)'>
-                        <div class="row g-0 h-100">
-                            <div class="col-md-3 col-sm-4">
-                                <div class="client-avatar-container">
-                                    <i class="fas fa-user-circle fa-4x opacity-75"></i>
-                                </div>
+                <div class="col-md-6 col-xl-4">
+                    <div class="card border-0 rounded-4 h-100 card-hover" style="box-shadow: 0px 10px 7px rgba(0, 0, 0, 0.26); cursor: pointer;" onclick='abrirModalCliente(<?= json_encode($cliente, JSON_HEX_APOS | JSON_HEX_QUOT) ?>)'>
+                        <div class="card-body d-flex flex-column p-4">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <h4 class="card-title font-spartan fw-bold text-truncate m-0" style="max-width: 75%;">
+                                    <?= esc($cliente['apellido_nombre']) ?>
+                                </h4>
+                                <?php if($cliente['estado_usuario'] == 1): ?>
+                                    <span class="badge bg-success rounded-pill px-3 py-2"><i class="fas fa-user-check me-1"></i> Activo</span>
+                                <?php else: ?>
+                                    <span class="badge bg-danger rounded-pill px-3 py-2"><i class="fas fa-user-slash me-1"></i> Inactivo</span>
+                                <?php endif; ?>
                             </div>
-                            <div class="col-md-9 col-sm-8">
-                                <div class="card-body d-flex flex-column h-100 p-4">
-                                    <div class="d-flex justify-content-between align-items-start mb-2">
-                                        <h4 class="card-title font-spartan fw-bold text-truncate m-0" style="max-width: 80%;">
-                                            <?= esc($cliente['apellido_nombre']) ?>
-                                        </h4>
-                                    </div>
-                                    
-                                    <p class="text-muted small mb-1"><i class="fas fa-envelope me-2"></i><?= esc($cliente['email']) ?></p>
-                                    <p class="text-muted small mb-3"><i class="fas fa-id-card me-2"></i>DNI: <?= esc($cliente['dni']) ?></p>
-                                    
-                                    <div class="d-flex gap-2 flex-wrap mt-auto">
-                                        <?php if($cliente['estado_usuario'] == 1): ?>
-                                            <span class="badge bg-success px-3 py-2"><i class="fas fa-user-check me-1"></i> Cuenta Activa</span>
-                                        <?php else: ?>
-                                            <span class="badge bg-danger px-3 py-2"><i class="fas fa-user-slash me-1"></i> Cuenta Inactiva</span>
-                                        <?php endif; ?>
-                                    </div>
-                                </div>
+                            
+                            <p class="text-muted mb-1 small"><i class="fas fa-envelope me-2 text-primary"></i> <?= esc($cliente['email']) ?></p>
+                            <p class="text-muted mb-1 small"><i class="fas fa-id-card me-2 text-primary"></i> DNI: <?= esc($cliente['dni']) ?></p>
+                            <p class="text-muted mb-3 small"><i class="fas fa-phone me-2 text-primary"></i> <?= esc($cliente['telefono'] ?: 'Sin teléfono') ?></p>
+                            
+                            <hr class="text-muted opacity-25 mt-auto">
+                            
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="badge bg-light text-dark border">ID: <?= esc($cliente['id_usuario']) ?></span>
+                                <small class="text-primary fw-bold"><i class="fas fa-cog me-1"></i> Gestionar Estado</small>
                             </div>
                         </div>
                     </div>
@@ -101,6 +77,61 @@
                 <p class="text-muted">No hay resultados para mostrar en el sistema.</p>
             </div>
         <?php endif; ?>
+
+        <!-- Modal Gestionar Estado de Cliente -->
+        <div class="modal fade" id="clienteModal" tabindex="-1" aria-labelledby="clienteModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content rounded-4 border-0">
+                    <div class="modal-header border-0">
+                        <h5 class="modal-title font-spartan fw-bold" id="clienteModalLabel">
+                            <i class="fas fa-user-cog text-primary me-2"></i>Gestionar Cliente
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                    </div>
+                    <form id="clienteForm" method="post" action="<?= base_url('admin/usuario/cambiar-estado') ?>">
+                        <?= csrf_field() ?>
+                        <input type="hidden" name="id_usuario" id="input_id_usuario">
+                        <input type="hidden" name="estado_usuario" id="input_estado_usuario">
+
+                        <div class="modal-body">
+                            <div class="p-3 bg-light rounded-3 mb-3 border">
+                                <div class="mb-2">
+                                    <span class="text-muted small">Nombre y Apellido:</span>
+                                    <h5 class="fw-bold font-spartan text-dark m-0" id="modal-nombre"></h5>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-6 mb-2">
+                                        <span class="text-muted small">DNI:</span>
+                                        <p class="fw-bold m-0" id="modal-dni"></p>
+                                    </div>
+                                    <div class="col-sm-6 mb-2">
+                                        <span class="text-muted small">Teléfono:</span>
+                                        <p class="fw-bold m-0" id="modal-telefono"></p>
+                                    </div>
+                                </div>
+                                <div class="mb-2">
+                                    <span class="text-muted small">Email:</span>
+                                    <p class="fw-bold m-0" id="modal-email"></p>
+                                </div>
+                                <div>
+                                    <span class="text-muted small">Estado actual:</span>
+                                    <div id="modal-estado" class="mt-1"></div>
+                                </div>
+                            </div>
+                            <p class="text-muted small text-center mb-0">
+                                Puedes activar o desactivar el acceso de este cliente a la plataforma.
+                            </p>
+                        </div>
+                        <div class="modal-footer border-0 d-flex justify-content-between">
+                            <button type="button" class="btn btn-secondary rounded-3" data-bs-dismiss="modal">Cerrar</button>
+                            <button type="submit" id="btn-cambiar-estado" class="btn btn-danger rounded-3 px-4 fw-bold">
+                                <i class="fas fa-ban me-2"></i> Desactivar Cuenta
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
 <?= $this->endSection() ?>
 
 <?= $this->section('scripts') ?>
@@ -130,14 +161,14 @@
             
             if (cliente.estado_usuario == 1) {
                 // Cliente Activo -> Opción de desactivar
-                modalEstado.innerHTML = '<span class="badge bg-success">Activo</span>';
+                modalEstado.innerHTML = '<span class="badge bg-success rounded-pill px-3 py-1"><i class="fas fa-check me-1"></i> Activo</span>';
                 
                 inputEstadoUsuario.value = '0';
                 btnCambiarEstado.className = 'btn btn-danger rounded-3 px-4 fw-bold';
                 btnCambiarEstado.innerHTML = '<i class="fas fa-ban me-2"></i> Desactivar Cuenta';
             } else {
                 // Cliente Inactivo -> Opción de activar
-                modalEstado.innerHTML = '<span class="badge bg-danger">Inactivo</span>';
+                modalEstado.innerHTML = '<span class="badge bg-danger rounded-pill px-3 py-1"><i class="fas fa-ban me-1"></i> Inactivo</span>';
                 
                 inputEstadoUsuario.value = '1';
                 btnCambiarEstado.className = 'btn btn-success rounded-3 px-4 fw-bold';

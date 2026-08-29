@@ -4,19 +4,16 @@ namespace App\Controllers\Admin;
 
 use App\Controllers\BaseController;
 
-class Designer extends BaseController
-{
+class Designer extends BaseController{
     private string $jsonPath;
     private const MAX_SLIDES = 8;
 
-    public function __construct()
-    {
+    public function __construct(){
         $this->jsonPath = WRITEPATH . 'banners.json';
     }
 
     /** GET /admin/designer */
-    public function index(): string
-    {
+    public function index(): string{
         return view('admin/designer', [
             'title'   => 'Designer — Panel Admin',
             'banners' => $this->leerBanners(),
@@ -24,8 +21,7 @@ class Designer extends BaseController
     }
 
     /** POST /admin/designer/guardar */
-    public function guardar()
-    {
+    public function guardar(){
         $titulos    = $this->request->getPost('titulo') ?? [];
         $subtitulos = $this->request->getPost('subtitulo') ?? [];
         $imagenes   = $this->request->getPost('imagen') ?? [];
@@ -44,11 +40,11 @@ class Designer extends BaseController
                 return redirect()->to('admin/designer')->with('error', 'El título de cada slide es obligatorio.');
             }
 
-            // Validar URL de imagen (si se provee y es una URL válida)
+            // Validar URL de imagen (si se provee y es una URL válida o archivo local)
             $imagenRaw = trim($imagenes[$i] ?? '');
             $imagen    = null;
             if (!empty($imagenRaw)) {
-                if (filter_var($imagenRaw, FILTER_VALIDATE_URL)) {
+                if (filter_var($imagenRaw, FILTER_VALIDATE_URL) || str_starts_with($imagenRaw, 'http://') || str_starts_with($imagenRaw, 'https://') || file_exists(FCPATH . 'assets/images/' . $imagenRaw) || file_exists(FCPATH . $imagenRaw)) {
                     $imagen = $imagenRaw;
                 }
             }
@@ -83,8 +79,7 @@ class Designer extends BaseController
         return redirect()->to('admin/designer')->with('error', 'Ocurrió un error al guardar el archivo de banners.');
     }
 
-    private function leerBanners(): array
-    {
+    private function leerBanners(): array{
         if (file_exists($this->jsonPath)) {
             $data = json_decode(file_get_contents($this->jsonPath), true);
             return is_array($data) && !empty($data) ? $data : $this->bannersDefault();
@@ -93,8 +88,7 @@ class Designer extends BaseController
         return $this->bannersDefault();
     }
 
-    private function bannersDefault(): array
-    {
+    private function bannersDefault(): array{
         return [
             [
                 'imagen'               => null,

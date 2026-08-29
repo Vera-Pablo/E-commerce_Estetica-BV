@@ -5,14 +5,8 @@ namespace App\Controllers\Admin;
 use App\Controllers\BaseController;
 use App\Models\UsuarioModel;
 
-class Usuario extends BaseController
-{
-    /**
-     * Muestra la lista de clientes (id_rol = 2). Soporta búsqueda por nombre.
-     * Ruta: GET /admin/clientes
-     */
-    public function clientes()
-    {
+class Usuario extends BaseController{
+    public function clientes(){
         $usuarioModel = new UsuarioModel();
         
         $search = $this->request->getGet('search');
@@ -33,12 +27,7 @@ class Usuario extends BaseController
         ]);
     }
 
-    /**
-     * Cambia el estado de un usuario (activo / inactivo).
-     * Ruta: POST /admin/usuario/cambiar-estado
-     */
-    public function cambiarEstado()
-    {
+    public function cambiarEstado(){
         $usuarioModel = new UsuarioModel();
         
         $id_usuario = $this->request->getPost('id_usuario');

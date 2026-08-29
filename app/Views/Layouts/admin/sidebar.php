@@ -53,6 +53,13 @@ $segment = $uri->getSegment(2); // admin/[segmento]
     <hr>
     
     <!-- Inferior: Logout -->
+     <ul class="nav nav-pills flex-column font-spartan">
+        <li class="nav-item">
+            <a href="<?= base_url('/') ?>" class="nav-link store-link">
+                <i class="fas fa-store fa-fw me-2"></i> Visitar Sitio
+            </a>
+        </li>
+    </ul>
     <ul class="nav nav-pills flex-column font-spartan">
         <li class="nav-item">
             <a href="<?= base_url('logout') ?>" class="nav-link logout-link">
