@@ -17,6 +17,7 @@ class UsuarioModel extends Model
     protected $useTimestamps = false;
 
     protected $validationRules = [
+        'id_usuario'      => 'permit_empty|is_natural_no_zero',
         'dni'             => 'required|integer|exact_length[8]|is_unique[usuario.dni,id_usuario,{id_usuario}]',
         'apellido_nombre' => 'required|min_length[3]|max_length[255]',
         'email'           => 'required|valid_email|max_length[255]|is_unique[usuario.email,id_usuario,{id_usuario}]',

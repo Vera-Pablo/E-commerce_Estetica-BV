@@ -5,14 +5,9 @@ namespace App\Controllers\Admin;
 use App\Controllers\BaseController;
 use App\Models\CategoriaModel;
 
-class Categoria extends BaseController
-{
-    /**
-     * Muestra la lista de categorías. Soporta búsqueda por nombre.
-     * Ruta: GET /admin/categorias
-     */
-    public function index()
-    {
+class Categoria extends BaseController{
+    //Muestra la lista de categorías. Soporta búsqueda por nombre
+    public function index(){
         $categoriaModel = new CategoriaModel();
         
         $search = $this->request->getGet('search');
@@ -36,12 +31,8 @@ class Categoria extends BaseController
         ]);
     }
 
-    /**
-     * Guarda una nueva categoría en la base de datos.
-     * Ruta: POST /admin/categoria/guardar
-     */
-    public function guardar()
-    {
+    //Guarda una nueva categoría en la base de datos.
+    public function guardar(){
         $categoriaModel = new CategoriaModel();
         
         $data = [
@@ -51,6 +42,7 @@ class Categoria extends BaseController
         ];
 
         if ($categoriaModel->insert($data)) {
+            \Config\Services::cache()->delete('categorias_activas_admin');
             return redirect()->to('admin/categorias')->with('success', 'Categoría creada con éxito.');
         } else {
             // Unir errores en un string para mostrarlos en el toast (o pasar el array si la vista lo soporta)
@@ -59,23 +51,19 @@ class Categoria extends BaseController
         }
     }
 
-    /**
-     * Edita una categoría existente.
-     * Ruta: POST /admin/categoria/editar/(:num)
-     * 
-     * @param int $id_categoria
-     */
-    public function editar($id_categoria)
-    {
+    //Edita una categoría existente.
+    public function editar($id_categoria){
         $categoriaModel = new CategoriaModel();
         
         $data = [
+            'id_categoria'          => (int)$id_categoria,
             'nombre_categoria'      => $this->request->getPost('nombre_categoria'),
             'descripcion_categoria' => $this->request->getPost('descripcion_categoria'),
             'estado_categoria'      => $this->request->getPost('estado_categoria') !== null ? (int)$this->request->getPost('estado_categoria') : 1
         ];
 
         if ($categoriaModel->update($id_categoria, $data)) {
+            \Config\Services::cache()->delete('categorias_activas_admin');
             return redirect()->to('admin/categorias')->with('success', 'Categoría actualizada con éxito.');
         } else {
             $errors = implode('<br>', $categoriaModel->errors());

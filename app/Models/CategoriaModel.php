@@ -17,6 +17,7 @@ class CategoriaModel extends Model
     protected $useTimestamps = false;
 
     protected $validationRules = [
+        'id_categoria'          => 'permit_empty|is_natural_no_zero',
         'nombre_categoria'      => 'required|min_length[3]|max_length[255]|is_unique[categoria.nombre_categoria,id_categoria,{id_categoria}]',
         'descripcion_categoria' => 'permit_empty|max_length[500]',
         'estado_categoria'      => 'permit_empty|integer|in_list[0,1]',

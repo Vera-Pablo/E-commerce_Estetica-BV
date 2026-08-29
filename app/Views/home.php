@@ -25,7 +25,9 @@
                 <?php foreach ($banners as $index => $banner): ?>
                     <?php
                         $imgPath = $banner['imagen'] ?? '';
-                        if (!empty($imgPath) && file_exists(FCPATH . 'assets/images/' . $imgPath)) {
+                        if (!empty($imgPath) && (str_starts_with($imgPath, 'http://') || str_starts_with($imgPath, 'https://') || str_starts_with($imgPath, '//'))) {
+                            $bgUrl = $imgPath;
+                        } elseif (!empty($imgPath) && file_exists(FCPATH . 'assets/images/' . $imgPath)) {
                             $bgUrl = base_url('assets/images/' . $imgPath);
                         } elseif (!empty($imgPath) && file_exists(FCPATH . $imgPath)) {
                             $bgUrl = base_url($imgPath);
@@ -152,7 +154,7 @@
                     </div>
                     <!-- Imagen a la derecha -->
                     <div class="col-md-4 h-100">
-                        <img src="<?= base_url('assets/images/banners/bv.webp') ?>" 
+                        <img src="<?= base_url('assets/images/banners/lavado-cabello.webp') ?>" 
                              class="img-fluid w-100 h-100 object-fit-cover" 
                              alt="Estética BV" 
                              loading="lazy" 
@@ -162,7 +164,34 @@
             </div>
         </div>
     </section>
-
+    <section class="py-5">
+    <div class="container">
+        <div class="card border-0 rounded-4 overflow-hidden" style="box-shadow: 0px 10px 7px rgba(0, 0, 0, 0.26);">
+            <div class="row g-0 align-items-center">
+                <!-- Imagen a la derecha -->
+                <div class="col-md-4 h-100">
+                    <img src="<?= base_url('assets/images/banners/productos-estetica.webp') ?>" 
+                        class="img-fluid w-100 h-100 object-fit-cover" 
+                        alt="Estética BV" 
+                        loading="lazy" 
+                        style="min-height: 250px; object-fit: cover;">
+                </div>
+                <!-- Texto a la izquierda -->
+                <div class="col-md-8">
+                    <div class="card-body p-4 p-lg-5">
+                        <h2 class="font-spartan fw-bold text-dark mb-3">Productos BV: Belleza y Bienestar en tus manos</h2>
+                        <p class="lead text-muted mb-4">
+                            En Estética BV creemos que el cuidado de tu cuero cabelludo y cabello comienza también en casa. Por eso contamos con una línea exclusiva de productos que complementan nuestros tratamientos profesionales y potencian sus resultados.
+                        </p>
+                        <a href="<?= base_url('catalogo') ?>" class="btn btn-custom-nav btn-lg rounded-3 font-spartan fw-bold">
+                            Conócenos Más <i class="fas fa-arrow-right ms-2"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
     <!-- Footer Component -->
     <?= $this->include('Layouts/footer') ?>
 

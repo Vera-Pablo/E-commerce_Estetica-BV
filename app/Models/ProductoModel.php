@@ -17,6 +17,7 @@ class ProductoModel extends Model
     protected $useTimestamps = false;
 
     protected $validationRules = [
+        'id_producto'          => 'permit_empty|is_natural_no_zero',
         'nombre_producto'      => 'required|min_length[3]|max_length[255]|is_unique[producto.nombre_producto,id_producto,{id_producto}]',
         'descripcion_producto' => 'permit_empty|max_length[500]',
         'precio'               => 'required|decimal',

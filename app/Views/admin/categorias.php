@@ -70,7 +70,7 @@
                                 <?php endif; ?>
                             </div>
                             
-                            <p class="card-text text-muted mb-4" style="display: -webkit-box; webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; height: 3em;">
+                            <p class="card-text text-muted mb-4" style="display: -webkit-box; -webkit-box-orient: vertical; overflow: hidden; height: 3em;">
                                 <?= esc($cat['descripcion_categoria'] ?: 'Sin descripción asignada.') ?>
                             </p>
                             
