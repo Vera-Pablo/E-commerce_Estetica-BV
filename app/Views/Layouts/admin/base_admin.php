@@ -50,7 +50,7 @@
 
     <?= $this->renderSection('styles') ?>
 </head>
-<body class="d-flex" style="background-color: #f8f9fa;">
+<body class="d-flex flex-row admin-layout" style="background-color: #f8f9fa;">
 
     <!-- Sidebar -->
     <?= $this->include('Layouts/admin/sidebar') ?>

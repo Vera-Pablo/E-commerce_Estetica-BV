@@ -24,6 +24,11 @@ $segment = $uri->getSegment(2); // admin/[segmento]
             </a>
         </li>
         <li class="nav-item">
+            <a href="<?= base_url('admin/designer') ?>" class="nav-link <?= ($segment == 'designer') ? 'active' : '' ?>">
+                <i class="fas fa-paint-brush fa-fw me-2"></i> Designer
+            </a>
+        </li>
+        <li class="nav-item">
             <a href="<?= base_url('admin/categorias') ?>" class="nav-link <?= ($segment == 'categorias') ? 'active' : '' ?>">
                 <i class="fas fa-tags fa-fw me-2"></i> Categorías
             </a>
