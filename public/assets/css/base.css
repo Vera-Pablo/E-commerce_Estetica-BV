@@ -3,6 +3,17 @@
 body {
     background-color: #fff6e9 !important;
     font-family: 'Arimo', sans-serif;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+main {
+    flex: 1 0 auto;
+}
+
+footer {
+    margin-top: auto;
 }
 
 h1, h2, h3, h4, h5, h6, .fw-bold, .font-spartan {
@@ -79,32 +90,19 @@ h1, h2, h3, h4, h5, h6, .fw-bold, .font-spartan {
     height: 100vh;
 }
 
-.carousel-item-1 {
-    background-image: url('../images/banners/estetica.webp');
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: center center;
-}
-
-.carousel-item-2 {
-    background-image: url('../images/banners/delivery.webp');
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: center center;
-}
-
-.carousel-item-3 {
-    background-image: url('../images/banners/pay.webp');
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: center center;
-}
-
 @media (min-width: 992px) {
     #introCarousel {
         margin-top: -68px;
     }
 }
+
+/* Product card hover — reutilizable en catálogo y home */
+.card-hover { transition: transform 0.2s, box-shadow 0.2s; }
+.card-hover:hover { transform: translateY(-3px); box-shadow: 0px 12px 10px rgba(0,0,0,0.35) !important; }
+.product-img { object-fit: cover; height: 250px; width: 100%; border-top-left-radius: var(--bs-border-radius-xl); border-top-right-radius: var(--bs-border-radius-xl); }
+
+/* Carrusel de productos (multi-card) */
+.carousel-productos .carousel-item { transition: transform 0.6s ease; }
 
 /* Sidebar Admin */
 .admin-sidebar {

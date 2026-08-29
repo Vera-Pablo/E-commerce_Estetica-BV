@@ -25,4 +25,12 @@ class ProductoModel extends Model
         'estado_producto'      => 'permit_empty|integer|in_list[0,1]',
         'id_categoria'         => 'required|integer',
     ];
+
+    public function getProductosAleatorios(int $limit = 12): array
+    {
+        return $this->where('estado_producto', 1)
+                    ->orderBy('RAND()')
+                    ->limit($limit)
+                    ->findAll();
+    }
 }
