@@ -20,6 +20,18 @@ class EmailService
         return self::sendEmail($recipientEmail, $subject, $message);
     }
 
+    public static function sendConsultaEmail(string $senderEmail, string $senderName, string $subject, string $message, string $adminEmail): bool
+    {
+        $subjectLine = 'Nueva Consulta: ' . esc($subject);
+        $body = "Ha recibido una nueva consulta desde el formulario web:\n\n";
+        $body .= "Remitente: {$senderName}\n";
+        $body .= "Correo: {$senderEmail}\n";
+        $body .= "Asunto: {$subject}\n\n";
+        $body .= "Consulta:\n{$message}\n";
+
+        return self::sendEmail($adminEmail, $subjectLine, $body);
+    }
+
     private static function sendEmail(string $to, string $subject, string $message): bool
     {
         try {

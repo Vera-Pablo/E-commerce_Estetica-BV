@@ -33,6 +33,9 @@ $routes->get('auth/google/callback', 'Auth\AuthController::googleCallback');
 $routes->get('logout', 'Auth\AuthController::logout');
 
 
+$routes->get('consultas', 'Home::consultas');
+$routes->post('consultas/enviar', 'Home::enviarConsulta');
+
 // Admin Protected Routes
 $routes->group('admin', ['filter' => 'admin'], static function ($routes) {
     $routes->get('dashboard', 'Admin\Categoria::index');
@@ -53,5 +56,5 @@ $routes->group('admin', ['filter' => 'admin'], static function ($routes) {
     $routes->get('ventas', 'Admin\Venta::index');
     $routes->get('ventas/detalle/(:num)', 'Admin\Venta::detalle/$1');
 
-    
+    $routes->get('consultas', 'Admin\Consulta::index');
 });

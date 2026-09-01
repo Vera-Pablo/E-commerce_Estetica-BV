@@ -48,6 +48,11 @@ $segment = $uri->getSegment(2); // admin/[segmento]
                 <i class="fas fa-shopping-bag fa-fw me-2"></i> Ventas
             </a>
         </li>
+        <li class="nav-item">
+            <a href="<?= base_url('admin/consultas') ?>" class="nav-link <?= ($segment == 'consultas') ? 'active' : '' ?>">
+                <i class="fas fa-question-circle fa-fw me-2"></i> Consultas
+            </a>
+        </li>
     </ul>
     
     <hr>
