@@ -3,6 +3,9 @@
 namespace App\Controllers;
 
 use App\Models\ProductoModel;
+use App\Models\UsuarioModel;
+use App\Models\ConsultaModel;
+use App\Libraries\EmailService;
 
 class Home extends BaseController
 {
@@ -54,6 +57,82 @@ class Home extends BaseController
                 'btn_secundario_url'   => null,
             ],
         ];
+    }
+
+    public function consultas()
+    {
+        $session = session();
+        $usuario = null;
+
+        if ($session->get('isLoggedIn')) {
+            $usuarioModel = new UsuarioModel();
+            $usuario = $usuarioModel->find($session->get('id_usuario'));
+        }
+
+        return view('public/consultas', [
+            'title'   => 'Consultas - Estética BV',
+            'usuario' => $usuario,
+        ]);
+    }
+
+    public function enviarConsulta()
+    {
+        $session = session();
+
+        $rules = [
+            'apellido_nombre' => 'required|min_length[3]|max_length[255]',
+            'email'           => 'required|valid_email',
+            'asunto'          => 'required|in_list[pagina web,producto,pago,envio]',
+            'consulta'        => 'required|min_length[10]|max_length[500]',
+        ];
+
+        if (!$this->validate($rules)) {
+            $errors = implode('<br>', $this->validator->getErrors());
+            return redirect()->back()->withInput()->with('error', $errors);
+        }
+
+        $data = [
+            'apellido_nombre' => $this->request->getPost('apellido_nombre'),
+            'email'           => $this->request->getPost('email'),
+            'asunto'          => $this->request->getPost('asunto'),
+            'consulta'        => $this->request->getPost('consulta'),
+        ];
+
+        $usuarioModel = new UsuarioModel();
+
+        // Restringir el envío a administradores
+        $emailPost = trim($data['email'] ?? '');
+        $esAdminEmail = $usuarioModel->where('email', $emailPost)->where('id_rol', 1)->first();
+
+        if ($esAdminEmail || ($session->get('isLoggedIn') && (int)$session->get('id_rol') === 1)) {
+            return redirect()->back()->withInput()->with('warning', 'Acción solo para clientes');
+        }
+
+        $admin = $usuarioModel->where('id_rol', 1)->first();
+        $adminEmail = $admin['email'] ?? 'admin@esteticabv.com';
+
+        $sent = EmailService::sendConsultaEmail(
+            $data['email'],
+            $data['apellido_nombre'],
+            $data['asunto'],
+            $data['consulta'],
+            $adminEmail
+        );
+
+        if (!$sent) {
+            return redirect()->back()->withInput()->with('error', 'No se pudo enviar el correo. Intente nuevamente.');
+        }
+
+        if ($session->get('isLoggedIn')) {
+            $consultaModel = new ConsultaModel();
+            $consultaModel->insert([
+                'mensaje'        => $data['consulta'],
+                'fecha_consulta' => date('Y-m-d'),
+                'id_usuario'     => $session->get('id_usuario'),
+            ]);
+        }
+
+        return redirect()->to('/')->with('success', 'Tu consulta ha sido enviada correctamente. Te responderemos a la brevedad.');
     }
 
     public function quienesSomos()

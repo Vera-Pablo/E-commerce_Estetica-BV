@@ -15,7 +15,7 @@
     <!-- Font Awesome 6 -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
     <!-- Base Custom CSS -->
-    <link href="<?= base_url('assets/css/base.css') ?>" rel="stylesheet">
+    <link href="<?= base_url('assets/css/base.css?v=' . @filemtime(FCPATH . 'assets/css/base.css')) ?>" rel="stylesheet">
 
     <!-- Speculation Rules API -->
     <script type="speculationrules">
@@ -49,8 +49,18 @@
     </script>
 
     <?= $this->renderSection('styles') ?>
-</head>
 <body class="d-flex flex-row admin-layout" style="background-color: #f8f9fa;">
+
+    <!-- Elementos ocultos globales para ToastHelper -->
+    <?php if(session()->getFlashdata('success')): ?>
+        <input type="hidden" id="flash-success" value="<?= esc(session()->getFlashdata('success')) ?>">
+    <?php endif; ?>
+    <?php if(session()->getFlashdata('error')): ?>
+        <input type="hidden" id="flash-error" value="<?= esc(session()->getFlashdata('error')) ?>">
+    <?php endif; ?>
+    <?php if(session()->getFlashdata('warning')): ?>
+        <input type="hidden" id="flash-warning" value="<?= esc(session()->getFlashdata('warning')) ?>">
+    <?php endif; ?>
 
     <!-- Sidebar -->
     <?= $this->include('Layouts/admin/sidebar') ?>
@@ -63,7 +73,7 @@
     <!-- Bootstrap 5 JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <!-- Toast Helper JS -->
-    <script src="<?= base_url('assets/js/toast.js') ?>"></script>
+    <script src="<?= base_url('assets/js/toast.js?v=' . @filemtime(FCPATH . 'assets/js/toast.js')) ?>"></script>
     <!-- Instant Page Prefetch Fallback -->
     <script src="<?= base_url('assets/js/instantpage.js') ?>" type="module" defer></script>
 

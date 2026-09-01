@@ -1,7 +1,7 @@
 <!-- Main Navigation & Hero Carousel -->
 <header>
   <!-- Navbar -->
-  <nav class="navbar navbar-expand-lg navbar-dark navbar-custom sticky-top" style="z-index: 2000;">
+  <nav class="navbar navbar-expand-lg navbar-dark navbar-custom sticky-top">
     <div class="container-fluid px-lg-4">
       <!-- Navbar Brand / Logo -->
       <a class="navbar-brand d-flex align-items-center me-3" href="<?= base_url('/') ?>">
