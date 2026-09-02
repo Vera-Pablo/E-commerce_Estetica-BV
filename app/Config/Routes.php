@@ -15,6 +15,7 @@ $routes->get('terminos-de-uso', 'Home::terminosDeUso');
 
 $routes->get('catalogo', 'Catalogo::index');
 $routes->get('catalogo/filtrar', 'Catalogo::filtrar');
+$routes->get('producto/(:num)', 'Catalogo::detalle/$1');
 
 $routes->get('login', 'Auth\AuthController::login');
 $routes->post('login', 'Auth\AuthController::loginProcess');

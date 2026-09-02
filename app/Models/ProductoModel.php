@@ -34,4 +34,14 @@ class ProductoModel extends Model
                     ->limit($limit)
                     ->findAll();
     }
+
+    public function getProductosSimilares(int $id_categoria, int $id_producto_actual, int $limit = 12): array
+    {
+        return $this->where('id_categoria', $id_categoria)
+                    ->where('id_producto !=', $id_producto_actual)
+                    ->where('estado_producto', 1)
+                    ->orderBy('RAND()')
+                    ->limit($limit)
+                    ->findAll();
+    }
 }
