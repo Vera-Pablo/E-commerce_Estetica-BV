@@ -51,12 +51,12 @@ class Catalogo extends BaseController
             ->where('categoria.estado_categoria', 1);
 
         // Aplicar filtros si existen
-        if (!empty($search)) {
-            $builder->like('producto.nombre_producto', $search);
+        if ($search !== null && trim($search) !== '') {
+            $builder->like('producto.nombre_producto', trim($search));
         }
 
-        if (!empty($id_categoria)) {
-            $builder->where('producto.id_categoria', $id_categoria);
+        if ($id_categoria !== null && trim($id_categoria) !== '') {
+            $builder->where('producto.id_categoria', (int)$id_categoria);
         }
 
         $resultados = $builder->findAll();
