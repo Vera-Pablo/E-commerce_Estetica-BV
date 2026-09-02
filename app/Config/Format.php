@@ -61,4 +61,9 @@ class Format extends BaseConfig
         'application/xml'  => 0,
         'text/xml'         => 0,
     ];
+
+    /**
+     * The depth of data to encode for JSON.
+     */
+    public int $jsonEncodeDepth = 512;
 }

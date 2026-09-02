@@ -83,7 +83,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const categoriaSelect = document.getElementById('categoria');
     const btnLimpiar = document.getElementById('btn-limpiar');
     const grid = document.getElementById('productos-grid');
-    const baseUrl = '<?= base_url() ?>';
+    const urlFiltrar = '<?= base_url('catalogo/filtrar') ?>';
+    const urlProductoBase = '<?= base_url('producto') ?>';
     
     // Variables para debounce en búsqueda
     let timeoutId;
@@ -103,7 +104,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (search) params.append('search', search);
         if (categoria) params.append('categoria', categoria);
         
-        const url = `${baseUrl}catalogo/filtrar?${params.toString()}`;
+        const url = `${urlFiltrar}?${params.toString()}`;
 
         try {
             const response = await fetch(url);
@@ -149,7 +150,7 @@ document.addEventListener('DOMContentLoaded', function() {
             col.className = 'col-12 col-sm-6 col-md-4 col-xl-3';
 
             const a = document.createElement('a');
-            a.href = `${baseUrl}producto/${prod.id_producto}`;
+            a.href = `${urlProductoBase}/${prod.id_producto}`;
             a.className = 'text-decoration-none text-dark';
 
             const card = document.createElement('div');
