@@ -68,4 +68,39 @@ class Catalogo extends BaseController
 
         return $this->response->setJSON($resultados);
     }
+
+    /**
+     * Muestra la vista de detalle de un producto individual.
+     */
+    public function detalle($id = null)
+    {
+        if (empty($id) || !is_numeric($id)) {
+            return redirect()->to('catalogo')->with('error', 'Producto no válido.');
+        }
+
+        $productoModel = new ProductoModel();
+
+        $producto = $productoModel->select('producto.*, categoria.nombre_categoria')
+            ->join('categoria', 'categoria.id_categoria = producto.id_categoria')
+            ->where('producto.id_producto', (int)$id)
+            ->where('producto.estado_producto', 1)
+            ->where('categoria.estado_categoria', 1)
+            ->first();
+
+        if (!$producto) {
+            return redirect()->to('catalogo')->with('error', 'El producto solicitado no está disponible.');
+        }
+
+        $productosSimilares = $productoModel->getProductosSimilares(
+            (int)$producto['id_categoria'],
+            (int)$producto['id_producto'],
+            12
+        );
+
+        return view('public/detalle_producto', [
+            'title'               => esc($producto['nombre_producto']) . ' - Estética BV',
+            'producto'            => $producto,
+            'productos_similares' => $productosSimilares,
+        ]);
+    }
 }
