@@ -32,6 +32,14 @@ class EmailService
         return self::sendEmail($adminEmail, $subjectLine, $body);
     }
 
+    public static function sendPedidoStatusEmail(string $recipientEmail, string $recipientName, int $idVenta, string $nuevoEstado): bool
+    {
+        $subject = "Actualización de tu pedido #{$idVenta} - Estética BV";
+        $message = "Hola {$recipientName},\n\nTe informamos que el estado de tu pedido #{$idVenta} ha sido actualizado a: {$nuevoEstado}.\n\nGracias por confiar en Estética BV.";
+
+        return self::sendEmail($recipientEmail, $subject, $message);
+    }
+
     private static function sendEmail(string $to, string $subject, string $message): bool
     {
         try {

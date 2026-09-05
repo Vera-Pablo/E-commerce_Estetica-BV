@@ -5,7 +5,7 @@
     <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
         <div>
             <h1 class="font-spartan fw-bold text-dark m-0">
-                <i class="fas fa-paint-brush text-primary me-2"></i> Designer — Hero Carousel
+                <i class="fas fa-paint-brush text-dark me-2"></i> Diseñador — Hero Carrusel
             </h1>
             <p class="text-muted small m-0 mt-1">Gestiona los slides visuales de la página principal en tiempo real.</p>
         </div>

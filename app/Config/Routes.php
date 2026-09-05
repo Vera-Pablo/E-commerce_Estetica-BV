@@ -68,6 +68,7 @@ $routes->group('admin', ['filter' => 'admin'], static function ($routes) {
 
     $routes->get('ventas', 'Admin\Venta::index');
     $routes->get('ventas/detalle/(:num)', 'Admin\Venta::detalle/$1');
+    $routes->post('ventas/cambiar-estado', 'Admin\Venta::cambiarEstado');
 
     $routes->get('consultas', 'Admin\Consulta::index');
 });

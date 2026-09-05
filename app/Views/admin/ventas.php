@@ -184,7 +184,7 @@
 
                             <!-- Total -->
                             <div class="text-end" style="min-width:80px;">
-                                <div class="fw-bold font-spartan fs-5 text-success">$<?= number_format($v['total'], 2, ',', '.') ?></div>
+                                <div class="fw-bold font-spartan fs-5 text-dark">$<?= number_format($v['total'], 2, ',', '.') ?></div>
                                 <span class="badge rounded-pill
                                     <?= str_contains($nombreEstado,'complet')||str_contains($nombreEstado,'entregad') ? 'bg-success' :
                                        (str_contains($nombreEstado,'pendient')||str_contains($nombreEstado,'proces') ? 'bg-warning text-dark' :
@@ -268,7 +268,7 @@
                                 <tfoot class="border-top">
                                     <tr>
                                         <td colspan="3" class="text-end fw-bold pt-3 fs-5">Total</td>
-                                        <td class="text-end fw-bold text-success pt-3 fs-5" id="r-total"></td>
+                                        <td class="text-end fw-bold text-dark pt-3 fs-5" id="r-total"></td>
                                     </tr>
                                 </tfoot>
                             </table>
@@ -279,11 +279,25 @@
                             <p class="small text-muted fst-italic">Gracias por su compra.</p>
                         </div>
                     </div>
-                    <div class="modal-footer border-top-0 bg-light rounded-bottom-4">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                        <button type="button" class="btn btn-custom-nav" onclick="imprimirRecibo()">
-                            <i class="fas fa-print me-2"></i>Imprimir
-                        </button>
+                    <div class="modal-footer border-top-0 bg-light rounded-bottom-4 d-flex justify-content-between align-items-center flex-wrap gap-3">
+                        <form action="<?= base_url('admin/ventas/cambiar-estado') ?>" method="POST" class="d-flex align-items-center mb-0">
+                            <?= csrf_field() ?>
+                            <input type="hidden" name="id_venta" id="form-cambiar-estado-id">
+                            <label for="form-estado-select" class="me-2 fw-bold small text-muted text-nowrap">Cambiar Estado:</label>
+                            <select name="id_estado_venta" id="form-estado-select" class="form-select form-select-sm w-auto me-2">
+                                <?php foreach($estados as $ev): ?>
+                                    <option value="<?= esc($ev['id_estado_venta']) ?>"><?= esc($ev['nombre_estado']) ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                            <button type="submit" class="btn btn-sm btn-dark">Actualizar</button>
+                        </form>
+                        
+                        <div>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                            <button type="button" class="btn btn-custom-nav" onclick="imprimirRecibo()">
+                                <i class="fas fa-print me-2"></i>Imprimir
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -320,10 +334,35 @@
                 document.getElementById('r-nombre').textContent = v.apellido_nombre ?? '—';
                 document.getElementById('r-dni').textContent    = v.dni ?? '—';
                 document.getElementById('r-email').textContent  = v.email ?? '—';
-                document.getElementById('r-estado').textContent = v.nombre_estado ?? '—';
+
+                // Lógica de color de estado
+                const rEstado = document.getElementById('r-estado');
+                rEstado.textContent = v.nombre_estado ?? '—';
+                rEstado.className = 'badge ms-1'; // Reset classes
+                
+                const nombreEst = (v.nombre_estado || '').toLowerCase();
+                if (nombreEst.includes('complet') || nombreEst.includes('entregad') || nombreEst.includes('listo')) {
+                    rEstado.classList.add('bg-success');
+                } else if (nombreEst.includes('pendient')) {
+                    rEstado.classList.add('bg-warning', 'text-dark');
+                } else if (nombreEst.includes('proces') || nombreEst.includes('preparaci')) {
+                    rEstado.classList.add('bg-info', 'text-dark');
+                } else if (nombreEst.includes('cancel')) {
+                    rEstado.classList.add('bg-danger');
+                } else {
+                    rEstado.classList.add('bg-secondary');
+                }
+
                 document.getElementById('r-pago').textContent   = v.nombre_metodo_pago ?? '—';
                 document.getElementById('r-entrega').textContent= v.tipo_entrega ?? 'Retiro en local';
                 document.getElementById('r-total').textContent  = fmt(v.total);
+
+                // Configurar formulario
+                document.getElementById('form-cambiar-estado-id').value = v.id_venta;
+                const selectEstado = document.getElementById('form-estado-select');
+                if (selectEstado && v.id_estado_venta) {
+                    selectEstado.value = v.id_estado_venta;
+                }
 
                 // Rellenar filas de detalle
                 const tbody = document.getElementById('r-items');
