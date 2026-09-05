@@ -37,6 +37,9 @@ $routes->get('perfil', 'Perfil::index');
 $routes->post('perfil/actualizar', 'Perfil::actualizar');
 $routes->post('perfil/cambiar-password', 'Perfil::cambiarPassword');
 
+// Mis Compras (requiere sesión de cliente)
+$routes->get('mis-compras', 'MisCompras::index', ['filter' => 'customer']);
+$routes->get('mis-compras/detalle/(:num)', 'MisCompras::detalle/$1', ['filter' => 'customer']);
 
 $routes->get('consultas', 'Home::consultas');
 $routes->post('consultas/enviar', 'Home::enviarConsulta');
