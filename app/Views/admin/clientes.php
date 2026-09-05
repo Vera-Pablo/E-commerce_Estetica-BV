@@ -55,15 +55,15 @@
                                 <?php endif; ?>
                             </div>
                             
-                            <p class="text-muted mb-1 small"><i class="fas fa-envelope me-2 text-primary"></i> <?= esc($cliente['email']) ?></p>
-                            <p class="text-muted mb-1 small"><i class="fas fa-id-card me-2 text-primary"></i> DNI: <?= esc($cliente['dni']) ?></p>
-                            <p class="text-muted mb-3 small"><i class="fas fa-phone me-2 text-primary"></i> <?= esc($cliente['telefono'] ?: 'Sin teléfono') ?></p>
+                            <p class="text-muted mb-1 small"><i class="fas fa-envelope me-2 text-dark"></i> <?= esc($cliente['email']) ?></p>
+                            <p class="text-muted mb-1 small"><i class="fas fa-id-card me-2 text-dark"></i> DNI: <?= esc($cliente['dni']) ?></p>
+                            <p class="text-muted mb-3 small"><i class="fas fa-phone me-2 text-dark"></i> <?= esc($cliente['telefono'] ?: 'Sin teléfono') ?></p>
                             
                             <hr class="text-muted opacity-25 mt-auto">
                             
                             <div class="d-flex justify-content-between align-items-center">
                                 <span class="badge bg-light text-dark border">ID: <?= esc($cliente['id_usuario']) ?></span>
-                                <small class="text-primary fw-bold"><i class="fas fa-cog me-1"></i> Gestionar Estado</small>
+                                <small class="text-dark fw-bold"><i class="fas fa-cog me-1"></i> Gestionar Estado</small>
                             </div>
                         </div>
                     </div>
