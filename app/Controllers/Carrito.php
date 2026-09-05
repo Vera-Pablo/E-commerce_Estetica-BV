@@ -3,6 +3,9 @@
 namespace App\Controllers;
 
 use App\Models\ProductoModel;
+use App\Models\MetodoPagoModel;
+use App\Models\VentaModel;
+use App\Models\VentaDetalleModel;
 
 /**
  * Carrito — Gestión del carrito de compras en sesión.
@@ -347,6 +350,207 @@ class Carrito extends BaseController
         $this->guardarCarrito($carrito);
 
         return $this->response->setJSON(array_merge(['ok' => true], $this->calcularTotales($carrito)));
+    }
+
+    /**
+     * GET /carrito/checkout — Vista de checkout.
+     */
+    public function checkout()
+    {
+        $carrito = $this->leerCarrito();
+
+        if ($this->verificarTTL($carrito)) {
+            return redirect()->to('carrito');
+        }
+
+        $warnings = $this->sanearCarrito($carrito);
+        if (!empty($warnings)) {
+            session()->setFlashdata('warning', implode(' | ', $warnings));
+        }
+
+        if (empty($carrito['items'])) {
+            return redirect()->to('carrito')->with('warning', 'Tu carrito está vacío.');
+        }
+
+        $itemsEnriquecidos = [];
+        $total             = 0.0;
+        $totalItems        = 0;
+
+        $ids = array_keys($carrito['items']);
+        $productoModel = new ProductoModel();
+        $dbItems = $productoModel
+            ->select('id_producto, nombre_producto, precio, imagen, stock')
+            ->whereIn('id_producto', $ids)
+            ->findAll();
+
+        $dbMap = [];
+        foreach ($dbItems as $row) {
+            $dbMap[(int)$row['id_producto']] = $row;
+        }
+
+        $itemsCarrito = array_reverse($carrito['items'], true); // LIFO
+
+        foreach ($itemsCarrito as $id => $item) {
+            $id = (int)$id;
+            if (!isset($dbMap[$id])) continue;
+            
+            $db        = $dbMap[$id];
+            $cantidad  = (int)$item['cantidad'];
+            $precio    = (float)$db['precio'];
+            $subtotal  = $cantidad * $precio;
+            
+            $total    += $subtotal;
+            $totalItems += $cantidad;
+
+            $itemsEnriquecidos[] = [
+                'id_producto'    => $id,
+                'nombre_producto'=> $db['nombre_producto'],
+                'precio'         => $precio,
+                'imagen'         => $db['imagen'],
+                'cantidad'       => $cantidad,
+                'subtotal'       => $subtotal,
+            ];
+        }
+
+        $metodosPago = (new MetodoPagoModel())->findAll();
+
+        return view('public/checkout', [
+            'title'       => 'Checkout - Estética BV',
+            'items'       => $itemsEnriquecidos,
+            'total'       => $total,
+            'totalItems'  => $totalItems,
+            'metodosPago' => $metodosPago
+        ]);
+    }
+
+    /**
+     * POST /carrito/checkout/procesar — Procesa la compra atómicamente.
+     */
+    public function procesar()
+    {
+        $idMetodoPago = $this->request->getPost('id_metodo_pago');
+        $tipoEntrega  = $this->request->getPost('tipo_entrega');
+
+        if (!$idMetodoPago || !in_array($tipoEntrega, ['Envío a domicilio', 'Retiro en local'])) {
+            return redirect()->back()->with('error', 'Debe seleccionar forma de entrega y método de pago válidos.');
+        }
+
+        $carrito = $this->leerCarrito();
+        $this->sanearCarrito($carrito); 
+
+        if (empty($carrito['items'])) {
+            return redirect()->to('carrito')->with('warning', 'Tu carrito quedó vacío o los productos ya no están disponibles.');
+        }
+
+        $ids = array_keys($carrito['items']);
+        $productoModel = new ProductoModel();
+        $productosDb = $productoModel->whereIn('id_producto', $ids)->findAll();
+        
+        $dbMap = [];
+        foreach ($productosDb as $p) {
+            $dbMap[(int)$p['id_producto']] = $p;
+        }
+
+        $totalCalculado    = 0.0;
+        $detallesAInsertar = [];
+        $updatesStock      = [];
+
+        foreach ($carrito['items'] as $id => $item) {
+            $id = (int)$id;
+            if (!isset($dbMap[$id])) {
+                return redirect()->to('carrito')->with('error', 'Inconsistencia en el carrito.');
+            }
+            
+            $cantidad    = (int)$item['cantidad'];
+            $stockActual = (int)$dbMap[$id]['stock'];
+
+            if ($cantidad > $stockActual) {
+                return redirect()->to('carrito')->with('warning', 'El stock de un producto cambió durante la compra.');
+            }
+
+            $precio   = (float)$dbMap[$id]['precio'];
+            $subtotal = $precio * $cantidad;
+            $totalCalculado += $subtotal;
+
+            $detallesAInsertar[] = [
+                'id_producto'     => $id,
+                'cantidad'        => $cantidad,
+                'precio_unitario' => $precio,
+                'subtotal'        => $subtotal
+            ];
+
+            $updatesStock[] = [
+                'id_producto' => $id,
+                'cantidad'    => $cantidad
+            ];
+        }
+
+        $db = \Config\Database::connect();
+        $db->transStart();
+
+        $ventaModel = new VentaModel();
+        $idVenta = $ventaModel->insert([
+            'total'           => $totalCalculado,
+            'fecha_venta'     => date('Y-m-d'),
+            'tipo_entrega'    => $tipoEntrega,
+            'id_estado_venta' => 1, // 1 = Pendiente
+            'id_metodo_pago'  => (int)$idMetodoPago,
+            'id_usuario'      => (int)session()->get('id_usuario'),
+        ], true); 
+
+        $ventaDetalleModel = new VentaDetalleModel();
+        foreach ($detallesAInsertar as &$det) {
+            $det['id_venta'] = $idVenta;
+        }
+        $ventaDetalleModel->insertBatch($detallesAInsertar);
+
+        foreach ($updatesStock as $upd) {
+            $db->table('producto')
+               ->where('id_producto', $upd['id_producto'])
+               ->set('stock', "stock - {$upd['cantidad']}", false)
+               ->update();
+        }
+
+        $db->transComplete();
+
+        if ($db->transStatus() === false) {
+            return redirect()->to('carrito/checkout')->with('error', 'Ocurrió un error al procesar la compra. Inténtalo de nuevo.');
+        }
+
+        $this->guardarCarrito(['timestamp' => time(), 'items' => []]);
+
+        return redirect()->to("carrito/checkout/confirmacion/{$idVenta}")
+                         ->with('success', '¡Compra finalizada con éxito!');
+    }
+
+    /**
+     * GET /carrito/checkout/confirmacion/(:num) — Vista de confirmación de compra.
+     */
+    public function confirmacion($id_venta)
+    {
+        $ventaModel = new VentaModel();
+        $venta = $ventaModel->select('venta.*, metodo_pago.nombre_metodo_pago')
+            ->join('metodo_pago', 'metodo_pago.id_metodo_pago = venta.id_metodo_pago')
+            ->where('id_venta', $id_venta)
+            ->where('id_usuario', session()->get('id_usuario'))
+            ->first();
+
+        if (!$venta) {
+            return redirect()->to('/')->with('error', 'Venta no encontrada.');
+        }
+
+        $db = \Config\Database::connect();
+        $detalles = $db->table('venta_detalle vd')
+            ->select('vd.*, p.nombre_producto')
+            ->join('producto p', 'p.id_producto = vd.id_producto')
+            ->where('vd.id_venta', $id_venta)
+            ->get()->getResultArray();
+
+        return view('public/checkout_confirmacion', [
+            'title'    => 'Confirmación de Compra - Estética BV',
+            'venta'    => $venta,
+            'detalles' => $detalles
+        ]);
     }
 
     // ----------------------------------------------------------------

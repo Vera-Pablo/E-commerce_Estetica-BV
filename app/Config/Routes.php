@@ -43,6 +43,10 @@ $routes->group('carrito', ['filter' => 'cart'], static function ($routes) {
     $routes->post('agregar', 'Carrito::agregar');
     $routes->post('actualizar', 'Carrito::actualizar');
     $routes->post('eliminar', 'Carrito::eliminar');
+    
+    $routes->get('checkout', 'Carrito::checkout');
+    $routes->post('checkout/procesar', 'Carrito::procesar');
+    $routes->get('checkout/confirmacion/(:num)', 'Carrito::confirmacion/$1');
 });
 
 // Admin Protected Routes

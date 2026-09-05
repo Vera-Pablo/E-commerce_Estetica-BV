@@ -145,11 +145,9 @@ $total = $total ?? 0;
                         </div>
 
                         <!-- Botón Continuar -->
-                        <button type="button"
-                                class="btn btn-custom-nav btn-lg w-100"
-                                id="btn-continuar">
+                        <a href="<?= base_url('carrito/checkout') ?>" class="btn btn-custom-nav btn-lg w-100">
                             <i class="fas fa-arrow-right me-2"></i>Continuar
-                        </button>
+                        </a>
 
                     </div>
                 </div>
@@ -294,14 +292,6 @@ $total = $total ?? 0;
             }
         });
     });
-
-    // ---- BOTÓN CONTINUAR ----
-    const btnContinuar = document.getElementById('btn-continuar');
-    if (btnContinuar) {
-        btnContinuar.addEventListener('click', () => {
-            ToastHelper.show('warning', 'Pasarela de pago próximamente.');
-        });
-    }
 
     // ---- ANIMACIÓN AL ELIMINAR ----
     function eliminarCardConAnimacion(card) {
