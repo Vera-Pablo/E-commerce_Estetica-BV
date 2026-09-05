@@ -194,7 +194,7 @@
                             </div>
 
                             <!-- Ícono Ver -->
-                            <div class="ms-auto d-none d-md-block text-primary">
+                            <div class="ms-auto d-none d-md-block text-dark">
                                 <i class="fas fa-eye"></i>
                             </div>
 
