@@ -28,9 +28,11 @@
                                 <label for="categoria" class="form-label fw-bold">Categoría</label>
                                 <select class="form-select" id="categoria">
                                     <option value="">Todas las categorías</option>
-                                    <?php foreach ($categorias as $cat): ?>
-                                        <option value="<?= esc($cat['id_categoria']) ?>"><?= esc($cat['nombre_categoria']) ?></option>
-                                    <?php endforeach; ?>
+                                    <?php if (!empty($categorias)): ?>
+                                        <?php foreach ($categorias as $cat): ?>
+                                            <option value="<?= esc($cat['id_categoria']) ?>"><?= esc($cat['nombre_categoria']) ?></option>
+                                        <?php endforeach; ?>
+                                    <?php endif; ?>
                                 </select>
                             </div>
                             <div class="col-md-3 text-md-end text-center mt-3 mt-md-0">
@@ -62,7 +64,7 @@
                                      loading="lazy" decoding="async" width="100%" height="250">
                                 <div class="card-body text-center p-4 d-flex flex-column justify-content-between">
                                     <h5 class="card-title font-spartan fw-bold mb-3"><?= esc($prod['nombre_producto']) ?></h5>
-                                    <p class="card-text text-primary fw-bold fs-5 mb-0">$ <?= number_format((float)$prod['precio'], 2, ',', '.') ?></p>
+                                    <p class="card-text text-dark fw-bold fs-5 mb-0">$ <?= number_format((float)$prod['precio'], 2, ',', '.') ?></p>
                                 </div>
                             </div>
                         </a>
