@@ -109,7 +109,7 @@
                                                          loading="lazy" decoding="async" width="100%" height="250">
                                                     <div class="card-body text-center p-4 d-flex flex-column justify-content-between">
                                                         <h5 class="card-title font-spartan fw-bold mb-3 text-truncate"><?= esc($prod['nombre_producto']) ?></h5>
-                                                        <p class="card-text text-primary fw-bold fs-5 mb-0">$ <?= number_format((float)$prod['precio'], 2, ',', '.') ?></p>
+                                                        <p class="card-text text-dark fw-bold fs-5 mb-0">$ <?= number_format((float)$prod['precio'], 2, ',', '.') ?></p>
                                                     </div>
                                                 </div>
                                             </a>

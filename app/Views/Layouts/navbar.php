@@ -69,8 +69,23 @@
         <ul class="navbar-nav d-flex flex-row align-items-center ms-auto gap-3">
           <!-- Carrito -->
           <li class="nav-item">
+            <?php
+            $carritoItems = session()->get('carrito')['items'] ?? [];
+            $totalItemsBadge = array_sum(array_column($carritoItems, 'cantidad'));
+            ?>
             <a class="nav-link position-relative px-2" href="<?= base_url('carrito') ?>" title="Carrito de compras">
               <i class="fas fa-shopping-cart fa-lg"></i>
+              <?php if ($totalItemsBadge > 0): ?>
+              <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                    id="badge-carrito"
+                    style="font-size: 0.65rem;">
+                <?= $totalItemsBadge > 99 ? '99+' : $totalItemsBadge ?>
+              </span>
+              <?php else: ?>
+              <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger d-none"
+                    id="badge-carrito"
+                    style="font-size: 0.65rem;"></span>
+              <?php endif; ?>
             </a>
           </li>
           <!-- Favoritos -->

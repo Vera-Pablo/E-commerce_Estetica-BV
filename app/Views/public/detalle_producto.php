@@ -1,3 +1,9 @@
+<?php
+/**
+ * @var array $producto
+ * @var array $productos_similares
+ */
+?>
 <?= $this->extend('Layouts/base') ?>
 
 <?= $this->section('content') ?>
@@ -57,23 +63,31 @@
                 </p>
 
                 <!-- Sub-fila 1.3: Cantidad + Botón -->
-                <div class="d-flex align-items-center gap-3 flex-wrap">
-                    <div>
-                        <label for="cantidad" class="form-label fw-bold mb-1">Cantidad</label>
-                        <input type="number"
-                               id="cantidad"
-                               class="form-control"
-                               style="width: 90px;"
-                               min="1"
-                               max="<?= esc($producto['stock'] ?? 0) ?>"
-                               value="1">
+                <form action="<?= base_url('carrito/agregar') ?>" method="POST">
+                    <?= csrf_field() ?>
+                    <input type="hidden" name="id_producto" value="<?= esc($producto['id_producto'] ?? '') ?>">
+                    <div class="d-flex align-items-center gap-3 flex-wrap">
+                        <div>
+                            <label for="cantidad" class="form-label fw-bold mb-1">Cantidad</label>
+                            <input type="number"
+                                   id="cantidad"
+                                   name="cantidad"
+                                   class="form-control"
+                                   style="width: 90px;"
+                                   min="1"
+                                   max="<?= esc($producto['stock'] ?? 0) ?>"
+                                   value="1"
+                                   <?= (int)($producto['stock'] ?? 0) === 0 ? 'disabled' : '' ?>>
+                        </div>
+                        <div class="align-self-end">
+                            <button type="submit"
+                                    class="btn btn-custom-nav px-4 py-2"
+                                    <?= (int)($producto['stock'] ?? 0) === 0 ? 'disabled' : '' ?>>
+                                <i class="fas fa-cart-shopping me-2"></i>Agregar al Carrito
+                            </button>
+                        </div>
                     </div>
-                    <div class="align-self-end">
-                        <button type="button" class="btn btn-custom-nav px-4 py-2">
-                            <i class="fas fa-cart-shopping me-2"></i>Agregar al Carrito
-                        </button>
-                    </div>
-                </div>
+                </form>
 
                 <!-- Stock disponible -->
                 <p class="text-muted mt-3 mb-0 small">

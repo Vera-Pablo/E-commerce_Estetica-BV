@@ -14,6 +14,7 @@ use CodeIgniter\Filters\PerformanceMetrics;
 use CodeIgniter\Filters\SecureHeaders;
 use App\Filters\CustomerFilter;
 use App\Filters\AdminFilter;
+use App\Filters\CartFilter;
 
 class Filters extends BaseFilters
 {
@@ -30,6 +31,7 @@ class Filters extends BaseFilters
 
         'customer'      => CustomerFilter::class,
         'admin'         => AdminFilter::class,
+        'cart'          => CartFilter::class,
     ];
 
     public array $required = [

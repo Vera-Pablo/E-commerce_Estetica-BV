@@ -37,6 +37,14 @@ $routes->get('logout', 'Auth\AuthController::logout');
 $routes->get('consultas', 'Home::consultas');
 $routes->post('consultas/enviar', 'Home::enviarConsulta');
 
+// Rutas de Carrito (protegidas con filtro 'cart')
+$routes->group('carrito', ['filter' => 'cart'], static function ($routes) {
+    $routes->get('/', 'Carrito::index');
+    $routes->post('agregar', 'Carrito::agregar');
+    $routes->post('actualizar', 'Carrito::actualizar');
+    $routes->post('eliminar', 'Carrito::eliminar');
+});
+
 // Admin Protected Routes
 $routes->group('admin', ['filter' => 'admin'], static function ($routes) {
     $routes->get('dashboard', 'Admin\Categoria::index');
