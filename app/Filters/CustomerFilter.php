@@ -13,6 +13,10 @@ class CustomerFilter implements FilterInterface
         if (!session()->get('isLoggedIn')) {
             return redirect()->to('/login')->with('error', 'Debe iniciar sesión para acceder a esta sección.');
         }
+
+        if ((int)session()->get('id_rol') === 1) {
+            return redirect()->to('/admin/dashboard')->with('error', 'Acción solo para clientes.');
+        }
     }
 
     public function after(RequestInterface $request, ResponseInterface $response, $arguments = null)

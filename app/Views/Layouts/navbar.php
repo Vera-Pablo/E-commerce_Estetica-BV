@@ -111,8 +111,8 @@
                   </a>
                 </li>
                 <li>
-                  <a class="dropdown-item disabled" href="#" tabindex="-1" aria-disabled="true">
-                    <i class="fas fa-shopping-bag me-2"></i>Mis Compras <span class="badge bg-secondary ms-1">Próximamente</span>
+                  <a class="dropdown-item" href="<?= base_url('mis-compras') ?>">
+                    <i class="fas fa-shopping-bag me-2"></i>Mis Compras
                   </a>
                 </li>
                 <?php endif; ?>
