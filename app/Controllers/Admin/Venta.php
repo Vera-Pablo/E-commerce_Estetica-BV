@@ -27,7 +27,7 @@ class Venta extends BaseController
 
         // Consulta relacional: venta + usuario + estado + método de pago
         $builder = $db->table('venta v')
-            ->select('v.id_venta, v.total, v.fecha_venta, v.id_estado_venta, v.id_metodo_pago, v.id_usuario,
+            ->select('v.id_venta, v.total, v.fecha_venta, v.tipo_entrega, v.id_estado_venta, v.id_metodo_pago, v.id_usuario,
                       u.apellido_nombre, u.dni,
                       ev.nombre_estado,
                       mp.nombre_metodo_pago')
@@ -88,7 +88,7 @@ class Venta extends BaseController
 
         // Traer la venta con datos relacionales
         $venta = $db->table('venta v')
-            ->select('v.id_venta, v.total, v.fecha_venta,
+            ->select('v.id_venta, v.total, v.fecha_venta, v.tipo_entrega,
                       u.apellido_nombre, u.dni, u.email,
                       ev.nombre_estado,
                       mp.nombre_metodo_pago')

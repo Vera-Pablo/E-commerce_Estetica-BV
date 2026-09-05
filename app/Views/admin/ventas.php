@@ -173,10 +173,11 @@
 
                             <div class="vr d-none d-sm-block"></div>
 
-                            <!-- Método pago -->
-                            <div class="text-center" style="min-width:90px;">
+                            <!-- Método pago & Entrega -->
+                            <div class="text-center" style="min-width:110px;">
                                 <div><i class="fas fa-credit-card text-secondary me-1"></i><span class="small fw-bold"><?= esc($v['nombre_metodo_pago'] ?? '—') ?></span></div>
-                                <small class="text-muted"><?= esc($v['fecha_venta']) ?></small>
+                                <div class="mt-1"><i class="fas fa-truck text-secondary me-1"></i><span class="small text-muted"><?= esc($v['tipo_entrega'] ?? 'Retiro en local') ?></span></div>
+                                <small class="text-muted d-block mt-1"><?= esc($v['fecha_venta']) ?></small>
                             </div>
 
                             <div class="vr d-none d-sm-block"></div>
@@ -211,6 +212,85 @@
             </div>
         <?php endif; ?>
 
+        <!-- Modal Recibo -->
+        <div class="modal fade" id="reciboModal" tabindex="-1" aria-labelledby="reciboModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+                <div class="modal-content border-0 rounded-4 shadow">
+                    <div class="modal-header border-bottom-0 pb-0">
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                    </div>
+                    <div class="modal-body p-4 pt-2" id="recibo-contenido">
+                        <!-- Cabecera Recibo -->
+                        <div class="text-center mb-4">
+                            <h2 class="font-spartan fw-bold text-dark mb-1">Estética BV</h2>
+                            <p class="text-muted small mb-0">Comprobante de Venta</p>
+                        </div>
+                        
+                        <div class="row mb-4 g-3">
+                            <div class="col-sm-6">
+                                <h6 class="text-muted mb-1 small">Detalles del Cliente</h6>
+                                <div class="fw-bold text-dark" id="r-nombre"></div>
+                                <div class="small text-muted">DNI: <span id="r-dni"></span></div>
+                                <div class="small text-muted">Email: <span id="r-email"></span></div>
+                            </div>
+                            <div class="col-sm-6 text-sm-end">
+                                <h6 class="text-muted mb-1 small">Detalles de Venta</h6>
+                                <div class="fw-bold text-dark" id="r-id"></div>
+                                <div class="small text-muted">Fecha: <span id="r-fecha"></span></div>
+                                <div class="small text-muted">Estado: <span id="r-estado" class="badge bg-secondary ms-1"></span></div>
+                            </div>
+                        </div>
+
+                        <div class="row mb-4 g-3 bg-light rounded-3 p-3 mx-0">
+                            <div class="col-sm-6">
+                                <h6 class="text-muted mb-1 small"><i class="fas fa-credit-card me-1"></i> Método de Pago</h6>
+                                <div class="fw-bold text-dark" id="r-pago"></div>
+                            </div>
+                            <div class="col-sm-6 text-sm-end">
+                                <h6 class="text-muted mb-1 small"><i class="fas fa-truck me-1"></i> Tipo de Entrega</h6>
+                                <div class="fw-bold text-dark" id="r-entrega"></div>
+                            </div>
+                        </div>
+
+                        <!-- Tabla de Ítems -->
+                        <div class="table-responsive mb-4">
+                            <table class="table table-borderless table-sm">
+                                <thead class="border-bottom">
+                                    <tr>
+                                        <th class="text-muted small fw-bold">Producto</th>
+                                        <th class="text-muted small fw-bold text-center">Cant.</th>
+                                        <th class="text-muted small fw-bold text-end">Precio U.</th>
+                                        <th class="text-muted small fw-bold text-end">Subtotal</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="r-items">
+                                </tbody>
+                                <tfoot class="border-top">
+                                    <tr>
+                                        <td colspan="3" class="text-end fw-bold pt-3 fs-5">Total</td>
+                                        <td class="text-end fw-bold text-success pt-3 fs-5" id="r-total"></td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                        
+                        <!-- Mensaje pie de recibo -->
+                        <div class="text-center mt-4">
+                            <p class="small text-muted fst-italic">Gracias por su compra.</p>
+                        </div>
+                    </div>
+                    <div class="modal-footer border-top-0 bg-light rounded-bottom-4">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                        <button type="button" class="btn btn-custom-nav" onclick="imprimirRecibo()">
+                            <i class="fas fa-print me-2"></i>Imprimir
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="recibo-print"></div>
+
 <?= $this->endSection() ?>
 
 <?= $this->section('scripts') ?>
@@ -242,6 +322,7 @@
                 document.getElementById('r-email').textContent  = v.email ?? '—';
                 document.getElementById('r-estado').textContent = v.nombre_estado ?? '—';
                 document.getElementById('r-pago').textContent   = v.nombre_metodo_pago ?? '—';
+                document.getElementById('r-entrega').textContent= v.tipo_entrega ?? 'Retiro en local';
                 document.getElementById('r-total').textContent  = fmt(v.total);
 
                 // Rellenar filas de detalle
