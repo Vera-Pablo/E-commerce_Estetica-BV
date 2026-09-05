@@ -33,6 +33,10 @@ $routes->get('auth/google/callback', 'Auth\AuthController::googleCallback');
 
 $routes->get('logout', 'Auth\AuthController::logout');
 
+$routes->get('perfil', 'Perfil::index');
+$routes->post('perfil/actualizar', 'Perfil::actualizar');
+$routes->post('perfil/cambiar-password', 'Perfil::cambiarPassword');
+
 
 $routes->get('consultas', 'Home::consultas');
 $routes->post('consultas/enviar', 'Home::enviarConsulta');

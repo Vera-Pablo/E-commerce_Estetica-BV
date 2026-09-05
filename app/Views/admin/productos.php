@@ -58,7 +58,7 @@
                                 <h4 class="card-title font-spartan fw-bold text-truncate m-0" style="max-width: 65%;">
                                     <?= esc($prod['nombre_producto']) ?>
                                 </h4>
-                                <span class="badge bg-primary rounded-pill px-3 py-2 fs-6">
+                                <span class="badge bg-dark rounded-pill px-3 py-2 fs-6">
                                     $<?= number_format($prod['precio'], 2, ',', '.') ?>
                                 </span>
                             </div>
@@ -86,7 +86,7 @@
                             </div>
 
                             <div class="d-flex justify-content-end align-items-center mt-auto border-top pt-3">
-                                <small class="text-primary fw-bold"><i class="fas fa-edit"></i> Editar</small>
+                                <small class="text-dark fw-bold"><i class="fas fa-edit"></i> Editar</small>
                             </div>
                         </div>
                     </div>

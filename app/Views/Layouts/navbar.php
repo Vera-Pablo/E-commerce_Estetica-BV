@@ -104,10 +104,31 @@
               <ul class="dropdown-menu dropdown-menu-end dropdown-menu-dark border-0 shadow-lg" aria-labelledby="navbarUserDropdown">
                 <li><span class="dropdown-item-text text-warning fw-bold"><?= esc(session()->get('apellido_nombre') ?? 'Usuario') ?></span></li>
                 <li><hr class="dropdown-divider"></li>
-                <?php if ((int)session()->get('id_rol') === 1): ?>
-                  <li><a class="dropdown-item" href="<?= base_url('admin/dashboard') ?>"><i class="fas fa-cog me-2"></i>Panel Administrador</a></li>
+                <?php if ((int)session()->get('id_rol') !== 1): ?>
+                <li>
+                  <a class="dropdown-item" href="<?= base_url('perfil') ?>">
+                    <i class="fas fa-user-circle me-2"></i>Mi Perfil
+                  </a>
+                </li>
+                <li>
+                  <a class="dropdown-item disabled" href="#" tabindex="-1" aria-disabled="true">
+                    <i class="fas fa-shopping-bag me-2"></i>Mis Compras <span class="badge bg-secondary ms-1">Próximamente</span>
+                  </a>
+                </li>
                 <?php endif; ?>
-                <li><a class="dropdown-item" href="<?= base_url('logout') ?>"><i class="fas fa-sign-out-alt me-2"></i>Cerrar Sesión</a></li>
+                <?php if ((int)session()->get('id_rol') === 1): ?>
+                  <li>
+                    <a class="dropdown-item" href="<?= base_url('admin/dashboard') ?>">
+                      <i class="fas fa-cog me-2"></i>Panel Administrador
+                    </a>
+                  </li>
+                <?php endif; ?>
+                <li><hr class="dropdown-divider"></li>
+                <li>
+                  <a class="dropdown-item" href="<?= base_url('logout') ?>">
+                    <i class="fas fa-sign-out-alt me-2"></i>Cerrar Sesión
+                  </a>
+                </li>
               </ul>
             </li>
           <?php else: ?>

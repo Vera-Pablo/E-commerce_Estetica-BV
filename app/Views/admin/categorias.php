@@ -78,7 +78,7 @@
                             
                             <div class="d-flex justify-content-between align-items-center mt-auto">
                                 <span class="badge bg-light text-dark border">ID: <?= esc($cat['id_categoria']) ?></span>
-                                <small class="text-primary fw-bold"><i class="fas fa-edit"></i> Editar</small>
+                                <small class="text-dark fw-bold"><i class="fas fa-edit"></i> Editar</small>
                             </div>
                         </div>
                     </div>
