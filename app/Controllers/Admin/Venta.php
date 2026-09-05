@@ -88,7 +88,7 @@ class Venta extends BaseController
 
         // Traer la venta con datos relacionales
         $venta = $db->table('venta v')
-            ->select('v.id_venta, v.total, v.fecha_venta, v.tipo_entrega,
+            ->select('v.id_venta, v.total, v.fecha_venta, v.tipo_entrega, v.id_estado_venta,
                       u.apellido_nombre, u.dni, u.email,
                       ev.nombre_estado,
                       mp.nombre_metodo_pago')
@@ -113,5 +113,54 @@ class Venta extends BaseController
             'venta'    => $venta,
             'detalles' => $detalles,
         ]);
+    }
+
+    /**
+     * Cambia el estado de la venta y notifica al usuario.
+     * Ruta: POST /admin/ventas/cambiar-estado
+     */
+    public function cambiarEstado()
+    {
+        $idVenta      = (int)$this->request->getPost('id_venta');
+        $idEstadoVenta= (int)$this->request->getPost('id_estado_venta');
+
+        if (!$idVenta || !$idEstadoVenta) {
+            return redirect()->back()->with('error', 'Datos inválidos para actualizar el estado.');
+        }
+
+        $ventaModel = new VentaModel();
+        $venta = $ventaModel->find($idVenta);
+
+        if (!$venta) {
+            return redirect()->back()->with('error', 'Venta no encontrada.');
+        }
+
+        $estadoModel = new EstadoVentaModel();
+        $estado = $estadoModel->find($idEstadoVenta);
+
+        if (!$estado) {
+            return redirect()->back()->with('error', 'Estado no válido.');
+        }
+
+        // Actualizar el estado
+        $ventaModel->update($idVenta, ['id_estado_venta' => $idEstadoVenta]);
+
+        // Enviar notificación por email al usuario
+        $db = \Config\Database::connect();
+        $usuario = $db->table('usuario')
+                      ->select('email, apellido_nombre')
+                      ->where('id_usuario', $venta['id_usuario'])
+                      ->get()->getRowArray();
+
+        if ($usuario && !empty($usuario['email'])) {
+            \App\Libraries\EmailService::sendPedidoStatusEmail(
+                $usuario['email'],
+                $usuario['apellido_nombre'] ?? 'Cliente',
+                $idVenta,
+                $estado['nombre_estado']
+            );
+        }
+
+        return redirect()->back()->with('success', "Estado actualizado correctamente a '{$estado['nombre_estado']}' y notificado al cliente.");
     }
 }
