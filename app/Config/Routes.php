@@ -58,7 +58,7 @@ $routes->group('carrito', ['filter' => 'cart'], static function ($routes) {
 
 // Admin Protected Routes
 $routes->group('admin', ['filter' => 'admin'], static function ($routes) {
-    $routes->get('dashboard', 'Admin\Categoria::index');
+    $routes->get('dashboard', 'Admin\Dashboard::index');
     $routes->get('designer', 'Admin\Designer::index');
     $routes->post('designer/guardar', 'Admin\Designer::guardar');
 
