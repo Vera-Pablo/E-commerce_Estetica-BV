@@ -40,6 +40,7 @@ $routes->post('perfil/cambiar-password', 'Perfil::cambiarPassword');
 // Mis Compras (requiere sesión de cliente)
 $routes->get('mis-compras', 'MisCompras::index', ['filter' => 'customer']);
 $routes->get('mis-compras/detalle/(:num)', 'MisCompras::detalle/$1', ['filter' => 'customer']);
+$routes->get('mis-compras/descargar-recibo/(:num)', 'MisCompras::descargarRecibo/$1', ['filter' => 'customer']);
 
 $routes->get('consultas', 'Home::consultas');
 $routes->post('consultas/enviar', 'Home::enviarConsulta');
@@ -75,6 +76,7 @@ $routes->group('admin', ['filter' => 'admin'], static function ($routes) {
 
     $routes->get('ventas', 'Admin\Venta::index');
     $routes->get('ventas/detalle/(:num)', 'Admin\Venta::detalle/$1');
+    $routes->get('ventas/descargar-recibo/(:num)', 'Admin\Venta::descargarRecibo/$1');
     $routes->post('ventas/cambiar-estado', 'Admin\Venta::cambiarEstado');
 
     $routes->get('consultas', 'Admin\Consulta::index');

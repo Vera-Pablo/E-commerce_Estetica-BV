@@ -140,7 +140,10 @@
                     </table>
                 </div>
             </div>
-            <div class="modal-footer border-top-0 bg-light rounded-bottom-4">
+            <div class="modal-footer border-top-0 bg-light rounded-bottom-4 d-flex justify-content-between">
+                <a href="#" id="btn-descargar-pdf" class="btn btn-custom-nav px-3" target="_blank">
+                    <i class="fas fa-file-pdf me-2"></i>Descargar PDF
+                </a>
                 <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">Cerrar</button>
             </div>
         </div>
@@ -152,6 +155,7 @@
 <?= $this->section('scripts') ?>
 <script>
     const baseUrlDetalle = '<?= base_url("mis-compras/detalle/") ?>';
+    const baseUrlPdf     = '<?= base_url("mis-compras/descargar-recibo/") ?>';
     const fmt = n => '$' + parseFloat(n).toLocaleString('es-AR', {minimumFractionDigits:2});
 
     async function abrirDetalle(idVenta) {
@@ -162,6 +166,9 @@
             
             const v = data.venta;
             const items = data.detalles;
+
+            // Actualizar botón de descarga PDF
+            document.getElementById('btn-descargar-pdf').href = baseUrlPdf + v.id_venta;
 
             // Llenar datos de la cabecera
             document.getElementById('mdl-comprobante').textContent = `Comprobante #${v.id_venta}`;
