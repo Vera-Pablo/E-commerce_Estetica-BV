@@ -163,4 +163,41 @@ class Venta extends BaseController
 
         return redirect()->back()->with('success', "Estado actualizado correctamente a '{$estado['nombre_estado']}' y notificado al cliente.");
     }
+
+    /**
+     * Descarga el recibo en PDF para cualquier venta (Panel Admin).
+     * Ruta: GET /admin/ventas/descargar-recibo/(:num)
+     *
+     * @param int $id_venta
+     */
+    public function descargarRecibo($id_venta)
+    {
+        $id_venta = (int)$id_venta;
+        $db = \Config\Database::connect();
+
+        $venta = $db->table('venta v')
+            ->select('v.id_venta, v.total, v.fecha_venta, v.tipo_entrega, v.id_estado_venta,
+                      u.apellido_nombre, u.dni, u.email,
+                      ev.nombre_estado,
+                      mp.nombre_metodo_pago')
+            ->join('usuario u', 'u.id_usuario = v.id_usuario', 'left')
+            ->join('estado_venta ev', 'ev.id_estado_venta = v.id_estado_venta', 'left')
+            ->join('metodo_pago mp', 'mp.id_metodo_pago = v.id_metodo_pago', 'left')
+            ->where('v.id_venta', $id_venta)
+            ->get()->getRowArray();
+
+        if (!$venta) {
+            return redirect()->to('/admin/ventas')->with('error', 'Comprobante no encontrado.');
+        }
+
+        $detalles = $db->table('venta_detalle vd')
+            ->select('vd.cantidad, vd.precio_unitario, vd.subtotal, p.nombre_producto')
+            ->join('producto p', 'p.id_producto = vd.id_producto', 'left')
+            ->where('vd.id_venta', $id_venta)
+            ->get()->getResultArray();
+
+        $filename = "Recibo_EsteticaBV_#" . $id_venta . ".pdf";
+
+        \App\Libraries\PdfService::descargarRecibo($venta, $detalles, $filename);
+    }
 }

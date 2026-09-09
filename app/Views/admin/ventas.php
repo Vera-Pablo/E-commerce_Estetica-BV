@@ -292,11 +292,11 @@
                             <button type="submit" class="btn btn-sm btn-dark">Actualizar</button>
                         </form>
                         
-                        <div>
+                        <div class="d-flex gap-2">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                            <button type="button" class="btn btn-custom-nav" onclick="imprimirRecibo()">
-                                <i class="fas fa-print me-2"></i>Imprimir
-                            </button>
+                            <a href="#" id="admin-btn-recibo" class="btn btn-custom-nav" target="_blank">
+                                <i class="fas fa-file-pdf me-2"></i>Recibo
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -311,6 +311,7 @@
     <script>
         const reciboModal = new bootstrap.Modal(document.getElementById('reciboModal'));
         const baseUrl = '<?= base_url('admin/ventas/detalle/') ?>';
+        const baseUrlPdf = '<?= base_url('admin/ventas/descargar-recibo/') ?>';
 
         // Formateador de moneda
         const fmt = n => '$' + parseFloat(n).toLocaleString('es-AR', {minimumFractionDigits:2, maximumFractionDigits:2});
@@ -327,6 +328,9 @@
 
                 const v = data.venta;
                 const items = data.detalles;
+
+                // Configurar enlace PDF del recibo
+                document.getElementById('admin-btn-recibo').href = baseUrlPdf + v.id_venta;
 
                 // Rellenar cabecera
                 document.getElementById('r-id').textContent     = `Recibo #${v.id_venta}`;

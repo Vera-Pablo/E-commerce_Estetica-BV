@@ -76,9 +76,12 @@
                             </table>
                         </div>
 
-                        <!-- Botón Volver -->
-                        <div class="text-center mt-5">
-                            <a href="<?= base_url('catalogo') ?>" class="btn btn-outline-dark rounded-pill px-5 py-2">
+                        <!-- Botón Volver y Descargar -->
+                        <div class="text-center mt-5 d-flex justify-content-center gap-3 flex-wrap">
+                            <a href="<?= base_url('mis-compras/descargar-recibo/' . $venta['id_venta']) ?>" class="btn btn-custom-nav rounded-pill px-4 py-2" target="_blank">
+                                <i class="fas fa-file-pdf me-2"></i>Descargar Comprobante PDF
+                            </a>
+                            <a href="<?= base_url('catalogo') ?>" class="btn btn-outline-dark rounded-pill px-4 py-2">
                                 <i class="fas fa-store me-2"></i>Volver al Catálogo
                             </a>
                         </div>

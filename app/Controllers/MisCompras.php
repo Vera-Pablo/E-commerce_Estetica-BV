@@ -63,4 +63,41 @@ class MisCompras extends BaseController
             'detalles' => $detalles,
         ]);
     }
+
+    /**
+     * GET /mis-compras/descargar-recibo/(:num) — Descarga directa del recibo PDF.
+     */
+    public function descargarRecibo($idVenta)
+    {
+        $idVenta   = (int)$idVenta;
+        $idUsuario = (int)session()->get('id_usuario');
+        $db = \Config\Database::connect();
+
+        // Consulta de seguridad (solo la venta del usuario logueado)
+        $venta = $db->table('venta v')
+            ->select('v.id_venta, v.total, v.fecha_venta, v.tipo_entrega, v.id_estado_venta,
+                      u.apellido_nombre, u.dni, u.email,
+                      ev.nombre_estado,
+                      mp.nombre_metodo_pago')
+            ->join('usuario u', 'u.id_usuario = v.id_usuario', 'left')
+            ->join('estado_venta ev', 'ev.id_estado_venta = v.id_estado_venta', 'left')
+            ->join('metodo_pago mp', 'mp.id_metodo_pago = v.id_metodo_pago', 'left')
+            ->where('v.id_venta', $idVenta)
+            ->where('v.id_usuario', $idUsuario)
+            ->get()->getRowArray();
+
+        if (!$venta) {
+            return redirect()->to('/mis-compras')->with('error', 'Comprobante no encontrado.');
+        }
+
+        $detalles = $db->table('venta_detalle vd')
+            ->select('vd.cantidad, vd.precio_unitario, vd.subtotal, p.nombre_producto')
+            ->join('producto p', 'p.id_producto = vd.id_producto', 'left')
+            ->where('vd.id_venta', $idVenta)
+            ->get()->getResultArray();
+
+        $filename = "Recibo_EsteticaBV_#" . $idVenta . ".pdf";
+
+        \App\Libraries\PdfService::descargarRecibo($venta, $detalles, $filename);
+    }
 }
