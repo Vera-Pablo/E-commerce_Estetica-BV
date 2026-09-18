@@ -1,6 +1,7 @@
 <?= $this->extend('Layouts/admin/base_admin') ?>
 
 <?= $this->section('content') ?>
+<div class="container-fluid px-0 px-lg-4">
         <!-- Header Section -->
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h1 class="font-spartan fw-bold text-dark m-0">
@@ -48,9 +49,9 @@
 
         <!-- Listado de Tarjetas de Productos -->
         <?php if(!empty($productos)): ?>
-            <div class="row g-4">
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
                 <?php foreach($productos as $prod): ?>
-                <div class="col-md-6 col-xl-4">
+                <div class="col">
                     <div class="card border-0 rounded-4 h-100 card-hover" style="box-shadow: 0px 10px 7px rgba(0, 0, 0, 0.26); cursor: pointer;" onclick='abrirModalEditar(<?= json_encode($prod, JSON_HEX_APOS | JSON_HEX_QUOT) ?>)'>
                         <img src="<?= esc(cloudinary_thumb($prod['imagen'] ?? null)) ?>" class="card-img-top bg-light rounded-top-4" alt="Imagen Producto" style="height: 180px; object-fit: cover;" loading="lazy" decoding="async">
                         <div class="card-body d-flex flex-column p-4">
@@ -159,6 +160,7 @@
                 </div>
             </div>
         </div>
+</div>
 <?= $this->endSection() ?>
 
 <?= $this->section('scripts') ?>

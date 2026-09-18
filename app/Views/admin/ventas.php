@@ -22,7 +22,9 @@
     </style>
 <?= $this->endSection() ?>
 
-<?= $this->section('content') ?><!-- Header -->
+<?= $this->section('content') ?>
+<div class="container-fluid px-0 px-lg-4">
+        <!-- Header -->
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h1 class="font-spartan fw-bold text-dark m-0">
                 <i class="fas fa-receipt me-2"></i> Gestión de Ventas
@@ -62,9 +64,10 @@
                             <label for="filtro_estado" class="form-label fw-bold small mb-1">Estado de Venta</label>
                             <select name="estado" id="filtro_estado" class="form-select border-secondary rounded-3">
                                 <option value="">Todos los estados</option>
+                                <?php $filtro_est = $estado ?? null; ?>
                                 <?php foreach($estados as $ev): ?>
                                     <option value="<?= esc($ev['id_estado_venta']) ?>"
-                                        <?= (isset($estado) && $estado == $ev['id_estado_venta']) ? 'selected' : '' ?>>
+                                        <?= ($filtro_est == $ev['id_estado_venta']) ? 'selected' : '' ?>>
                                         <?= esc($ev['nombre_estado']) ?>
                                     </option>
                                 <?php endforeach; ?>
@@ -76,9 +79,10 @@
                             <label for="filtro_pago" class="form-label fw-bold small mb-1">Método de Pago</label>
                             <select name="metodo_pago" id="filtro_pago" class="form-select border-secondary rounded-3">
                                 <option value="">Todos los métodos</option>
+                                <?php $filtro_mp = $metodo_pago ?? null; ?>
                                 <?php foreach($metodosPago as $mp): ?>
                                     <option value="<?= esc($mp['id_metodo_pago']) ?>"
-                                        <?= (isset($metodo_pago) && $metodo_pago == $mp['id_metodo_pago']) ? 'selected' : '' ?>>
+                                        <?= ($filtro_mp == $mp['id_metodo_pago']) ? 'selected' : '' ?>>
                                         <?= esc($mp['nombre_metodo_pago']) ?>
                                     </option>
                                 <?php endforeach; ?>
@@ -99,7 +103,11 @@
                             <button type="submit" class="btn btn-custom-nav rounded-3 w-100">
                                 <i class="fas fa-filter"></i>
                             </button>
-                            <?php if(!empty($search_id) || !empty($estado) || !empty($metodo_pago)): ?>
+                            <?php 
+                                $filtro_est = $estado ?? null;
+                                $filtro_mp = $metodo_pago ?? null;
+                            ?>
+                            <?php if(!empty($search_id) || !empty($filtro_est) || !empty($filtro_mp)): ?>
                                 <a href="<?= base_url('admin/ventas') ?>" class="btn btn-custom-back rounded-3" title="Limpiar">
                                     <i class="fas fa-times"></i>
                                 </a>
@@ -289,11 +297,10 @@
                                     <option value="<?= esc($ev['id_estado_venta']) ?>"><?= esc($ev['nombre_estado']) ?></option>
                                 <?php endforeach; ?>
                             </select>
-                            <button type="submit" class="btn btn-sm btn-dark">Actualizar</button>
+                            <button type="submit" id="btn-actualizar-estado" class="btn btn-sm btn-dark">Actualizar</button>
                         </form>
                         
                         <div class="d-flex gap-2">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
                             <a href="#" id="admin-btn-recibo" class="btn btn-custom-nav" target="_blank">
                                 <i class="fas fa-file-pdf me-2"></i>Recibo
                             </a>
@@ -304,7 +311,7 @@
         </div>
 
         <div id="recibo-print"></div>
-
+</div>
 <?= $this->endSection() ?>
 
 <?= $this->section('scripts') ?>
@@ -364,8 +371,18 @@
                 // Configurar formulario
                 document.getElementById('form-cambiar-estado-id').value = v.id_venta;
                 const selectEstado = document.getElementById('form-estado-select');
+                const btnActualizar = document.getElementById('btn-actualizar-estado');
                 if (selectEstado && v.id_estado_venta) {
                     selectEstado.value = v.id_estado_venta;
+                    if (parseInt(v.id_estado_venta) === 4) {
+                        selectEstado.disabled = true;
+                        if (btnActualizar) btnActualizar.disabled = true;
+                        selectEstado.title = "La venta ya fue entregada";
+                    } else {
+                        selectEstado.disabled = false;
+                        if (btnActualizar) btnActualizar.disabled = false;
+                        selectEstado.title = "";
+                    }
                 }
 
                 // Rellenar filas de detalle

@@ -3,6 +3,9 @@
 <?= $this->section('title') ?><?= esc($title ?? 'Mis Compras') ?><?= $this->endSection() ?>
 
 <?= $this->section('content') ?>
+    <!-- Navbar Component -->
+    <?= $this->include('Layouts/navbar') ?>
+
 <main class="py-5" style="background-color: #fff6e9; min-height: 80vh;">
     <div class="container px-lg-4">
         
@@ -19,10 +22,11 @@
             <h1 class="font-spartan fw-bold mb-1 d-flex align-items-center">
                  Mis Compras
             </h1>
-            <p class="text-muted mb-0">Historial de pedidos (<?= count($ventas) ?>)</p>
+            <?php $listaVentas = $ventas ?? []; ?>
+            <p class="text-muted mb-0">Historial de pedidos (<?= count($listaVentas) ?>)</p>
         </div>
 
-        <?php if (empty($ventas)): ?>
+        <?php if (empty($listaVentas)): ?>
             <!-- Estado Vacío -->
             <div class="text-center py-5 bg-white rounded-4 shadow-sm border-0 mt-4">
                 <i class="fas fa-shopping-bag fa-4x text-muted mb-3 opacity-50"></i>
@@ -33,7 +37,7 @@
         <?php else: ?>
             <!-- Lista de Ventas -->
             <div class="row g-4">
-                <?php foreach ($ventas as $v): ?>
+                <?php foreach ($listaVentas as $v): ?>
                     <?php
                         $nombreEst = strtolower($v['nombre_estado'] ?? '');
                         $badgeClass = 'bg-secondary';
@@ -144,11 +148,13 @@
                 <a href="#" id="btn-descargar-pdf" class="btn btn-custom-nav px-3" target="_blank">
                     <i class="fas fa-file-pdf me-2"></i>Descargar PDF
                 </a>
-                <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">Cerrar</button>
             </div>
         </div>
     </div>
 </div>
+
+    <!-- Footer Component -->
+    <?= $this->include('Layouts/footer') ?>
 
 <?= $this->endSection() ?>
 

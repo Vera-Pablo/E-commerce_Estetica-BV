@@ -42,12 +42,14 @@
                     <h1 class="font-spartan fw-bold mb-0" style="font-size: 2rem; line-height: 1.2;">
                         <?= esc($producto['nombre_producto'] ?? '') ?>
                     </h1>
+                    <?php
+                        $isFavorito = isset($favoritosIds) && in_array($producto['id_producto'], $favoritosIds);
+                    ?>
                     <button type="button"
-                            class="btn p-0 border-0 bg-transparent flex-shrink-0"
-                            title="Agregar a favoritos (próximamente)"
-                            style="cursor: default;"
-                            tabindex="-1">
-                        <i class="far fa-heart fs-3 text-danger"></i>
+                            class="btn p-0 border-0 bg-transparent flex-shrink-0 btn-favorito"
+                            title="<?= $isFavorito ? 'Quitar de favoritos' : 'Agregar a favoritos' ?>"
+                            onclick="toggleFavorito(<?= $producto['id_producto'] ?>, this)">
+                        <i class="<?= $isFavorito ? 'fas' : 'far' ?> fa-heart fs-3 text-danger"></i>
                     </button>
                 </div>
 
@@ -173,7 +175,7 @@
                                                         <h5 class="card-title font-spartan fw-bold mb-3">
                                                             <?= esc($sim['nombre_producto']) ?>
                                                         </h5>
-                                                        <p class="card-text text-primary fw-bold fs-5 mb-0">
+                                                        <p class="card-text text-dark fw-bold fs-5 mb-0">
                                                             $ <?= number_format((float)$sim['precio'], 2, ',', '.') ?>
                                                         </p>
                                                     </div>

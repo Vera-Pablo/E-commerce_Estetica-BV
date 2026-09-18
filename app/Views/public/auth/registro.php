@@ -22,6 +22,9 @@
     <?php if (session()->getFlashdata('error')): ?>
         <div id="flash-error" data-message="<?= esc(session()->getFlashdata('error')) ?>" style="display:none;"></div>
     <?php endif; ?>
+    <?php if (session()->getFlashdata('info')): ?>
+        <div id="flash-warning" data-message="<?= esc(session()->getFlashdata('info')) ?>" style="display:none;"></div>
+    <?php endif; ?>
     <?php if (session()->getFlashdata('errors')): ?>
         <div id="flash-warning" data-message="<?= esc(implode(' | ', session()->getFlashdata('errors'))) ?>" style="display:none;"></div>
     <?php endif; ?>
@@ -38,49 +41,52 @@
                                 <form action="<?= base_url('registro') ?>" method="post">
                                     <?= csrf_field() ?>
 
-                                    <div class="row">
-                                        <div class="col-md-6 mb-4">
-                                            <div class="form-floating">
-                                                <input type="text" id="dni" name="dni" class="form-control" placeholder="DNI" value="<?= old('dni') ?>" required />
-                                                <label for="dni">DNI</label>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6 mb-4">
-                                            <div class="form-floating">
-                                                <input type="text" id="apellido_nombre" name="apellido_nombre" class="form-control" placeholder="Apellido y Nombre" value="<?= old('apellido_nombre') ?>" required />
-                                                <label for="apellido_nombre">Apellido y Nombre</label>
-                                            </div>
+                                    <div class="mb-3">
+                                        <div class="form-floating">
+                                            <input type="text" id="dni" name="dni" class="form-control" placeholder="DNI" value="<?= old('dni') ?>" maxlength="8" pattern="[0-9]{8}" inputmode="numeric" title="El DNI debe tener exactamente 8 números" required />
+                                            <label for="dni">DNI</label>
                                         </div>
                                     </div>
 
-                                    <div class="row">
-                                        <div class="col-md-6 mb-4">
-                                            <div class="form-floating">
-                                                <input type="email" id="email" name="email" class="form-control" placeholder="Email" value="<?= old('email') ?>" required />
-                                                <label for="email">Correo Electrónico</label>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6 mb-4">
-                                            <div class="form-floating">
-                                                <input type="text" id="telefono" name="telefono" class="form-control" placeholder="Teléfono" value="<?= old('telefono') ?>" />
-                                                <label for="telefono">Teléfono (Opcional)</label>
-                                            </div>
+                                    <div class="mb-3">
+                                        <div class="form-floating">
+                                            <input type="text" id="apellido_nombre" name="apellido_nombre" class="form-control" placeholder="Apellido y Nombre" value="<?= old('apellido_nombre') ?>" required />
+                                            <label for="apellido_nombre">Apellido y Nombre</label>
                                         </div>
                                     </div>
 
-                                    <div class="row">
-                                        <div class="col-md-6 mb-4">
-                                            <div class="form-floating">
-                                                <input type="password" id="password" name="password" class="form-control" placeholder="Contraseña" required />
-                                                <label for="password">Contraseña</label>
-                                            </div>
+                                    <div class="mb-3">
+                                        <div class="form-floating">
+                                            <input type="email" id="email" name="email" class="form-control" placeholder="Email" value="<?= old('email') ?>" required />
+                                            <label for="email">Correo Electrónico</label>
                                         </div>
-                                        <div class="col-md-6 mb-4">
-                                            <div class="form-floating">
-                                                <input type="password" id="passconf" name="passconf" class="form-control" placeholder="Confirmar Contraseña" required />
-                                                <label for="passconf">Confirmar Contraseña</label>
-                                            </div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <div class="form-floating">
+                                            <input type="text" id="telefono" name="telefono" class="form-control" placeholder="Teléfono" value="<?= old('telefono') ?>" />
+                                            <label for="telefono">Teléfono (Opcional)</label>
                                         </div>
+                                    </div>
+
+                                    <div class="mb-3 position-relative">
+                                        <div class="form-floating">
+                                            <input type="password" id="password" name="password" class="form-control pe-5" placeholder="Contraseña" required />
+                                            <label for="password">Contraseña</label>
+                                        </div>
+                                        <button type="button" class="btn btn-link text-muted position-absolute top-50 end-0 translate-middle-y me-3 p-0 border-0 shadow-none" onclick="togglePassword('password', this)" tabindex="-1" style="z-index: 10;">
+                                            <i class="fas fa-eye fs-5"></i>
+                                        </button>
+                                    </div>
+
+                                    <div class="mb-4 position-relative">
+                                        <div class="form-floating">
+                                            <input type="password" id="passconf" name="passconf" class="form-control pe-5" placeholder="Confirmar Contraseña" required />
+                                            <label for="passconf">Confirmar Contraseña</label>
+                                        </div>
+                                        <button type="button" class="btn btn-link text-muted position-absolute top-50 end-0 translate-middle-y me-3 p-0 border-0 shadow-none" onclick="togglePassword('passconf', this)" tabindex="-1" style="z-index: 10;">
+                                            <i class="fas fa-eye fs-5"></i>
+                                        </button>
                                     </div>
 
                                     <!-- Submit button -->
@@ -88,14 +94,6 @@
                                         <button type="submit" class="btn btn-custom-nav py-2">
                                             Crear Cuenta
                                         </button>
-                                    </div>
-
-                                    <!-- Register buttons -->
-                                    <div class="text-center mb-4">
-                                        <p class="mb-2">o regístrate con:</p>
-                                        <a href="<?= base_url('auth/google') ?>" class="btn btn-outline-danger btn-floating mx-1 btn-custom-back rounded-circle" style="width: 40px; height: 40px; display: inline-flex; align-items: center; justify-content: center; padding: 0;">
-                                            <i class="fab fa-google"></i>
-                                        </a>
                                     </div>
                                     
                                     <div>
@@ -118,4 +116,20 @@
     </div>
 
 </div>
+<?= $this->endSection() ?>
+
+<?= $this->section('scripts') ?>
+<script>
+function togglePassword(inputId, btn) {
+    const input = document.getElementById(inputId);
+    const icon  = btn.querySelector('i');
+    if (input.type === 'password') {
+        input.type = 'text';
+        icon.classList.replace('fa-eye', 'fa-eye-slash');
+    } else {
+        input.type = 'password';
+        icon.classList.replace('fa-eye-slash', 'fa-eye');
+    }
+}
+</script>
 <?= $this->endSection() ?>

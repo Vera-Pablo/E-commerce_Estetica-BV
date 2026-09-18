@@ -100,19 +100,34 @@
                             <div class="carousel-item <?= $chunkIndex === 0 ? 'active' : '' ?>">
                                 <div class="row g-4 justify-content-center">
                                     <?php foreach ($chunk as $prod): ?>
-                                        <div class="col-6 col-md-4 col-lg-3">
-                                            <a href="<?= base_url('producto/' . esc($prod['id_producto'])) ?>" class="text-decoration-none text-dark">
-                                                <div class="card h-100 border-0 rounded-4 card-hover" style="box-shadow: 0px 10px 7px rgba(0, 0, 0, 0.26);">
+                                        <div class="col-12 col-sm-6 col-md-4 col-xl-3">
+                                            <div class="card h-100 border-0 rounded-4 card-hover position-relative" style="box-shadow: 0px 10px 7px rgba(0, 0, 0, 0.26);">
+                                                
+                                                <!-- Botón Favorito -->
+                                                <?php $isFavorito = isset($favoritosIds) && in_array($prod['id_producto'], $favoritosIds); ?>
+                                                <button type="button" 
+                                                        class="btn p-2 border-0 bg-transparent position-absolute top-0 end-0 m-2" 
+                                                        style="z-index: 10;"
+                                                        title="<?= $isFavorito ? 'Quitar de favoritos' : 'Agregar a favoritos' ?>"
+                                                        onclick="toggleFavorito(<?= $prod['id_producto'] ?>, this)">
+                                                    <i class="<?= $isFavorito ? 'fas' : 'far' ?> fa-heart fs-4 text-danger"></i>
+                                                </button>
+
+                                                <a href="<?= base_url('producto/' . esc($prod['id_producto'])) ?>" class="text-decoration-none text-dark">
                                                     <img src="<?= esc(cloudinary_thumb($prod['imagen'] ?? null)) ?>" 
-                                                         class="card-img-top product-img bg-light" 
+                                                         class="card-img-top product-img bg-light rounded-top-4" 
                                                          alt="Imagen de <?= esc($prod['nombre_producto']) ?>" 
-                                                         loading="lazy" decoding="async" width="100%" height="250">
+                                                         loading="lazy" decoding="async" width="100%" height="250" style="object-fit: cover;">
                                                     <div class="card-body text-center p-4 d-flex flex-column justify-content-between">
-                                                        <h5 class="card-title font-spartan fw-bold mb-3 text-truncate"><?= esc($prod['nombre_producto']) ?></h5>
-                                                        <p class="card-text text-dark fw-bold fs-5 mb-0">$ <?= number_format((float)$prod['precio'], 2, ',', '.') ?></p>
+                                                        <h5 class="card-title font-spartan fw-bold mb-3 text-truncate" title="<?= esc($prod['nombre_producto']) ?>">
+                                                            <?= esc($prod['nombre_producto']) ?>
+                                                        </h5>
+                                                        <p class="card-text text-dark fw-bold fs-5 mb-0">
+                                                            $ <?= number_format((float)$prod['precio'], 2, ',', '.') ?>
+                                                        </p>
                                                     </div>
-                                                </div>
-                                            </a>
+                                                </a>
+                                            </div>
                                         </div>
                                     <?php endforeach; ?>
                                 </div>

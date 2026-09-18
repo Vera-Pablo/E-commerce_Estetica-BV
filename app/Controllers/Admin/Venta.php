@@ -135,6 +135,10 @@ class Venta extends BaseController
             return redirect()->back()->with('error', 'Venta no encontrada.');
         }
 
+        if ((int)$venta['id_estado_venta'] === 4) {
+            return redirect()->back()->with('error', 'Esta venta ya figura como "Entregado" y su estado no puede modificarse.');
+        }
+
         $estadoModel = new EstadoVentaModel();
         $estado = $estadoModel->find($idEstadoVenta);
 

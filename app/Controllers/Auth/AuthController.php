@@ -87,15 +87,54 @@ class AuthController extends BaseController
     public function registroProcess()
     {
         $rules = [
-            'dni'             => 'required|integer|exact_length[8]|is_unique[usuario.dni]',
-            'apellido_nombre' => 'required|min_length[3]|max_length[255]',
-            'email'           => 'required|valid_email|is_unique[usuario.email]',
-            'telefono'        => 'permit_empty|max_length[20]',
-            'password'        => 'required|min_length[8]',
+            'dni' => [
+                'rules'  => 'required|numeric|exact_length[8]|is_unique[usuario.dni]',
+                'errors' => [
+                    'required'     => 'El DNI es obligatorio.',
+                    'numeric'      => 'El DNI debe contener únicamente números.',
+                    'exact_length' => 'El DNI debe tener exactamente 8 dígitos.',
+                    'is_unique'    => 'El DNI ya se encuentra registrado.',
+                ],
+            ],
+            'apellido_nombre' => [
+                'rules'  => 'required|min_length[3]|max_length[255]',
+                'errors' => [
+                    'required'   => 'El Apellido y Nombre es obligatorio.',
+                    'min_length' => 'El nombre debe tener al menos 3 caracteres.',
+                ],
+            ],
+            'email' => [
+                'rules'  => 'required|valid_email|is_unique[usuario.email]',
+                'errors' => [
+                    'required'    => 'El correo electrónico es obligatorio.',
+                    'valid_email' => 'Debes ingresar un correo electrónico válido.',
+                    'is_unique'   => 'El correo electrónico ya se encuentra registrado.',
+                ],
+            ],
+            'telefono' => [
+                'rules'  => 'permit_empty|max_length[20]',
+                'errors' => [
+                    'max_length' => 'El teléfono no puede superar los 20 caracteres.',
+                ],
+            ],
+            'password' => [
+                'rules'  => 'required|min_length[8]',
+                'errors' => [
+                    'required'   => 'La contraseña es obligatoria.',
+                    'min_length' => 'La contraseña debe tener al menos 8 caracteres.',
+                ],
+            ],
+            'passconf' => [
+                'rules'  => 'required|matches[password]',
+                'errors' => [
+                    'required' => 'Debes confirmar la contraseña.',
+                    'matches'  => 'Las contraseñas no coinciden.',
+                ],
+            ],
         ];
 
         if (!$this->validate($rules)) {
-            return redirect()->back()->withInput()->with('errors', $this->validator->getErrors())->with('error', 'Ocurrió un error en la validación.');
+            return redirect()->back()->withInput()->with('errors', $this->validator->getErrors())->with('error', 'Por favor corrige los errores en el formulario.');
         }
 
         $dni            = $this->request->getPost('dni');
@@ -227,93 +266,10 @@ class AuthController extends BaseController
         return redirect()->to('/login')->with('success', 'Contraseña actualizada correctamente');
     }
 
-    public function googleAuth()
-    {
-        $clientId = getenv('GOOGLE_CLIENT_ID') ?: ($_ENV['GOOGLE_CLIENT_ID'] ?? null);
-
-        if (empty($clientId) || $this->request->getGet('mock') === '1') {
-            return redirect()->to(site_url('auth/google/callback?code=mock_google_code'));
-        }
-
-        $redirectUri = site_url('auth/google/callback');
-        $state       = bin2hex(random_bytes(16));
-        session()->set('oauth_state', $state);
-
-        $authUrl = 'https://accounts.google.com/o/oauth2/v2/auth?' . http_build_query([
-            'client_id'     => $clientId,
-            'redirect_uri'  => $redirectUri,
-            'response_type' => 'code',
-            'scope'         => 'openid email profile',
-            'state'         => $state,
-        ]);
-
-        return redirect()->to($authUrl);
-    }
-
-    public function googleCallback()
-    {
-        $code = $this->request->getGet('code');
-
-        if (empty($code)) {
-            return redirect()->to('/login')->with('error', 'Error al autenticar con Google.');
-        }
-
-        $googleEmail = 'usuario.google@gmail.com';
-        $googleName  = 'Usuario Google';
-
-        if ($code !== 'mock_google_code') {
-            $googleEmail = $this->request->getGet('email') ?: $googleEmail;
-            $googleName  = $this->request->getGet('name') ?: $googleName;
-        }
-
-        $user = $this->usuarioModel->where('email', $googleEmail)->first();
-
-        if (!$user) {
-            $generatedDni = $this->generateUniqueDni();
-
-            $newUserData = [
-                'dni'             => $generatedDni,
-                'apellido_nombre' => $googleName,
-                'email'           => $googleEmail,
-                'password'        => password_hash(bin2hex(random_bytes(16)), PASSWORD_BCRYPT),
-                'telefono'        => null,
-                'estado_usuario'  => 1,
-                'id_rol'          => 2,
-            ];
-
-            $userId = $this->usuarioModel->insert($newUserData);
-            $user   = $this->usuarioModel->find($userId);
-        } elseif ((int) $user['estado_usuario'] === 0) {
-            $this->usuarioModel->update($user['id_usuario'], ['estado_usuario' => 1]);
-            $user['estado_usuario'] = 1;
-        }
-
-        session()->set([
-            'id_usuario'      => (int) $user['id_usuario'],
-            'dni'             => $user['dni'],
-            'apellido_nombre' => $user['apellido_nombre'],
-            'email'           => $user['email'],
-            'id_rol'          => (int) $user['id_rol'],
-            'isLoggedIn'      => true,
-        ]);
-
-        return redirect()->to('/')->with('success', '¡Sesión iniciada con Google correctamente!');
-    }
-
     public function logout()
     {
         session()->destroy();
         return redirect()->to('/')->with('success', 'Sesión Cerrada');
-    }
-
-    private function generateUniqueDni(): int
-    {
-        do {
-            $dni = mt_rand(80000000, 89999999);
-            $exists = $this->usuarioModel->where('dni', $dni)->first();
-        } while ($exists);
-
-        return $dni;
     }
 
     private function renderFallbackPage(string $title, string $subtitle)

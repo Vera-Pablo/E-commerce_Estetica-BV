@@ -66,7 +66,7 @@
     <?= $this->include('Layouts/admin/sidebar') ?>
 
     <!-- Contenido Principal -->
-    <main class="flex-grow-1 p-4" style="height: 100vh; overflow-y: auto;">
+    <main class="flex-grow-1 p-0 p-md-4" style="height: 100vh; overflow-y: auto; overflow-x: hidden; min-width: 0; flex-shrink: 1 !important;">
         <?= $this->renderSection('content') ?>
     </main>
 

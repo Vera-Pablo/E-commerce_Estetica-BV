@@ -53,9 +53,14 @@
                                     </div>
 
                                     <!-- Password input -->
-                                    <div class="form-floating mb-4">
-                                        <input type="password" id="password" name="password" class="form-control" placeholder="Contraseña" required />
-                                        <label for="password">Contraseña</label>
+                                    <div class="mb-4 position-relative">
+                                        <div class="form-floating">
+                                            <input type="password" id="password" name="password" class="form-control pe-5" placeholder="Contraseña" required />
+                                            <label for="password">Contraseña</label>
+                                        </div>
+                                        <button type="button" class="btn btn-link text-muted position-absolute top-50 end-0 translate-middle-y me-3 p-0 border-0 shadow-none" onclick="togglePassword('password', this)" tabindex="-1" style="z-index: 10;">
+                                            <i class="fas fa-eye fs-5"></i>
+                                        </button>
                                     </div>
 
                                     <!-- Submit button -->
@@ -63,14 +68,6 @@
                                         <button type="submit" class="btn btn-custom-nav py-2">
                                             Acceder
                                         </button>
-                                    </div>
-
-                                    <!-- Register buttons -->
-                                    <div class="text-center mb-4">
-                                        <p class="mb-2">o inicia sesión con:</p>
-                                        <a href="<?= base_url('auth/google') ?>" class="btn btn-outline-danger btn-floating mx-1 btn-custom-back rounded-circle" style="width: 40px; height: 40px; display: inline-flex; align-items: center; justify-content: center; padding: 0;">
-                                            <i class="fab fa-google"></i>
-                                        </a>
                                     </div>
                                     
                                     <div class="d-flex justify-content-between flex-wrap gap-2 mb-4">
@@ -98,4 +95,20 @@
     </div>
 
 </div>
+<?= $this->endSection() ?>
+
+<?= $this->section('scripts') ?>
+<script>
+function togglePassword(inputId, btn) {
+    const input = document.getElementById(inputId);
+    const icon  = btn.querySelector('i');
+    if (input.type === 'password') {
+        input.type = 'text';
+        icon.classList.replace('fa-eye', 'fa-eye-slash');
+    } else {
+        input.type = 'password';
+        icon.classList.replace('fa-eye-slash', 'fa-eye');
+    }
+}
+</script>
 <?= $this->endSection() ?>
