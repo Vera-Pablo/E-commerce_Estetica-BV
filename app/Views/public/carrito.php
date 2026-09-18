@@ -145,7 +145,7 @@ $total = $total ?? 0;
                         </div>
 
                         <!-- Botón Continuar -->
-                        <a href="<?= base_url('carrito/checkout') ?>" class="btn btn-custom-nav btn-lg w-100">
+                        <a href="<?= base_url('carrito/checkout') ?>" class="btn btn-custom-nav btn-lg w-100" id="btn-continuar">
                             <i class="fas fa-arrow-right me-2"></i>Continuar
                         </a>
 
@@ -222,14 +222,20 @@ $total = $total ?? 0;
     }
 
     // ---- ACTUALIZAR CANTIDAD ----
+    let updateTimers = {};
+    let isUpdating = false;
+    let pendingUpdates = 0;
+
     document.querySelectorAll('.input-cantidad').forEach(input => {
-        let timer;
         input.addEventListener('change', function () {
-            clearTimeout(timer);
             const idProducto   = this.dataset.id;
             const nuevaCantidad = parseInt(this.value, 10);
 
-            timer = setTimeout(async () => {
+            if (updateTimers[idProducto]) clearTimeout(updateTimers[idProducto]);
+            
+            pendingUpdates++;
+            updateTimers[idProducto] = setTimeout(async () => {
+                isUpdating = true;
                 try {
                     const data = await postJSON(urlActualizar, {
                         id_producto:   idProducto,
@@ -238,10 +244,7 @@ $total = $total ?? 0;
 
                     if (!data.ok) {
                         ToastHelper.show('error', data.message || 'Error al actualizar.');
-                        return;
-                    }
-
-                    if (data.eliminado) {
+                    } else if (data.eliminado) {
                         const card = document.getElementById(`item-${idProducto}`);
                         if (card) eliminarCardConAnimacion(card);
                         if (data.carritoVacio) mostrarVacio();
@@ -257,14 +260,39 @@ $total = $total ?? 0;
                         }
                     }
 
-                    actualizarResumen(data.total, data.totalItems);
+                    if (data && data.ok) {
+                        actualizarResumen(data.total, data.totalItems);
+                    }
                 } catch (e) {
                     ToastHelper.show('error', 'Error al actualizar la cantidad.');
                     console.error(e);
+                } finally {
+                    isUpdating = false;
+                    pendingUpdates--;
                 }
             }, 400);
         });
     });
+
+    // ---- INTERCEPTAR CONTINUAR ----
+    const btnContinuar = document.getElementById('btn-continuar');
+    if (btnContinuar) {
+        btnContinuar.addEventListener('click', function(e) {
+            if (pendingUpdates > 0 || isUpdating) {
+                e.preventDefault();
+                const originalText = btnContinuar.innerHTML;
+                btnContinuar.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Actualizando...';
+                btnContinuar.classList.add('disabled');
+                
+                const checkInterval = setInterval(() => {
+                    if (pendingUpdates === 0 && !isUpdating) {
+                        clearInterval(checkInterval);
+                        window.location.href = this.href;
+                    }
+                }, 100);
+            }
+        });
+    }
 
     // ---- ELIMINAR PRODUCTO ----
     document.querySelectorAll('.btn-eliminar').forEach(btn => {

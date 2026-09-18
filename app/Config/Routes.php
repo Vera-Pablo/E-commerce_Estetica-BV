@@ -42,6 +42,10 @@ $routes->get('mis-compras', 'MisCompras::index', ['filter' => 'customer']);
 $routes->get('mis-compras/detalle/(:num)', 'MisCompras::detalle/$1', ['filter' => 'customer']);
 $routes->get('mis-compras/descargar-recibo/(:num)', 'MisCompras::descargarRecibo/$1', ['filter' => 'customer']);
 
+// Favoritos (requiere sesión de cliente)
+$routes->get('mis-favoritos', 'FavoritoController::index', ['filter' => 'customer']);
+$routes->post('favorito/toggle', 'FavoritoController::toggle', ['filter' => 'customer']);
+
 $routes->get('consultas', 'Home::consultas');
 $routes->post('consultas/enviar', 'Home::enviarConsulta');
 

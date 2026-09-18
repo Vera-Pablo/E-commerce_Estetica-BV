@@ -69,6 +69,44 @@
     <script src="<?= base_url('assets/js/toast.js?v=' . @filemtime(FCPATH . 'assets/js/toast.js')) ?>"></script>
     <!-- Instant Page Prefetch Fallback -->
     <script src="<?= base_url('assets/js/instantpage.js') ?>" type="module" defer></script>
+    
+    <script>
+    async function toggleFavorito(idProducto, btn) {
+        <?php if(!session()->get('isLoggedIn')): ?>
+            window.location.href = '<?= base_url('login') ?>';
+            return;
+        <?php else: ?>
+        const icon = btn.querySelector('i.fa-heart');
+        try {
+            const res = await fetch('<?= base_url('favorito/toggle') ?>', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams({ 'id_producto': idProducto })
+            });
+            if (res.ok) {
+                const data = await res.json();
+                if (data.status === 'added') {
+                    icon.classList.remove('far');
+                    icon.classList.add('fas');
+                    btn.title = 'Quitar de favoritos';
+                    if (typeof ToastHelper !== 'undefined') ToastHelper.show('success', 'Añadido a favoritos');
+                } else if (data.status === 'removed') {
+                    icon.classList.remove('fas');
+                    icon.classList.add('far');
+                    btn.title = 'Agregar a favoritos';
+                    if (typeof ToastHelper !== 'undefined') ToastHelper.show('success', 'Removido de favoritos');
+                }
+            } else {
+                if (typeof ToastHelper !== 'undefined') ToastHelper.show('error', 'Error al actualizar favoritos');
+            }
+        } catch (e) {
+            console.error(e);
+            if (typeof ToastHelper !== 'undefined') ToastHelper.show('error', 'Error de conexión');
+        }
+        <?php endif; ?>
+    }
+    </script>
+
     <?= $this->renderSection('scripts') ?>
 </body>
 </html>

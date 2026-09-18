@@ -56,18 +56,29 @@
             <?php else: ?>
                 <?php foreach ($productos as $prod): ?>
                     <div class="col-12 col-sm-6 col-md-4 col-xl-3">
-                        <a href="<?= base_url('producto/' . esc($prod['id_producto'])) ?>" class="text-decoration-none text-dark">
-                            <div class="card h-100 border-0 rounded-4 card-hover" style="box-shadow: 0px 10px 7px rgba(0, 0, 0, 0.26);">
+                        <div class="card h-100 border-0 rounded-4 card-hover position-relative" style="box-shadow: 0px 10px 7px rgba(0, 0, 0, 0.26);">
+                            
+                            <!-- Botón Favorito -->
+                            <?php $isFavorito = isset($favoritosIds) && in_array($prod['id_producto'], $favoritosIds); ?>
+                            <button type="button" 
+                                    class="btn p-2 border-0 bg-transparent position-absolute top-0 end-0 m-2" 
+                                    style="z-index: 10;"
+                                    title="<?= $isFavorito ? 'Quitar de favoritos' : 'Agregar a favoritos' ?>"
+                                    onclick="toggleFavorito(<?= $prod['id_producto'] ?>, this)">
+                                <i class="<?= $isFavorito ? 'fas' : 'far' ?> fa-heart fs-4 text-danger"></i>
+                            </button>
+
+                            <a href="<?= base_url('producto/' . esc($prod['id_producto'])) ?>" class="text-decoration-none text-dark">
                                 <img src="<?= esc(cloudinary_thumb($prod['imagen'] ?? null)) ?>" 
-                                     class="card-img-top product-img bg-light" 
+                                     class="card-img-top product-img bg-light rounded-top-4" 
                                      alt="Imagen de <?= esc($prod['nombre_producto']) ?>" 
-                                     loading="lazy" decoding="async" width="100%" height="250">
+                                     loading="lazy" decoding="async" width="100%" height="250" style="object-fit: cover;">
                                 <div class="card-body text-center p-4 d-flex flex-column justify-content-between">
                                     <h5 class="card-title font-spartan fw-bold mb-3"><?= esc($prod['nombre_producto']) ?></h5>
                                     <p class="card-text text-dark fw-bold fs-5 mb-0">$ <?= number_format((float)$prod['precio'], 2, ',', '.') ?></p>
                                 </div>
-                            </div>
-                        </a>
+                            </a>
+                        </div>
                     </div>
                 <?php endforeach; ?>
             <?php endif; ?>
@@ -87,7 +98,18 @@ document.addEventListener('DOMContentLoaded', function() {
     const grid = document.getElementById('productos-grid');
     const urlFiltrar = '<?= base_url('catalogo/filtrar') ?>';
     const urlProductoBase = '<?= base_url('producto') ?>';
+    const favoritosIds = <?= json_encode($favoritosIds ?? []) ?>;
     
+    // Función para escapar HTML básico y prevenir XSS
+    const escapeHtml = (unsafe) => {
+        return (unsafe || '').toString()
+             .replace(/&/g, "&amp;")
+             .replace(/</g, "&lt;")
+             .replace(/>/g, "&gt;")
+             .replace(/"/g, "&quot;")
+             .replace(/'/g, "&#039;");
+    };
+
     // Variables para debounce en búsqueda
     let timeoutId;
 
@@ -151,41 +173,32 @@ document.addEventListener('DOMContentLoaded', function() {
             const col = document.createElement('div');
             col.className = 'col-12 col-sm-6 col-md-4 col-xl-3';
 
-            const a = document.createElement('a');
-            a.href = `${urlProductoBase}/${prod.id_producto}`;
-            a.className = 'text-decoration-none text-dark';
-
-            const card = document.createElement('div');
-            card.className = 'card h-100 border-0 rounded-4 card-hover';
-            card.style.boxShadow = '0px 10px 7px rgba(0, 0, 0, 0.26)';
-
-            const img = document.createElement('img');
-            img.src = prod.imagen;
-            img.className = 'card-img-top product-img bg-light';
-            img.alt = `Imagen de ${prod.nombre_producto}`;
-            img.loading = 'lazy';
-            img.decoding = 'async';
+            const isFav = favoritosIds.includes(parseInt(prod.id_producto)) || favoritosIds.includes(prod.id_producto.toString());
+            const heartIcon = isFav ? 'fas text-danger' : 'far text-danger';
+            const titleFav = isFav ? 'Quitar de favoritos' : 'Agregar a favoritos';
+            const price = parseFloat(prod.precio).toLocaleString('es-AR', {minimumFractionDigits: 2});
             
-            const cardBody = document.createElement('div');
-            cardBody.className = 'card-body text-center p-4 d-flex flex-column justify-content-between';
-
-            const h5 = document.createElement('h5');
-            h5.className = 'card-title font-spartan fw-bold mb-3';
-            h5.textContent = prod.nombre_producto; // Uso seguro contra XSS
-
-            const p = document.createElement('p');
-            p.className = 'card-text text-primary fw-bold fs-5 mb-0';
-            p.textContent = `$ ${formatPrice(prod.precio)}`; // Uso seguro
-
-            cardBody.appendChild(h5);
-            cardBody.appendChild(p);
-
-            card.appendChild(img);
-            card.appendChild(cardBody);
-            
-            a.appendChild(card);
-            col.appendChild(a);
-
+            col.innerHTML = `
+                <div class="card h-100 border-0 rounded-4 card-hover position-relative" style="box-shadow: 0px 10px 7px rgba(0, 0, 0, 0.26);">
+                    <button type="button" 
+                            class="btn p-2 border-0 bg-transparent position-absolute top-0 end-0 m-2" 
+                            style="z-index: 10;"
+                            title="${titleFav}"
+                            onclick="toggleFavorito(${prod.id_producto}, this)">
+                        <i class="${heartIcon} fa-heart fs-4"></i>
+                    </button>
+                    <a href="${urlProductoBase}/${prod.id_producto}" class="text-decoration-none text-dark">
+                        <img src="${prod.imagen}" 
+                             class="card-img-top product-img bg-light rounded-top-4" 
+                             alt="Imagen" 
+                             loading="lazy" decoding="async" style="height: 250px; object-fit: cover;">
+                        <div class="card-body text-center p-4 d-flex flex-column justify-content-between">
+                            <h5 class="card-title font-spartan fw-bold mb-3">${escapeHtml(prod.nombre_producto)}</h5>
+                            <p class="card-text text-dark fw-bold fs-5 mb-0">$ ${price}</p>
+                        </div>
+                    </a>
+                </div>
+            `;
             grid.appendChild(col);
         });
     };

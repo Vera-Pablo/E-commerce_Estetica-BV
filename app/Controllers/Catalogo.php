@@ -25,10 +25,18 @@ class Catalogo extends BaseController
             ->where('categoria.estado_categoria', 1)
             ->findAll();
 
+        $favoritosIds = [];
+        if (session()->get('isLoggedIn')) {
+            $favoritoModel = new \App\Models\FavoritoModel();
+            $favs = $favoritoModel->where('id_usuario', session()->get('id_usuario'))->findAll();
+            $favoritosIds = array_column($favs, 'id_producto');
+        }
+
         return view('public/catalogo', [
-            'title'      => 'Catálogo de Productos - Estética BV',
-            'productos'  => $productos,
-            'categorias' => $categorias,
+            'title'        => 'Catálogo de Productos - Estética BV',
+            'productos'    => $productos,
+            'categorias'   => $categorias,
+            'favoritosIds' => $favoritosIds,
         ]);
     }
 
@@ -97,10 +105,18 @@ class Catalogo extends BaseController
             12
         );
 
+        $favoritosIds = [];
+        if (session()->get('isLoggedIn')) {
+            $favoritoModel = new \App\Models\FavoritoModel();
+            $favs = $favoritoModel->where('id_usuario', session()->get('id_usuario'))->findAll();
+            $favoritosIds = array_column($favs, 'id_producto');
+        }
+
         return view('public/detalle_producto', [
             'title'               => esc($producto['nombre_producto']) . ' - Estética BV',
             'producto'            => $producto,
             'productos_similares' => $productosSimilares,
+            'favoritosIds'        => $favoritosIds,
         ]);
     }
 }

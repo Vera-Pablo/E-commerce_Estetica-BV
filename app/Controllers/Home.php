@@ -19,10 +19,18 @@ class Home extends BaseController
             ? json_decode(file_get_contents($bannersPath), true) ?? $this->bannersDefault()
             : $this->bannersDefault();
 
+        $favoritosIds = [];
+        if (session()->get('isLoggedIn')) {
+            $favoritoModel = new \App\Models\FavoritoModel();
+            $favs = $favoritoModel->where('id_usuario', session()->get('id_usuario'))->findAll();
+            $favoritosIds = array_column($favs, 'id_producto');
+        }
+
         return view('home', [
             'title'                => 'Estética BV - Inicio',
             'banners'              => $banners,
             'productos_destacados' => $productoModel->getProductosAleatorios(12),
+            'favoritosIds'         => $favoritosIds,
         ]);
     }
 

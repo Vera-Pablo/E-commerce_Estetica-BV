@@ -1,7 +1,7 @@
 <!-- Main Navigation & Hero Carousel -->
-<header>
+<header class="sticky-top" style="z-index: 1030;">
   <!-- Navbar -->
-  <nav class="navbar navbar-expand-lg navbar-dark navbar-custom sticky-top">
+  <nav class="navbar navbar-expand-lg navbar-dark navbar-custom">
     <div class="container-fluid px-lg-4">
       <!-- Navbar Brand / Logo -->
       <a class="navbar-brand d-flex align-items-center me-3" href="<?= base_url('/') ?>">
@@ -90,7 +90,7 @@
           </li>
           <!-- Favoritos -->
           <li class="nav-item">
-            <a class="nav-link position-relative px-2" href="<?= base_url('favoritos') ?>" title="Mis Favoritos">
+            <a class="nav-link position-relative px-2" href="<?= base_url('mis-favoritos') ?>" title="Mis Favoritos">
               <i class="fas fa-heart fa-lg"></i>
             </a>
           </li>

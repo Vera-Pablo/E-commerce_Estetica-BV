@@ -200,5 +200,12 @@ h1, h2, h3, h4, h5, h6, .fw-bold, .font-spartan {
     z-index: 999999 !important;
 }
 
+/* Ocultar revelador/ojo de contraseña nativo de navegadores (Edge/IE) */
+input::-ms-reveal,
+input::-ms-clear {
+    display: none !important;
+}
+
+
 
 

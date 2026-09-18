@@ -21,8 +21,12 @@ class EstadoVentaSeeder extends Seeder
                 'id_estado_venta' => 3,
                 'nombre_estado'   => 'Listo para retirar/enviar',
             ],
+            [
+                'id_estado_venta' => 4,
+                'nombre_estado'   => 'Entregado',
+            ],
         ];
 
-        $this->db->table('estado_venta')->insertBatch($data);
+        $this->db->table('estado_venta')->ignore(true)->insertBatch($data);
     }
 }
