@@ -53,5 +53,20 @@ abstract class BaseController extends Controller
 
         // Preload any models, libraries, etc, here.
         // $this->session = \Config\Services::session();
+
+        // --- Sincronizar carrito desde cookie (persistencia de 7 días tras logout) ---
+        // Solo restaurar si el usuario está autenticado (no mostrar carrito sin sesión)
+        if (session()->get('isLoggedIn')) {
+            $carrito = session()->get('carrito');
+            if (!is_array($carrito)) {
+                $cookieCarrito = $this->request->getCookie('carrito_backup');
+                if ($cookieCarrito) {
+                    $decodificado = json_decode(rawurldecode($cookieCarrito), true);
+                    if (is_array($decodificado)) {
+                        session()->set('carrito', $decodificado);
+                    }
+                }
+            }
+        }
     }
 }

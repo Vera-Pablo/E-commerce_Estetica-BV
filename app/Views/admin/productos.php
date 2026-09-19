@@ -184,7 +184,7 @@
         function abrirModalCrear() {
             // Resetear el formulario para el modo creación
             form.action = urlGuardar;
-            modalTitle.innerHTML = '<i class="fas fa-plus-circle text-primary me-2"></i>Nuevo Producto';
+            modalTitle.innerHTML = '<i class="fas fa-plus-circle text-dark me-2"></i>Nuevo Producto';
             
             inputNombre.value = '';
             inputCategoria.value = '';
@@ -200,7 +200,7 @@
         function abrirModalEditar(prod) {
             // Configurar el formulario para el modo edición
             form.action = urlEditarBase + prod.id_producto;
-            modalTitle.innerHTML = '<i class="fas fa-edit text-warning me-2"></i>Editar Producto';
+            modalTitle.innerHTML = '<i class="fas fa-edit text-dark me-2"></i>Editar Producto';
             
             inputNombre.value = prod.nombre_producto || '';
             inputCategoria.value = prod.id_categoria || '';
