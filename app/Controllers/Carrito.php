@@ -26,11 +26,23 @@ class Carrito extends BaseController
     // ----------------------------------------------------------------
 
     /**
-     * Lee el carrito de la sesión. Devuelve la estructura normalizada.
+     * Lee el carrito de la sesión o de la cookie (backup). Devuelve la estructura normalizada.
      */
     private function leerCarrito(): array
     {
         $carrito = session()->get('carrito');
+
+        // Si no está en sesión y el usuario está autenticado, intentar recuperar de la cookie
+        if (!is_array($carrito) && session()->get('isLoggedIn')) {
+            $cookieCarrito = $this->request->getCookie('carrito_backup');
+            if ($cookieCarrito) {
+                $decodificado = json_decode(rawurldecode($cookieCarrito), true);
+                if (is_array($decodificado)) {
+                    $carrito = $decodificado;
+                    session()->set('carrito', $carrito);
+                }
+            }
+        }
 
         if (!is_array($carrito) || !isset($carrito['timestamp'], $carrito['items'])) {
             return ['timestamp' => time(), 'items' => []];
@@ -40,11 +52,20 @@ class Carrito extends BaseController
     }
 
     /**
-     * Persiste el carrito en la sesión.
+     * Persiste el carrito en la sesión y en la cookie nativa para sobrevivir al cierre de sesión.
      */
     private function guardarCarrito(array $carrito): void
     {
         session()->set('carrito', $carrito);
+
+        // Usamos setrawcookie() nativo (independiente del Response de CI4)
+        // para que funcione tanto en respuestas HTML como JSON.
+        setrawcookie(
+            'carrito_backup',
+            rawurlencode(json_encode($carrito)),
+            time() + self::TTL,
+            '/'
+        );
     }
 
     /**
