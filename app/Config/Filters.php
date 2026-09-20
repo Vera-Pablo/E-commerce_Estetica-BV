@@ -48,7 +48,7 @@ class Filters extends BaseFilters
 
     public array $globals = [
         'before' => [
-            // Global before filters if needed
+            'csrf', // Valida token CSRF en todos los POST; tokens generados con csrf_field() en cada formulario
         ],
         'after' => [
             // Global after filters if needed

@@ -209,3 +209,34 @@ input::-ms-clear {
 
 
 
+
+/* =============================================================
+   Componentes reutilizables — migrado de vistas (auditoría B2)
+   ============================================================= */
+
+/* --- Card hover (admin panel y catálogo) --- */
+.card-hover { transition: transform 0.2s, box-shadow 0.2s; }
+.card-hover:hover { transform: translateY(-3px); box-shadow: 0 12px 24px rgba(0, 0, 0, 0.18) !important; }
+
+/* --- Ventas: card con borde de acento lateral por estado --- */
+.venta-card { cursor: pointer; }
+.venta-card .card-accent { width: 6px; border-radius: 12px 0 0 12px; flex-shrink: 0; }
+.accent-completado { background: linear-gradient(180deg, #198754, #20c997); }
+.accent-pendiente  { background: linear-gradient(180deg, #ffc107, #fd7e14); }
+.accent-cancelado  { background: linear-gradient(180deg, #dc3545, #c0392b); }
+.accent-default    { background: linear-gradient(180deg, #6c757d, #495057); }
+
+/* --- Recibo: solo visible en impresión --- */
+#recibo-print { display: none; }
+
+/* --- Auth: imagen superpuesta en desktop --- */
+.cascading-right { margin-right: -50px; }
+@media (max-width: 991.98px) { .cascading-right { margin-right: 0; } }
+
+/* --- Auth: sección centrada verticalmente --- */
+.auth-section {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 0;
+}

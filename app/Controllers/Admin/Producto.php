@@ -7,38 +7,45 @@ use App\Models\ProductoModel;
 use App\Models\CategoriaModel;
 
 class Producto extends BaseController{
-    public function index(){
-        $productoModel = new ProductoModel();
-        $categoriaModel = new CategoriaModel();
-        
+
+    protected ProductoModel $productoModel;
+    protected CategoriaModel $categoriaModel;
+
+    public function __construct(){
+        $this->productoModel = new ProductoModel();
+        $this->categoriaModel = new CategoriaModel();
+    }
+
+    // Muestra la lista de productos con opciones de búsqueda y filtrado.
+    public function index(){        
         $search = $this->request->getGet('search');
         $stockFilter = $this->request->getGet('stock_filter');
         
         // Cargar modelo con join si es necesario o podemos buscar solo en producto y hacer el join después, 
         // pero dado que ProductoModel es simple, podemos usar el query builder aquí
-        $productoModel->select('producto.*, categoria.nombre_categoria');
-        $productoModel->join('categoria', 'categoria.id_categoria = producto.id_categoria', 'left');
+        $this->productoModel->select('producto.*, categoria.nombre_categoria');
+        $this->productoModel->join('categoria', 'categoria.id_categoria = producto.id_categoria', 'left');
         
         if (!empty($search)) {
-            $productoModel->like('producto.nombre_producto', $search);
+            $this->productoModel->like('producto.nombre_producto', $search);
         }
         
         if ($stockFilter !== null && $stockFilter !== '') {
             if ($stockFilter === 'low') {
-                $productoModel->where('producto.stock <=', 5);
-                $productoModel->where('producto.stock >', 0);
+                $this->productoModel->where('producto.stock <=', 5);
+                $this->productoModel->where('producto.stock >', 0);
             } elseif ($stockFilter === 'out') {
-                $productoModel->where('producto.stock', 0);
+                $this->productoModel->where('producto.stock', 0);
             }
         }
         
-        $productos = $productoModel->findAll();
+        $productos = $this->productoModel->findAll();
         
         // Caché de categorías activas para evitar consultas repetidas a MySQL
         $cache = \Config\Services::cache();
         $categorias = $cache->get('categorias_activas_admin');
         if ($categorias === null) {
-            $categorias = $categoriaModel->where('estado_categoria', 1)->findAll();
+            $categorias = $this->categoriaModel->where('estado_categoria', 1)->findAll();
             // Guardar en caché por 1 hora (3600 segundos)
             $cache->save('categorias_activas_admin', $categorias, 3600);
         }
@@ -52,9 +59,8 @@ class Producto extends BaseController{
         ]);
     }
 
+    // Guarda un nuevo producto en la base de datos.
     public function guardar(){
-        $productoModel = new ProductoModel();
-        
         $data = [
             'nombre_producto'      => $this->request->getPost('nombre_producto'),
             'descripcion_producto' => $this->request->getPost('descripcion_producto'),
@@ -65,21 +71,16 @@ class Producto extends BaseController{
             'id_categoria'         => $this->request->getPost('id_categoria')
         ];
 
-        if ($productoModel->insert($data)) {
+        if ($this->productoModel->insert($data)) {
             return redirect()->to('admin/productos')->with('success', 'Producto creado con éxito.');
         } else {
-            $errors = implode('<br>', $productoModel->errors());
+            $errors = implode('<br>', $this->productoModel->errors());
             return redirect()->to('admin/productos')->with('error', $errors);
         }
     }
 
-    /**
-     * Edita un producto existente.
-     * Ruta: POST /admin/producto/editar/(:num)
-     * 
-     * @param int $id_producto
-     */
-    public function editar($id_producto){
+    // Edita un producto existente.
+    public function editar(int $id_producto){
         $productoModel = new ProductoModel();
         
         $data = [

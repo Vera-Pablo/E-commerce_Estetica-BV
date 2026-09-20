@@ -1,10 +1,5 @@
 <?= $this->extend('Layouts/admin/base_admin') ?>
-<?= $this->section('styles') ?>
-    <style>
-        .card-hover { transition: transform 0.2s, box-shadow 0.2s; }
-        .card-hover:hover { transform: translateY(-3px); box-shadow: 0px 12px 10px rgba(0, 0, 0, 0.35) !important; }
-    </style>
-<?= $this->endSection() ?>
+
 
 <?= $this->section('content') ?>
 <div class="container-fluid px-0 px-lg-4">

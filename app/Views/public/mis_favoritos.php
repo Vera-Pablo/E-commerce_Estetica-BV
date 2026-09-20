@@ -97,7 +97,10 @@ async function removerDesdeFavoritos(idProducto, btn) {
         const res = await fetch('<?= base_url('favorito/toggle') ?>', {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: new URLSearchParams({ 'id_producto': idProducto })
+            body: new URLSearchParams({
+                'id_producto': idProducto,
+                '<?= csrf_token() ?>': '<?= csrf_hash() ?>'
+            })
         });
         if (res.ok) {
             const data = await res.json();

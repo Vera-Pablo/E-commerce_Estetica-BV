@@ -6,7 +6,7 @@ use CodeIgniter\Router\RouteCollection;
  * @var RouteCollection $routes
  */
 
-// Public Auth Routes
+// Rutas públicas
 $routes->get('/', 'Home::index');
 $routes->get('quienes-somos', 'Home::quienesSomos');
 $routes->get('comercializacion', 'Home::comercializacion');
@@ -16,6 +16,10 @@ $routes->get('terminos-de-uso', 'Home::terminosDeUso');
 $routes->get('catalogo', 'Catalogo::index');
 $routes->get('catalogo/filtrar', 'Catalogo::filtrar');
 $routes->get('producto/(:num)', 'Catalogo::detalle/$1');
+
+$routes->get('consultas', 'Home::consultas');
+// A2: Movida fuera del grupo 'customer' para permitir que visitantes anónimos envíen consultas
+$routes->post('consultas/enviar', 'Home::enviarConsulta');
 
 $routes->get('login', 'Auth\AuthController::login');
 $routes->post('login', 'Auth\AuthController::loginProcess');
@@ -28,40 +32,40 @@ $routes->get('recuperar', 'Auth\AuthController::recuperar');
 $routes->post('recuperar', 'Auth\AuthController::recuperarProcess');
 $routes->get('recuperar/confirmar/(:any)', 'Auth\AuthController::confirmarRecuperacion/$1');
 
-$routes->get('auth/google', 'Auth\AuthController::googleAuth');
-$routes->get('auth/google/callback', 'Auth\AuthController::googleCallback');
+// A3: Google OAuth pendiente de implementación — comentado para evitar Error 500
+// $routes->get('auth/google', 'Auth\AuthController::googleAuth');
+// $routes->get('auth/google/callback', 'Auth\AuthController::googleCallback');
 
 $routes->get('logout', 'Auth\AuthController::logout');
 
-$routes->get('perfil', 'Perfil::index');
-$routes->post('perfil/actualizar', 'Perfil::actualizar');
-$routes->post('perfil/cambiar-password', 'Perfil::cambiarPassword');
+// Rutas de cliente (requiere sesión de cliente)
+$routes->group('', ['filter' => 'customer'], static function ($routes) {
+    $routes->get('perfil', 'Perfil::index');
+    $routes->post('perfil/actualizar', 'Perfil::actualizar');
+    $routes->post('perfil/cambiar-password', 'Perfil::cambiarPassword');
 
-// Mis Compras (requiere sesión de cliente)
-$routes->get('mis-compras', 'MisCompras::index', ['filter' => 'customer']);
-$routes->get('mis-compras/detalle/(:num)', 'MisCompras::detalle/$1', ['filter' => 'customer']);
-$routes->get('mis-compras/descargar-recibo/(:num)', 'MisCompras::descargarRecibo/$1', ['filter' => 'customer']);
+    $routes->get('mis-compras', 'MisCompras::index');
+    $routes->get('mis-compras/detalle/(:num)', 'MisCompras::detalle/$1');
+    $routes->get('mis-compras/descargar-recibo/(:num)', 'MisCompras::descargarRecibo/$1');
 
-// Favoritos (requiere sesión de cliente)
-$routes->get('mis-favoritos', 'FavoritoController::index', ['filter' => 'customer']);
-$routes->post('favorito/toggle', 'FavoritoController::toggle', ['filter' => 'customer']);
+    $routes->get('mis-favoritos', 'FavoritoController::index');
+    $routes->post('favorito/toggle', 'FavoritoController::toggle');
+    // A2: consultas/enviar fue movida a rutas públicas arriba
+});
 
-$routes->get('consultas', 'Home::consultas');
-$routes->post('consultas/enviar', 'Home::enviarConsulta');
-
-// Rutas de Carrito (protegidas con filtro 'cart')
+// A1: Aplicar filtro 'cart' al grupo completo — bloquea admins y visitantes anónimos
 $routes->group('carrito', ['filter' => 'cart'], static function ($routes) {
     $routes->get('/', 'Carrito::index');
     $routes->post('agregar', 'Carrito::agregar');
     $routes->post('actualizar', 'Carrito::actualizar');
     $routes->post('eliminar', 'Carrito::eliminar');
-    
+
     $routes->get('checkout', 'Carrito::checkout');
     $routes->post('checkout/procesar', 'Carrito::procesar');
     $routes->get('checkout/confirmacion/(:num)', 'Carrito::confirmacion/$1');
 });
 
-// Admin Protected Routes
+// Rutas de administrador (requiere sesión de administrador)
 $routes->group('admin', ['filter' => 'admin'], static function ($routes) {
     $routes->get('dashboard', 'Admin\Dashboard::index');
     $routes->get('designer', 'Admin\Designer::index');

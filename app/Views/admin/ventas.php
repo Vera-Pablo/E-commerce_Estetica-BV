@@ -1,26 +1,5 @@
 <?= $this->extend('Layouts/admin/base_admin') ?>
-<?= $this->section('styles') ?>
-    <style>
-        /* ——— Cards ——— */
-        .card-hover { transition: transform 0.2s, box-shadow 0.2s; }
-        .card-hover:hover { transform: translateY(-3px); box-shadow: 0 12px 24px rgba(0,0,0,.18) !important; }
-        .venta-card { cursor: pointer; }
 
-        /* ——— Canva-shadow stripe coloring ——— */
-        .venta-card .card-accent {
-            width: 6px;
-            border-radius: 12px 0 0 12px;
-            flex-shrink: 0;
-        }
-        .accent-completado { background: linear-gradient(180deg, #198754, #20c997); }
-        .accent-pendiente  { background: linear-gradient(180deg, #ffc107, #fd7e14); }
-        .accent-cancelado  { background: linear-gradient(180deg, #dc3545, #c0392b); }
-        .accent-default    { background: linear-gradient(180deg, #6c757d, #495057); }
-
-        /* ——— Recibo (solo print) ——— */
-        #recibo-print { display: none; }
-    </style>
-<?= $this->endSection() ?>
 
 <?= $this->section('content') ?>
 <div class="container-fluid px-0 px-lg-4">

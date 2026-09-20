@@ -1,16 +1,5 @@
 <?= $this->extend('Layouts/base') ?>
-<?= $this->section('styles') ?>
-    <style>
-        .cascading-right {
-            margin-right: -50px;
-        }
-        @media (max-width: 991.98px) {
-            .cascading-right {
-                margin-right: 0;
-            }
-        }
-    </style>
-<?= $this->endSection() ?>
+
 
 <?= $this->section('content') ?>
 <div class="d-flex align-items-center min-vh-100 py-4">
@@ -43,28 +32,28 @@
 
                                     <div class="mb-3">
                                         <div class="form-floating">
-                                            <input type="text" id="dni" name="dni" class="form-control" placeholder="DNI" value="<?= old('dni') ?>" maxlength="8" pattern="[0-9]{8}" inputmode="numeric" title="El DNI debe tener exactamente 8 números" required />
+                                            <input type="text" id="dni" name="dni" class="form-control" placeholder="DNI" value="<?= esc(old('dni')) ?>" maxlength="8" pattern="[0-9]{8}" inputmode="numeric" title="El DNI debe tener exactamente 8 números" required />
                                             <label for="dni">DNI</label>
                                         </div>
                                     </div>
 
                                     <div class="mb-3">
                                         <div class="form-floating">
-                                            <input type="text" id="apellido_nombre" name="apellido_nombre" class="form-control" placeholder="Apellido y Nombre" value="<?= old('apellido_nombre') ?>" required />
+                                            <input type="text" id="apellido_nombre" name="apellido_nombre" class="form-control" placeholder="Apellido y Nombre" value="<?= esc(old('apellido_nombre')) ?>" required />
                                             <label for="apellido_nombre">Apellido y Nombre</label>
                                         </div>
                                     </div>
 
                                     <div class="mb-3">
                                         <div class="form-floating">
-                                            <input type="email" id="email" name="email" class="form-control" placeholder="Email" value="<?= old('email') ?>" required />
+                                            <input type="email" id="email" name="email" class="form-control" placeholder="Email" value="<?= esc(old('email')) ?>" required />
                                             <label for="email">Correo Electrónico</label>
                                         </div>
                                     </div>
 
                                     <div class="mb-3">
                                         <div class="form-floating">
-                                            <input type="text" id="telefono" name="telefono" class="form-control" placeholder="Teléfono" value="<?= old('telefono') ?>" />
+                                            <input type="text" id="telefono" name="telefono" class="form-control" placeholder="Teléfono" value="<?= esc(old('telefono')) ?>" />
                                             <label for="telefono">Teléfono (Opcional)</label>
                                         </div>
                                     </div>

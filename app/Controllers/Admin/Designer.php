@@ -12,7 +12,7 @@ class Designer extends BaseController{
         $this->jsonPath = WRITEPATH . 'banners.json';
     }
 
-    /** GET /admin/designer */
+    //GET /admin/designer */
     public function index(): string{
         return view('admin/designer', [
             'title'   => 'Designer — Panel Admin',

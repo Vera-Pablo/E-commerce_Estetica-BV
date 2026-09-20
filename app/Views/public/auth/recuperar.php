@@ -1,16 +1,5 @@
 <?= $this->extend('Layouts/base') ?>
-<?= $this->section('styles') ?>
-    <style>
-        .cascading-right {
-            margin-right: -50px;
-        }
-        @media (max-width: 991.98px) {
-            .cascading-right {
-                margin-right: 0;
-            }
-        }
-    </style>
-<?= $this->endSection() ?>
+
 
 <?= $this->section('content') ?>
 <div class="d-flex align-items-center min-vh-100 py-4">
@@ -41,7 +30,7 @@
 
                                     <!-- Email input -->
                                     <div class="form-floating mb-4">
-                                        <input type="email" id="email" name="email" class="form-control" placeholder="nombre@ejemplo.com" value="<?= old('email') ?>" required />
+                                        <input type="email" id="email" name="email" class="form-control" placeholder="nombre@ejemplo.com" value="<?= esc(old('email')) ?>" required />
                                         <label for="email">Correo Electrónico</label>
                                     </div>
 
