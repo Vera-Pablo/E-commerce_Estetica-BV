@@ -4,10 +4,10 @@ namespace App\Controllers\Admin;
 
 use App\Controllers\BaseController;
 
-class Dashboard extends BaseController
-{
-    public function index()
-    {
+class Dashboard extends BaseController{
+
+    // Muestra el dashboard con gráficos y KPIs.
+    public function index(){
         $db = \Config\Database::connect();
 
         // Nombres de los meses en español para los labels
@@ -103,9 +103,9 @@ class Dashboard extends BaseController
 
         return view('admin/dashboard', [
             'title'            => 'Dashboard - Panel Admin',
-            'grafico_meses'    => json_encode($graficoMeses),
-            'grafico_metodos'  => json_encode($metodosPago),
-            'grafico_entregas' => json_encode($tiposEntrega),
+            'grafico_meses'    => json_encode($graficoMeses,  JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT),
+            'grafico_metodos'  => json_encode($metodosPago,   JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT),
+            'grafico_entregas' => json_encode($tiposEntrega,  JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT),
             'bajo_stock'       => (int)$bajoStock['cantidad'],
             'umbral_stock'     => $umbralStock,
             'usuarios_activos' => (int)$usuariosActivos['cantidad'],

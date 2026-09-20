@@ -5,14 +5,25 @@ namespace App\Controllers;
 use App\Models\ProductoModel;
 use App\Models\UsuarioModel;
 use App\Models\ConsultaModel;
+use App\Models\FavoritoModel;
 use App\Libraries\EmailService;
 
-class Home extends BaseController
-{
-    public function index()
-    {
-        $productoModel = new ProductoModel();
+class Home extends BaseController{
 
+    protected ProductoModel $productoModel;
+    protected UsuarioModel $usuarioModel;
+    protected ConsultaModel $consultaModel;
+    protected FavoritoModel $favoritoModel;
+
+    public function __construct(){
+        $this->productoModel = new ProductoModel();
+        $this->usuarioModel = new UsuarioModel();
+        $this->consultaModel = new ConsultaModel();
+        $this->favoritoModel = new FavoritoModel();
+    }
+
+    // Muestra la vista principal del sitio web con banners y productos destacados.
+    public function index(){
         // Banners desde JSON o fallback
         $bannersPath = WRITEPATH . 'banners.json';
         $banners     = file_exists($bannersPath)
@@ -21,21 +32,20 @@ class Home extends BaseController
 
         $favoritosIds = [];
         if (session()->get('isLoggedIn')) {
-            $favoritoModel = new \App\Models\FavoritoModel();
-            $favs = $favoritoModel->where('id_usuario', session()->get('id_usuario'))->findAll();
+            $favs = $this->favoritoModel->where('id_usuario', session()->get('id_usuario'))->findAll();
             $favoritosIds = array_column($favs, 'id_producto');
         }
 
         return view('home', [
             'title'                => 'Estética BV - Inicio',
             'banners'              => $banners,
-            'productos_destacados' => $productoModel->getProductosAleatorios(12),
+            'productos_destacados' => $this->productoModel->getProductosAleatorios(12),
             'favoritosIds'         => $favoritosIds,
         ]);
     }
 
-    private function bannersDefault(): array
-    {
+    // Devuelve un arreglo de banners por defecto en caso de que no exista el archivo JSON.
+    private function bannersDefault(): array{
         return [
             [
                 'imagen'               => null,
@@ -67,14 +77,13 @@ class Home extends BaseController
         ];
     }
 
-    public function consultas()
-    {
+    // Muestra la vista de consultas.
+    public function consultas(){
         $session = session();
         $usuario = null;
 
         if ($session->get('isLoggedIn')) {
-            $usuarioModel = new UsuarioModel();
-            $usuario = $usuarioModel->find($session->get('id_usuario'));
+            $usuario = $this->usuarioModel->find($session->get('id_usuario'));
         }
 
         return view('public/consultas', [
@@ -83,8 +92,8 @@ class Home extends BaseController
         ]);
     }
 
-    public function enviarConsulta()
-    {
+    // Endpoint para procesar el envío de consultas desde el formulario de contacto.
+    public function enviarConsulta(){
         $session = session();
 
         $rules = [
@@ -106,17 +115,15 @@ class Home extends BaseController
             'consulta'        => $this->request->getPost('consulta'),
         ];
 
-        $usuarioModel = new UsuarioModel();
-
         // Restringir el envío a administradores
         $emailPost = trim($data['email'] ?? '');
-        $esAdminEmail = $usuarioModel->where('email', $emailPost)->where('id_rol', 1)->first();
+        $esAdminEmail = $this->usuarioModel->where('email', $emailPost)->where('id_rol', 1)->first();
 
         if ($esAdminEmail || ($session->get('isLoggedIn') && (int)$session->get('id_rol') === 1)) {
             return redirect()->back()->withInput()->with('warning', 'Acción solo para clientes');
         }
 
-        $admin = $usuarioModel->where('id_rol', 1)->first();
+        $admin = $this->usuarioModel->where('id_rol', 1)->first();
         $adminEmail = $admin['email'] ?? 'admin@esteticabv.com';
 
         $sent = EmailService::sendConsultaEmail(
@@ -132,8 +139,7 @@ class Home extends BaseController
         }
 
         if ($session->get('isLoggedIn')) {
-            $consultaModel = new ConsultaModel();
-            $consultaModel->insert([
+            $this->consultaModel->insert([
                 'mensaje'        => $data['consulta'],
                 'fecha_consulta' => date('Y-m-d'),
                 'id_usuario'     => $session->get('id_usuario'),
@@ -143,26 +149,22 @@ class Home extends BaseController
         return redirect()->to('/')->with('success', 'Tu consulta ha sido enviada correctamente. Te responderemos a la brevedad.');
     }
 
-    public function quienesSomos()
-    {
+    public function quienesSomos(){
         $this->cachePage(60);
         return view('public/quienes_somos', ['title' => 'Quiénes Somos - Estética BV']);
     }
 
-    public function comercializacion()
-    {
+    public function comercializacion(){
         $this->cachePage(60);
         return view('public/comercializacion', ['title' => 'Comercialización - Estética BV']);
     }
 
-    public function contacto()
-    {
+    public function contacto(){
         $this->cachePage(60);
         return view('public/contacto', ['title' => 'Contacto - Estética BV']);
     }
 
-    public function terminosDeUso()
-    {
+    public function terminosDeUso(){
         $this->cachePage(60);
         return view('public/terminos_uso', ['title' => 'Términos de Uso - Estética BV']);
     }

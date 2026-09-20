@@ -5,20 +5,21 @@ namespace App\Controllers\Admin;
 use App\Controllers\BaseController;
 use App\Models\ConsultaModel;
 
-class Consulta extends BaseController
-{
-    /**
-     * Listado de consultas registradas con soporte de filtro por fecha y orden cronológico.
-     * Ruta: GET /admin/consultas
-     */
-    public function index()
-    {
-        $consultaModel = new ConsultaModel();
+class Consulta extends BaseController{
+
+    protected ConsultaModel $consultaModel;
+
+    public function __construct() {
+        $this->consultaModel = new ConsultaModel();
+    }
+
+    //Muestra la lista de consultas. Soporta búsqueda por fecha y ordenamiento.
+    public function index(){
 
         $fecha = $this->request->getGet('fecha');
         $orden = $this->request->getGet('orden') ?? 'desc';
 
-        $builder = $consultaModel->select('consulta.*, usuario.apellido_nombre, usuario.email, usuario.telefono, usuario.dni')
+        $builder = $this->consultaModel->select('consulta.*, usuario.apellido_nombre, usuario.email, usuario.telefono, usuario.dni')
                                  ->join('usuario', 'usuario.id_usuario = consulta.id_usuario', 'left');
 
         if (!empty($fecha)) {

@@ -8,15 +8,22 @@ use App\Models\VentaDetalleModel;
 use App\Models\EstadoVentaModel;
 use App\Models\MetodoPagoModel;
 
-class Venta extends BaseController
-{
-    /**
-     * Muestra el listado de ventas con datos relacionales.
-     * Soporta búsqueda por ID exacto, filtro por estado, método de pago y ordenamiento.
-     * Ruta: GET /admin/ventas
-     */
-    public function index()
-    {
+class Venta extends BaseController{
+
+    protected VentaModel $ventaModel;
+    protected VentaDetalleModel $ventaDetalleModel;
+    protected EstadoVentaModel $estadoVentaModel;
+    protected MetodoPagoModel $metodoPagoModel;
+
+    public function __construct(){
+        $this->ventaModel = new VentaModel();
+        $this->ventaDetalleModel = new VentaDetalleModel();
+        $this->estadoVentaModel = new EstadoVentaModel();
+        $this->metodoPagoModel = new MetodoPagoModel();
+    }
+
+    // Muestra la lista de ventas con filtros y búsqueda.
+    public function index(){
         $db = \Config\Database::connect();
 
         // Parámetros de búsqueda y filtro desde GET
@@ -57,11 +64,8 @@ class Venta extends BaseController
         $ventas = $builder->get()->getResultArray();
 
         // Cargar listas para los filtros del formulario
-        $estadoVentaModel = new EstadoVentaModel();
-        $metodoPagoModel  = new MetodoPagoModel();
-
-        $estados     = $estadoVentaModel->findAll();
-        $metodosPago = $metodoPagoModel->findAll();
+        $estados     = $this->estadoVentaModel->findAll();
+        $metodosPago = $this->metodoPagoModel->findAll();
 
         return view('admin/ventas', [
             'title'       => 'Administrar Ventas - Panel Admin',
@@ -75,15 +79,8 @@ class Venta extends BaseController
         ]);
     }
 
-    /**
-     * Devuelve el detalle completo de una venta en JSON (para el modal del recibo).
-     * Incluye los items del detalle con nombre del producto, cantidad, precio unitario y subtotal.
-     * Ruta: GET /admin/ventas/detalle/(:num)
-     *
-     * @param int $id_venta
-     */
-    public function detalle($id_venta)
-    {
+    // Muestra el detalle de una venta específica en formato JSON.
+    public function detalle(int $id_venta){
         $db = \Config\Database::connect();
 
         // Traer la venta con datos relacionales
@@ -115,12 +112,8 @@ class Venta extends BaseController
         ]);
     }
 
-    /**
-     * Cambia el estado de la venta y notifica al usuario.
-     * Ruta: POST /admin/ventas/cambiar-estado
-     */
-    public function cambiarEstado()
-    {
+    // Cambia el estado de una venta y notifica al cliente por email.
+    public function cambiarEstado(){
         $idVenta      = (int)$this->request->getPost('id_venta');
         $idEstadoVenta= (int)$this->request->getPost('id_estado_venta');
 
@@ -128,8 +121,7 @@ class Venta extends BaseController
             return redirect()->back()->with('error', 'Datos inválidos para actualizar el estado.');
         }
 
-        $ventaModel = new VentaModel();
-        $venta = $ventaModel->find($idVenta);
+        $venta = $this->ventaModel->find($idVenta);
 
         if (!$venta) {
             return redirect()->back()->with('error', 'Venta no encontrada.');
@@ -139,15 +131,14 @@ class Venta extends BaseController
             return redirect()->back()->with('error', 'Esta venta ya figura como "Entregado" y su estado no puede modificarse.');
         }
 
-        $estadoModel = new EstadoVentaModel();
-        $estado = $estadoModel->find($idEstadoVenta);
+        $estado = $this->estadoVentaModel->find($idEstadoVenta);
 
         if (!$estado) {
             return redirect()->back()->with('error', 'Estado no válido.');
         }
 
         // Actualizar el estado
-        $ventaModel->update($idVenta, ['id_estado_venta' => $idEstadoVenta]);
+        $this->ventaModel->update($idVenta, ['id_estado_venta' => $idEstadoVenta]);
 
         // Enviar notificación por email al usuario
         $db = \Config\Database::connect();
@@ -168,15 +159,8 @@ class Venta extends BaseController
         return redirect()->back()->with('success', "Estado actualizado correctamente a '{$estado['nombre_estado']}' y notificado al cliente.");
     }
 
-    /**
-     * Descarga el recibo en PDF para cualquier venta (Panel Admin).
-     * Ruta: GET /admin/ventas/descargar-recibo/(:num)
-     *
-     * @param int $id_venta
-     */
-    public function descargarRecibo($id_venta)
-    {
-        $id_venta = (int)$id_venta;
+    // Descarga el recibo de una venta en formato PDF.
+    public function descargarRecibo(int $id_venta){
         $db = \Config\Database::connect();
 
         $venta = $db->table('venta v')

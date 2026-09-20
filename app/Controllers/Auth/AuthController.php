@@ -7,17 +7,15 @@ use App\Libraries\EmailService;
 use App\Libraries\TokenService;
 use App\Models\UsuarioModel;
 
-class AuthController extends BaseController
-{
+class AuthController extends BaseController{
     protected UsuarioModel $usuarioModel;
 
-    public function __construct()
-    {
+    public function __construct(){
         $this->usuarioModel = new UsuarioModel();
     }
 
-    public function login()
-    {
+    // Muestra el formulario de login.
+    public function login(){
         if (session()->get('isLoggedIn')) {
             return session()->get('id_rol') == 1
                 ? redirect()->to('/admin/dashboard')
@@ -31,8 +29,8 @@ class AuthController extends BaseController
         return $this->renderFallbackPage('Iniciar Sesión', 'Formulario de Login');
     }
 
-    public function loginProcess()
-    {
+    // Procesa el login del usuario.
+    public function loginProcess(){
         $rules = [
             'email'    => 'required|valid_email',
             'password' => 'required',
@@ -71,8 +69,8 @@ class AuthController extends BaseController
         return redirect()->to('/')->with('success', 'Sesión iniciada correctamente');
     }
 
-    public function registro()
-    {
+    // Muestra el formulario de registro.
+    public function registro(){
         if (session()->get('isLoggedIn')) {
             return redirect()->to('/');
         }
@@ -84,8 +82,8 @@ class AuthController extends BaseController
         return $this->renderFallbackPage('Registro', 'Formulario de Registro');
     }
 
-    public function registroProcess()
-    {
+    // Procesa el registro del usuario y envía un correo de activación.
+    public function registroProcess(){
         $rules = [
             'dni' => [
                 'rules'  => 'required|numeric|exact_length[8]|is_unique[usuario.dni]',
@@ -170,8 +168,8 @@ class AuthController extends BaseController
         return redirect()->to('/login')->with('success', 'Registro exitoso. Se ha enviado un enlace de activación a tu correo electrónico.');
     }
 
-    public function validarEmail($token = null)
-    {
+    // Valida el token de activación y activa la cuenta del usuario.
+    public function validarEmail($token = null){
         if (empty($token)) {
             return redirect()->to('/login')->with('error', 'Token no proporcionado.');
         }
@@ -193,8 +191,8 @@ class AuthController extends BaseController
         return redirect()->to('/login')->with('success', '¡Cuenta activada con éxito!');
     }
 
-    public function recuperar()
-    {
+    // Muestra el formulario de recuperación de contraseña.
+    public function recuperar(){
         if (session()->get('isLoggedIn')) {
             return redirect()->to('/');
         }
@@ -206,8 +204,8 @@ class AuthController extends BaseController
         return $this->renderFallbackPage('Recuperar Clave', 'Formulario de Recuperación');
     }
 
-    public function recuperarProcess()
-    {
+    // Procesa la solicitud de recuperación de contraseña.
+    public function recuperarProcess(){
         $rules = [
             'email'            => 'required|valid_email',
             'password'         => 'required|min_length[8]',
@@ -224,7 +222,8 @@ class AuthController extends BaseController
         $user = $this->usuarioModel->where('email', $email)->first();
 
         if (!$user) {
-            return redirect()->back()->withInput()->with('error', 'No existe ninguna cuenta registrada con ese correo electrónico.');
+            // M3: Mensaje genérico para evitar enumeración de emails (el atacante no sabe si el email existe)
+            return redirect()->to('/login')->with('success', 'Si el correo está registrado, recibirás un enlace de recuperación en los próximos minutos.');
         }
 
         $newPasswordHash = password_hash($password, PASSWORD_BCRYPT);
@@ -241,8 +240,8 @@ class AuthController extends BaseController
         return redirect()->to('/login')->with('success', 'Se ha enviado un correo de confirmación. Por favor haz clic en el enlace para aplicar el cambio de contraseña.');
     }
 
-    public function confirmarRecuperacion($token = null)
-    {
+    // Confirma la recuperación de contraseña usando el token enviado por correo.
+    public function confirmarRecuperacion($token = null){
         if (empty($token)) {
             return redirect()->to('/login')->with('error', 'Token no proporcionado.');
         }
@@ -266,14 +265,14 @@ class AuthController extends BaseController
         return redirect()->to('/login')->with('success', 'Contraseña actualizada correctamente');
     }
 
-    public function logout()
-    {
+    // Cierra la sesión del usuario.
+    public function logout(){
         session()->destroy();
         return redirect()->to('/')->with('success', 'Sesión Cerrada');
     }
 
-    private function renderFallbackPage(string $title, string $subtitle)
-    {
+    // Renderiza una página de fallback simple en caso de que las vistas no estén disponibles.
+    private function renderFallbackPage(string $title, string $subtitle){
         $html = "<!DOCTYPE html><html lang='es'><head><meta charset='UTF-8'><title>{$title}</title></head><body><h1>{$title}</h1><p>{$subtitle}</p></body></html>";
         return $this->response->setBody($html);
     }

@@ -2,13 +2,9 @@
 
 namespace App\Controllers;
 
-class MisCompras extends BaseController
-{
-    /**
-     * GET /mis-compras — Lista las ventas del usuario logueado.
-     */
-    public function index()
-    {
+class MisCompras extends BaseController{
+    //GET /mis-compras — Lista las ventas del usuario logueado.
+    public function index(){
         $idUsuario = (int)session()->get('id_usuario');
         $db = \Config\Database::connect();
 
@@ -28,11 +24,8 @@ class MisCompras extends BaseController
         ]);
     }
 
-    /**
-     * GET /mis-compras/detalle/(:num) — Endpoint JSON del detalle de una venta.
-     */
-    public function detalle($idVenta)
-    {
+    // GET /mis-compras/detalle/(:num) — Endpoint JSON del detalle de una venta. 
+    public function detalle(int $idVenta){
         $idVenta   = (int)$idVenta;
         $idUsuario = (int)session()->get('id_usuario');
         $db = \Config\Database::connect();
@@ -64,11 +57,8 @@ class MisCompras extends BaseController
         ]);
     }
 
-    /**
-     * GET /mis-compras/descargar-recibo/(:num) — Descarga directa del recibo PDF.
-     */
-    public function descargarRecibo($idVenta)
-    {
+    // GET /mis-compras/descargar-recibo/(:num) — Descarga directa del recibo PDF.
+    public function descargarRecibo(int $idVenta){
         $idVenta   = (int)$idVenta;
         $idUsuario = (int)session()->get('id_usuario');
         $db = \Config\Database::connect();

@@ -4,17 +4,16 @@ namespace App\Controllers;
 
 use App\Models\UsuarioModel;
 
-class Perfil extends BaseController
-{
+class Perfil extends BaseController{
+
     protected UsuarioModel $usuarioModel;
 
-    public function __construct()
-    {
+    public function __construct(){
         $this->usuarioModel = new UsuarioModel();
     }
 
-    public function index()
-    {
+    // GET /perfil — Muestra la información del perfil del usuario logueado.
+    public function index(){
         if (!session()->get('isLoggedIn')) {
             return redirect()->to('/login')->with('error', 'Debes iniciar sesión para acceder a tu perfil.');
         }
@@ -31,8 +30,8 @@ class Perfil extends BaseController
         ]);
     }
 
-    public function actualizar()
-    {
+    // POST /perfil/actualizar — Actualiza la información del perfil del usuario logueado.
+    public function actualizar(){
         if (!session()->get('isLoggedIn')) {
             return redirect()->to('/login')->with('error', 'Debes iniciar sesión para acceder a tu perfil.');
         }
@@ -67,8 +66,8 @@ class Perfil extends BaseController
         return redirect()->to('/perfil')->with('success', 'Perfil actualizado correctamente.');
     }
 
-    public function cambiarPassword()
-    {
+    // POST /perfil/cambiar-password — Cambia la contraseña del usuario logueado.
+    public function cambiarPassword(){
         if (!session()->get('isLoggedIn')) {
             return redirect()->to('/login')->with('error', 'Debes iniciar sesión para acceder a tu perfil.');
         }

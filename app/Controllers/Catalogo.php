@@ -4,22 +4,27 @@ namespace App\Controllers;
 
 use App\Models\ProductoModel;
 use App\Models\CategoriaModel;
+use App\Models\FavoritoModel;
 
-class Catalogo extends BaseController
-{
-    /**
-     * Muestra la vista principal del catálogo con los productos y categorías disponibles.
-     */
-    public function index()
-    {
-        $productoModel = new ProductoModel();
-        $categoriaModel = new CategoriaModel();
+class Catalogo extends BaseController{
+    
+    protected ProductoModel $productoModel;
+    protected CategoriaModel $categoriaModel;
+    private FavoritoModel $favoritoModel;
 
+    public function __construct(){
+        $this->productoModel = new ProductoModel();
+        $this->categoriaModel = new CategoriaModel();
+        $this->favoritoModel = new FavoritoModel();
+    }
+
+    //Muestra la vista principal del catálogo con los productos y categorías disponibles.
+    public function index(){
         // Obtener solo categorías activas para el select del filtro
-        $categorias = $categoriaModel->where('estado_categoria', 1)->findAll();
+        $categorias = $this->categoriaModel->where('estado_categoria', 1)->findAll();
 
         // Obtener productos activos de categorías activas
-        $productos = $productoModel->select('producto.*, categoria.nombre_categoria')
+        $productos = $this->productoModel->select('producto.*, categoria.nombre_categoria')
             ->join('categoria', 'categoria.id_categoria = producto.id_categoria')
             ->where('producto.estado_producto', 1)
             ->where('categoria.estado_categoria', 1)
@@ -27,8 +32,7 @@ class Catalogo extends BaseController
 
         $favoritosIds = [];
         if (session()->get('isLoggedIn')) {
-            $favoritoModel = new \App\Models\FavoritoModel();
-            $favs = $favoritoModel->where('id_usuario', session()->get('id_usuario'))->findAll();
+            $favs = $this->favoritoModel->where('id_usuario', session()->get('id_usuario'))->findAll();
             $favoritosIds = array_column($favs, 'id_producto');
         }
 
@@ -40,20 +44,14 @@ class Catalogo extends BaseController
         ]);
     }
 
-    /**
-     * Endpoint AJAX para filtrar los productos por búsqueda y categoría.
-     * Responde con formato JSON.
-     */
-    public function filtrar()
-    {
+    //Endpoint AJAX para filtrar los productos por búsqueda y categoría |Responde con formato JSON.
+    public function filtrar(){
         $search = $this->request->getGet('search');
         $id_categoria = $this->request->getGet('categoria');
 
-        $productoModel = new ProductoModel();
-
         // Query base: productos activos de categorías activas
         // Se devuelven solo los campos necesarios para renderizar las cards del catálogo
-        $builder = $productoModel->select('producto.id_producto, producto.nombre_producto, producto.precio, producto.imagen')
+        $builder = $this->productoModel->select('producto.id_producto, producto.nombre_producto, producto.precio, producto.imagen')
             ->join('categoria', 'categoria.id_categoria = producto.id_categoria')
             ->where('producto.estado_producto', 1)
             ->where('categoria.estado_categoria', 1);
@@ -77,18 +75,13 @@ class Catalogo extends BaseController
         return $this->response->setJSON($resultados);
     }
 
-    /**
-     * Muestra la vista de detalle de un producto individual.
-     */
-    public function detalle($id = null)
-    {
+    //Muestra la vista de detalle de un producto individual.
+    public function detalle($id = null){
         if (empty($id) || !is_numeric($id)) {
             return redirect()->to('catalogo')->with('error', 'Producto no válido.');
         }
 
-        $productoModel = new ProductoModel();
-
-        $producto = $productoModel->select('producto.*, categoria.nombre_categoria')
+        $producto = $this->productoModel->select('producto.*, categoria.nombre_categoria')
             ->join('categoria', 'categoria.id_categoria = producto.id_categoria')
             ->where('producto.id_producto', (int)$id)
             ->where('producto.estado_producto', 1)
@@ -99,7 +92,7 @@ class Catalogo extends BaseController
             return redirect()->to('catalogo')->with('error', 'El producto solicitado no está disponible.');
         }
 
-        $productosSimilares = $productoModel->getProductosSimilares(
+        $productosSimilares = $this->productoModel->getProductosSimilares(
             (int)$producto['id_categoria'],
             (int)$producto['id_producto'],
             12
@@ -107,8 +100,7 @@ class Catalogo extends BaseController
 
         $favoritosIds = [];
         if (session()->get('isLoggedIn')) {
-            $favoritoModel = new \App\Models\FavoritoModel();
-            $favs = $favoritoModel->where('id_usuario', session()->get('id_usuario'))->findAll();
+            $favs = $this->favoritoModel->where('id_usuario', session()->get('id_usuario'))->findAll();
             $favoritosIds = array_column($favs, 'id_producto');
         }
 

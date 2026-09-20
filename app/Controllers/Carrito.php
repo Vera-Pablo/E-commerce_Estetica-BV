@@ -6,30 +6,23 @@ use App\Models\ProductoModel;
 use App\Models\MetodoPagoModel;
 use App\Models\VentaModel;
 use App\Models\VentaDetalleModel;
-
-/**
- * Carrito — Gestión del carrito de compras en sesión.
- *
- * Estructura de sesión:
- * $_SESSION['carrito'] = [
- *     'timestamp' => <unix>,
- *     'items'     => [ id_producto => ['id_producto' => X, 'cantidad' => N], ... ]
- * ]
- */
-class Carrito extends BaseController
-{
-    /** TTL del carrito: 7 días en segundos */
+class Carrito extends BaseController{
     private const TTL = 604800;
 
-    // ----------------------------------------------------------------
-    // HELPERS INTERNOS
-    // ----------------------------------------------------------------
+    protected ProductoModel $productoModel;
+    protected MetodoPagoModel $metodoPagoModel;
+    protected VentaModel $ventaModel;
+    protected VentaDetalleModel $ventaDetalleModel;
 
-    /**
-     * Lee el carrito de la sesión o de la cookie (backup). Devuelve la estructura normalizada.
-     */
-    private function leerCarrito(): array
-    {
+    public function __construct(){
+        $this->productoModel = new ProductoModel();
+        $this->metodoPagoModel = new MetodoPagoModel();
+        $this->ventaModel = new VentaModel();
+        $this->ventaDetalleModel = new VentaDetalleModel();
+    }
+    
+    // Lee el carrito desde la sesión o desde la cookie de respaldo si el usuario está autenticado.
+    private function leerCarrito(): array{
         $carrito = session()->get('carrito');
 
         // Si no está en sesión y el usuario está autenticado, intentar recuperar de la cookie
@@ -51,15 +44,11 @@ class Carrito extends BaseController
         return $carrito;
     }
 
-    /**
-     * Persiste el carrito en la sesión y en la cookie nativa para sobrevivir al cierre de sesión.
-     */
-    private function guardarCarrito(array $carrito): void
-    {
+    // Guarda el carrito en la sesión y en la cookie de respaldo.
+    private function guardarCarrito(array $carrito): void{
         session()->set('carrito', $carrito);
 
-        // Usamos setrawcookie() nativo (independiente del Response de CI4)
-        // para que funcione tanto en respuestas HTML como JSON.
+        // Usamos setrawcookie() nativo (independiente del Response de CI4) para que funcione tanto en respuestas HTML como JSON.
         setrawcookie(
             'carrito_backup',
             rawurlencode(json_encode($carrito)),
@@ -68,12 +57,8 @@ class Carrito extends BaseController
         );
     }
 
-    /**
-     * Verifica el TTL. Si expiró, limpia el carrito y avisa.
-     * Devuelve true si fue limpiado.
-     */
-    private function verificarTTL(array &$carrito): bool
-    {
+    // Verifica si el carrito ha expirado según el TTL. Si ha expirado, lo vacía y devuelve true; de lo contrario, devuelve false.
+    private function verificarTTL(array &$carrito): bool{
         if ((time() - $carrito['timestamp']) > self::TTL) {
             $carrito = ['timestamp' => time(), 'items' => []];
             $this->guardarCarrito($carrito);
@@ -88,20 +73,28 @@ class Carrito extends BaseController
      * - Elimina productos desactivados o de categoría inactiva.
      * - Ajusta cantidades si el stock bajó.
      * Acumula mensajes de advertencia en $warnings.
+     *
+     * Retorna un array con:
+     *   'warnings' => string[]  — Mensajes de advertencia acumulados.
+     *   'dbMap'    => array     — Mapa id_producto => registro completo (precio, imagen, stock, nombre).
+     *                            Solo contiene productos válidos tras el saneamiento.
      */
     private function sanearCarrito(array &$carrito): array
     {
         if (empty($carrito['items'])) {
-            return [];
+            return ['warnings' => [], 'dbMap' => []];
         }
 
-        $warnings   = [];
-        $ids        = array_keys($carrito['items']);
+        $warnings = [];
+        $ids      = array_keys($carrito['items']);
 
         $productoModel = new ProductoModel();
 
+        // B1: Incluir precio e imagen en este SELECT para evitar consulta duplicada en index() y checkout()
         $dbItems = $productoModel
-            ->select('producto.id_producto, producto.nombre_producto, producto.stock, producto.estado_producto, categoria.estado_categoria')
+            ->select('producto.id_producto, producto.nombre_producto, producto.stock,
+                      producto.estado_producto, producto.precio, producto.imagen,
+                      categoria.estado_categoria')
             ->join('categoria', 'categoria.id_categoria = producto.id_categoria')
             ->whereIn('producto.id_producto', $ids)
             ->findAll();
@@ -120,6 +113,7 @@ class Carrito extends BaseController
                 $nombre = $dbMap[$id]['nombre_producto'] ?? "ID #{$id}";
                 $warnings[] = "«{$nombre}» fue eliminado del carrito porque ya no está disponible.";
                 unset($carrito['items'][$id]);
+                unset($dbMap[$id]); // Remover del mapa también
                 continue;
             }
 
@@ -129,6 +123,7 @@ class Carrito extends BaseController
             if ($stock === 0) {
                 $warnings[] = "«{$dbMap[$id]['nombre_producto']}» fue eliminado del carrito: sin stock.";
                 unset($carrito['items'][$id]);
+                unset($dbMap[$id]);
             } elseif ($cantidad > $stock) {
                 $warnings[] = "La cantidad de «{$dbMap[$id]['nombre_producto']}» fue ajustada a {$stock} (stock máximo disponible).";
                 $carrito['items'][$id]['cantidad'] = $stock;
@@ -139,18 +134,13 @@ class Carrito extends BaseController
             $this->guardarCarrito($carrito);
         }
 
-        return $warnings;
+        return ['warnings' => $warnings, 'dbMap' => $dbMap];
     }
 
-    // ----------------------------------------------------------------
     // ENDPOINTS PÚBLICOS
-    // ----------------------------------------------------------------
 
-    /**
-     * GET /carrito — Vista del carrito con saneamiento.
-     */
-    public function index()
-    {
+    // GET /carrito — Muestra la vista del carrito.
+    public function index(){
         $carrito = $this->leerCarrito();
 
         // TTL
@@ -163,33 +153,22 @@ class Carrito extends BaseController
             ]);
         }
 
-        // Saneamiento
-        $warnings = $this->sanearCarrito($carrito);
+        // Saneamiento — B1: reutilizar el dbMap retornado (evita segunda consulta)
+        $resultado = $this->sanearCarrito($carrito);
+        $warnings  = $resultado['warnings'];
+        $dbMap     = $resultado['dbMap'];
 
-        // Mostrar advertencias acumuladas (concatenadas en un único flash)
+        // Mostrar advertencias acumuladas
         if (!empty($warnings)) {
             session()->setFlashdata('warning', implode(' | ', $warnings));
         }
 
-        // Enriquecer ítems con datos actuales de la DB
+        // Enriquecer ítems con datos ya cargados (sin nueva consulta a DB)
         $itemsEnriquecidos = [];
         $total             = 0.0;
         $totalItems        = 0;
 
         if (!empty($carrito['items'])) {
-            $ids = array_keys($carrito['items']);
-
-            $productoModel = new ProductoModel();
-            $dbItems = $productoModel
-                ->select('producto.id_producto, producto.nombre_producto, producto.precio, producto.imagen, producto.stock')
-                ->whereIn('producto.id_producto', $ids)
-                ->findAll();
-
-            $dbMap = [];
-            foreach ($dbItems as $row) {
-                $dbMap[(int)$row['id_producto']] = $row;
-            }
-
             // LIFO: invertir para mostrar últimos agregados primero
             $itemsCarrito = array_reverse($carrito['items'], true);
 
@@ -206,13 +185,13 @@ class Carrito extends BaseController
                 $totalItems += $cantidad;
 
                 $itemsEnriquecidos[] = [
-                    'id_producto'    => $id,
-                    'nombre_producto'=> $db['nombre_producto'],
-                    'precio'         => $precio,
-                    'imagen'         => $db['imagen'],
-                    'stock'          => (int)$db['stock'],
-                    'cantidad'       => $cantidad,
-                    'subtotal'       => $subtotal,
+                    'id_producto'     => $id,
+                    'nombre_producto' => $db['nombre_producto'],
+                    'precio'          => $precio,
+                    'imagen'          => $db['imagen'],
+                    'stock'           => (int)$db['stock'],
+                    'cantidad'        => $cantidad,
+                    'subtotal'        => $subtotal,
                 ];
             }
         }
@@ -225,11 +204,8 @@ class Carrito extends BaseController
         ]);
     }
 
-    /**
-     * POST /carrito/agregar — Agrega un producto al carrito.
-     */
-    public function agregar()
-    {
+    // POST /carrito/agregar — Agrega un producto al carrito.
+    public function agregar(){
         $idProducto = (int)$this->request->getPost('id_producto');
         $cantidad   = (int)$this->request->getPost('cantidad');
 
@@ -238,8 +214,7 @@ class Carrito extends BaseController
         }
 
         // Verificar producto en DB
-        $productoModel = new ProductoModel();
-        $producto = $productoModel
+        $producto = $this->productoModel
             ->select('producto.id_producto, producto.nombre_producto, producto.stock, producto.estado_producto, categoria.estado_categoria')
             ->join('categoria', 'categoria.id_categoria = producto.id_categoria')
             ->where('producto.id_producto', $idProducto)
@@ -288,12 +263,8 @@ class Carrito extends BaseController
         return redirect()->back();
     }
 
-    /**
-     * POST /carrito/actualizar — AJAX: actualiza la cantidad de un producto.
-     * Devuelve JSON con subtotal, total general y totalItems.
-     */
-    public function actualizar()
-    {
+    // POST /carrito/actualizar — AJAX: actualiza la cantidad de un producto | Devuelve JSON con subtotal, total general y totalItems.
+    public function actualizar(){
         $idProducto   = (int)$this->request->getPost('id_producto');
         $nuevaCantidad = (int)$this->request->getPost('nueva_cantidad');
 
@@ -310,8 +281,7 @@ class Carrito extends BaseController
         }
 
         // Verificar stock en tiempo real
-        $productoModel = new ProductoModel();
-        $producto = $productoModel
+        $producto = $this->productoModel
             ->select('id_producto, stock')
             ->where('id_producto', $idProducto)
             ->where('estado_producto', 1)
@@ -339,7 +309,7 @@ class Carrito extends BaseController
         $this->guardarCarrito($carrito);
 
         // Obtener precio para calcular subtotal
-        $dbPrecio = $productoModel->select('precio')->where('id_producto', $idProducto)->first();
+        $dbPrecio = $this->productoModel->select('precio')->where('id_producto', $idProducto)->first();
         $precio   = (float)($dbPrecio['precio'] ?? 0);
         $subtotal = $nuevaCantidad * $precio;
 
@@ -354,12 +324,8 @@ class Carrito extends BaseController
         ], $totales));
     }
 
-    /**
-     * POST /carrito/eliminar — AJAX: elimina un producto del carrito.
-     * Devuelve JSON con totales actualizados.
-     */
-    public function eliminar()
-    {
+    // POST /carrito/eliminar — AJAX: elimina un producto del carrito | Devuelve JSON con total general y totalItems.
+    public function eliminar(){
         $idProducto = (int)$this->request->getPost('id_producto');
 
         if ($idProducto <= 0) {
@@ -373,67 +339,54 @@ class Carrito extends BaseController
         return $this->response->setJSON(array_merge(['ok' => true], $this->calcularTotales($carrito)));
     }
 
-    /**
-     * GET /carrito/checkout — Vista de checkout.
-     */
-    public function checkout()
-    {
+    // GET /carrito/checkout — Vista de checkout con saneamiento y verificación de TTL.
+    public function checkout(){
         $carrito = $this->leerCarrito();
 
         if ($this->verificarTTL($carrito)) {
             return redirect()->to('carrito');
         }
 
-        $warnings = $this->sanearCarrito($carrito);
-        if (!empty($warnings)) {
-            session()->setFlashdata('warning', implode(' | ', $warnings));
+        // B1: reutilizar dbMap del saneamiento — evita segunda consulta a DB
+        $resultado = $this->sanearCarrito($carrito);
+        if (!empty($resultado['warnings'])) {
+            session()->setFlashdata('warning', implode(' | ', $resultado['warnings']));
         }
 
         if (empty($carrito['items'])) {
             return redirect()->to('carrito')->with('warning', 'Tu carrito está vacío.');
         }
 
+        $dbMap             = $resultado['dbMap'];
         $itemsEnriquecidos = [];
         $total             = 0.0;
         $totalItems        = 0;
-
-        $ids = array_keys($carrito['items']);
-        $productoModel = new ProductoModel();
-        $dbItems = $productoModel
-            ->select('id_producto, nombre_producto, precio, imagen, stock')
-            ->whereIn('id_producto', $ids)
-            ->findAll();
-
-        $dbMap = [];
-        foreach ($dbItems as $row) {
-            $dbMap[(int)$row['id_producto']] = $row;
-        }
 
         $itemsCarrito = array_reverse($carrito['items'], true); // LIFO
 
         foreach ($itemsCarrito as $id => $item) {
             $id = (int)$id;
             if (!isset($dbMap[$id])) continue;
-            
+
             $db        = $dbMap[$id];
             $cantidad  = (int)$item['cantidad'];
             $precio    = (float)$db['precio'];
             $subtotal  = $cantidad * $precio;
-            
-            $total    += $subtotal;
+
+            $total      += $subtotal;
             $totalItems += $cantidad;
 
             $itemsEnriquecidos[] = [
-                'id_producto'    => $id,
-                'nombre_producto'=> $db['nombre_producto'],
-                'precio'         => $precio,
-                'imagen'         => $db['imagen'],
-                'cantidad'       => $cantidad,
-                'subtotal'       => $subtotal,
+                'id_producto'     => $id,
+                'nombre_producto' => $db['nombre_producto'],
+                'precio'          => $precio,
+                'imagen'          => $db['imagen'],
+                'cantidad'        => $cantidad,
+                'subtotal'        => $subtotal,
             ];
         }
 
-        $metodosPago = (new MetodoPagoModel())->findAll();
+        $metodosPago = $this->metodoPagoModel->findAll();
 
         return view('public/checkout', [
             'title'       => 'Checkout - Estética BV',
@@ -444,11 +397,8 @@ class Carrito extends BaseController
         ]);
     }
 
-    /**
-     * POST /carrito/checkout/procesar — Procesa la compra atómicamente.
-     */
-    public function procesar()
-    {
+    // POST /carrito/procesar — Procesa la compra, inserta en DB y vacía el carrito.
+    public function procesar(){
         $idMetodoPago = $this->request->getPost('id_metodo_pago');
         $tipoEntrega  = $this->request->getPost('tipo_entrega');
 
@@ -457,20 +407,15 @@ class Carrito extends BaseController
         }
 
         $carrito = $this->leerCarrito();
-        $this->sanearCarrito($carrito); 
+
+        // B1: reutilizar dbMap del saneamiento — evita segunda consulta findAll() duplicada
+        $resultado = $this->sanearCarrito($carrito);
 
         if (empty($carrito['items'])) {
             return redirect()->to('carrito')->with('warning', 'Tu carrito quedó vacío o los productos ya no están disponibles.');
         }
 
-        $ids = array_keys($carrito['items']);
-        $productoModel = new ProductoModel();
-        $productosDb = $productoModel->whereIn('id_producto', $ids)->findAll();
-        
-        $dbMap = [];
-        foreach ($productosDb as $p) {
-            $dbMap[(int)$p['id_producto']] = $p;
-        }
+        $dbMap = $resultado['dbMap'];
 
         $totalCalculado    = 0.0;
         $detallesAInsertar = [];
@@ -508,9 +453,8 @@ class Carrito extends BaseController
 
         $db = \Config\Database::connect();
         $db->transStart();
-
-        $ventaModel = new VentaModel();
-        $idVenta = $ventaModel->insert([
+        
+        $idVenta = $this->ventaModel->insert([
             'total'           => $totalCalculado,
             'fecha_venta'     => date('Y-m-d'),
             'tipo_entrega'    => $tipoEntrega,
@@ -519,16 +463,15 @@ class Carrito extends BaseController
             'id_usuario'      => (int)session()->get('id_usuario'),
         ], true); 
 
-        $ventaDetalleModel = new VentaDetalleModel();
         foreach ($detallesAInsertar as &$det) {
             $det['id_venta'] = $idVenta;
         }
-        $ventaDetalleModel->insertBatch($detallesAInsertar);
+        $this->ventaDetalleModel->insertBatch($detallesAInsertar);
 
         foreach ($updatesStock as $upd) {
             $db->table('producto')
-               ->where('id_producto', $upd['id_producto'])
-               ->set('stock', "stock - {$upd['cantidad']}", false)
+               ->where('id_producto', (int)$upd['id_producto'])
+               ->set('stock', 'stock - ' . (int)$upd['cantidad'], false)
                ->update();
         }
 
@@ -544,13 +487,9 @@ class Carrito extends BaseController
                          ->with('success', '¡Compra finalizada con éxito!');
     }
 
-    /**
-     * GET /carrito/checkout/confirmacion/(:num) — Vista de confirmación de compra.
-     */
-    public function confirmacion($id_venta)
-    {
-        $ventaModel = new VentaModel();
-        $venta = $ventaModel->select('venta.*, metodo_pago.nombre_metodo_pago')
+    // GET /carrito/checkout/confirmacion/{id_venta} — Muestra la confirmación de compra.
+    public function confirmacion(int $id_venta){
+        $venta = $this->ventaModel->select('venta.*, metodo_pago.nombre_metodo_pago')
             ->join('metodo_pago', 'metodo_pago.id_metodo_pago = venta.id_metodo_pago')
             ->where('id_venta', $id_venta)
             ->where('id_usuario', session()->get('id_usuario'))
@@ -574,23 +513,16 @@ class Carrito extends BaseController
         ]);
     }
 
-    // ----------------------------------------------------------------
     // HELPER PRIVADO: TOTALES
-    // ----------------------------------------------------------------
 
-    /**
-     * Calcula total general y cantidad total de ítems.
-     * Necesita consultar precios de la DB para calcular correctamente.
-     */
-    private function calcularTotales(array $carrito): array
-    {
+    // Calcula el total general y total de ítems del carrito. Devuelve un array con 'total', 'totalItems' y 'carritoVacio'.
+    private function calcularTotales(array $carrito): array{
         $total      = 0.0;
         $totalItems = 0;
 
         if (!empty($carrito['items'])) {
             $ids = array_keys($carrito['items']);
-            $productoModel = new ProductoModel();
-            $rows = $productoModel->select('id_producto, precio')->whereIn('id_producto', $ids)->findAll();
+            $rows = $this->productoModel->select('id_producto, precio')->whereIn('id_producto', $ids)->findAll();
 
             $precios = [];
             foreach ($rows as $row) {
