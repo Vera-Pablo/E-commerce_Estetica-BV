@@ -35,15 +35,25 @@
                                     </div>
 
                                     <!-- Password input -->
-                                    <div class="form-floating mb-4">
-                                        <input type="password" id="password" name="password" class="form-control" placeholder="Nueva Contraseña" required />
-                                        <label for="password">Nueva Contraseña</label>
+                                    <div class="mb-4 position-relative">
+                                        <div class="form-floating">
+                                            <input type="password" id="password" name="password" class="form-control pe-5" placeholder="Nueva Contraseña" required />
+                                            <label for="password">Nueva Contraseña</label>
+                                        </div>
+                                        <button type="button" class="btn btn-link text-muted position-absolute top-50 end-0 translate-middle-y me-3 p-0 border-0 shadow-none" onclick="togglePassword('password', this)" tabindex="-1" style="z-index: 10;">
+                                            <i class="fas fa-eye fs-5"></i>
+                                        </button>
                                     </div>
 
                                     <!-- Confirm Password input -->
-                                    <div class="form-floating mb-4">
-                                        <input type="password" id="confirm_password" name="confirm_password" class="form-control" placeholder="Confirmar Nueva Contraseña" required />
-                                        <label for="confirm_password">Confirmar Nueva Contraseña</label>
+                                    <div class="mb-4 position-relative">
+                                        <div class="form-floating">
+                                            <input type="password" id="confirm_password" name="confirm_password" class="form-control pe-5" placeholder="Confirmar Nueva Contraseña" required />
+                                            <label for="confirm_password">Confirmar Nueva Contraseña</label>
+                                        </div>
+                                        <button type="button" class="btn btn-link text-muted position-absolute top-50 end-0 translate-middle-y me-3 p-0 border-0 shadow-none" onclick="togglePassword('confirm_password', this)" tabindex="-1" style="z-index: 10;">
+                                            <i class="fas fa-eye fs-5"></i>
+                                        </button>
                                     </div>
 
                                     <!-- Submit button -->
@@ -73,4 +83,20 @@
     </div>
 
 </div>
+<?= $this->endSection() ?>
+
+<?= $this->section('scripts') ?>
+<script>
+function togglePassword(inputId, btn) {
+    const input = document.getElementById(inputId);
+    const icon  = btn.querySelector('i');
+    if (input.type === 'password') {
+        input.type = 'text';
+        icon.classList.replace('fa-eye', 'fa-eye-slash');
+    } else {
+        input.type = 'password';
+        icon.classList.replace('fa-eye-slash', 'fa-eye');
+    }
+}
+</script>
 <?= $this->endSection() ?>
