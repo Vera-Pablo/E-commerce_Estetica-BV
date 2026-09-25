@@ -3,7 +3,7 @@
 <?= $this->section('content') ?>
 <div class="container-fluid px-0 px-lg-4">
         <!-- Header Section -->
-        <div class="d-flex justify-content-between align-items-center mb-4">
+        <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
             <h1 class="font-spartan fw-bold text-dark m-0">
                 <i class="fas fa-box-open me-2"></i> Gestión de Productos
             </h1>
