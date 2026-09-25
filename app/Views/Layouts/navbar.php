@@ -96,8 +96,8 @@
           </li>
           <!-- Perfil / Cuenta -->
           <?php if (session()->get('isLoggedIn')): ?>
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle px-2 d-flex align-items-center" href="#" id="navbarUserDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" title="Mi Cuenta">
+            <li class="nav-item dropdown position-relative">
+              <a class="nav-link dropdown-toggle px-2 d-flex align-items-center" href="#" id="navbarUserDropdown" role="button" data-bs-toggle="dropdown" data-bs-display="static" aria-expanded="false" title="Mi Cuenta">
                 <i class="fas fa-user-circle fa-lg me-1"></i>
                 <span class="d-none d-md-inline small"><?= esc(session()->get('apellido_nombre') ?? 'Perfil') ?></span>
               </a>

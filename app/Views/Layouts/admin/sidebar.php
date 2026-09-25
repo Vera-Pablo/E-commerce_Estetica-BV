@@ -7,12 +7,15 @@
 $uri = service('uri');
 $segment = $uri->getSegment(2); // admin/[segmento]
 ?>
-<div class="d-flex flex-column flex-shrink-0 p-3 admin-sidebar" style="width: 250px;">
-    <!-- Superior: Logo y Título -->
-    <a href="<?= base_url('admin/dashboard') ?>" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
-        <img src="<?= base_url('assets/images/logos/Logo-BV.webp') ?>" alt="Logo Estética BV" style="max-height: 40px; margin-right: 15px;">
-        <span class="fs-5 fw-bold font-spartan">Panel Admin</span>
-    </a>
+<aside class="offcanvas-lg offcanvas-start admin-sidebar flex-shrink-0 d-flex flex-column p-3" tabindex="-1" id="adminSidebarOffcanvas" aria-labelledby="adminSidebarOffcanvasLabel">
+    <!-- Superior: Logo y Título (+ Botón cerrar en móvil) -->
+    <div class="d-flex align-items-center justify-content-between mb-3 mb-md-0 me-md-auto w-100">
+        <a href="<?= base_url('admin/dashboard') ?>" class="d-flex align-items-center text-white text-decoration-none">
+            <img src="<?= base_url('assets/images/logos/Logo-BV.webp') ?>" alt="Logo Estética BV" style="max-height: 40px; margin-right: 15px;">
+            <span class="fs-5 fw-bold font-spartan" id="adminSidebarOffcanvasLabel">Panel Admin</span>
+        </a>
+        <button type="button" class="btn-close btn-close-white d-lg-none" data-bs-dismiss="offcanvas" data-bs-target="#adminSidebarOffcanvas" aria-label="Cerrar"></button>
+    </div>
     
     <hr>
     
@@ -72,4 +75,4 @@ $segment = $uri->getSegment(2); // admin/[segmento]
             </a>
         </li>
     </ul>
-</div>
+</aside>

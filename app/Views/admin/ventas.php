@@ -4,7 +4,7 @@
 <?= $this->section('content') ?>
 <div class="container-fluid px-0 px-lg-4">
         <!-- Header -->
-        <div class="d-flex justify-content-between align-items-center mb-4">
+        <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
             <h1 class="font-spartan fw-bold text-dark m-0">
                 <i class="fas fa-receipt me-2"></i> Gestión de Ventas
             </h1>
@@ -267,7 +267,7 @@
                         </div>
                     </div>
                     <div class="modal-footer border-top-0 bg-light rounded-bottom-4 d-flex justify-content-between align-items-center flex-wrap gap-3">
-                        <form action="<?= base_url('admin/ventas/cambiar-estado') ?>" method="POST" class="d-flex align-items-center mb-0">
+                        <form action="<?= base_url('admin/ventas/cambiar-estado') ?>" method="POST" class="d-flex align-items-center flex-wrap gap-2 mb-0">
                             <?= csrf_field() ?>
                             <input type="hidden" name="id_venta" id="form-cambiar-estado-id">
                             <label for="form-estado-select" class="me-2 fw-bold small text-muted text-nowrap">Cambiar Estado:</label>
