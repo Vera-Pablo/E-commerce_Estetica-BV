@@ -1,11 +1,11 @@
 # Documentación
-**Versión: 1.3.3**
+**Versión: 1.3.4**
 
-**Fecha: 26/8/2026**
+**Fecha: 24/9/2026**
 
 **Autor: Vera Pablo G.**
 
-**Cambios: Migración de WSL Ubuntu -> Windows XAMPP | sección 3.2 - 3.3 - 3.4 | sección 4.1 | sección 5.3 | sección 6.4 - 6.5 - 6.6 **
+**Cambios: Actualización completa del árbol de directorios (sección 3.5), nuevos controladores/vistas/filtros/librerías documentados, campo `tipo_entrega` en tabla `venta` (sección 4.2), estado "Entregado" inmutable (RF-08, sección 4.2), corrección de instrucciones de despliegue a XAMPP Windows (sección 6.4), corrección conteo migraciones y seeders, eliminación de referencias WSL.**
 ---
 
 ## Capítulo I: Generalidades del Proyecto
@@ -23,8 +23,8 @@ El propósito principal de "Estética - BV" es automatizar el proceso de venta d
 Para cumplir con los objetivos académicos y de negocio dentro de los plazos establecidos, se delimitan las fronteras del sistema de la siguiente manera:
 
 - Dentro del alcance (funciones cubiertas)
-    - Módulo de Clientes: Acceso a vistas públicas del catálogo, gestión del carrito de compras (agregar/quitar productos), actualización de datos de perfil y simulación de compra a través de una pasarela de pago artificial.
-    - Módulo de Administración: Panel privado con acceso restringido para clientes, operaciones CRUD (Altas, Bajas, Modificaciones y Consultas) de categorías y productos, y un sistema de control de ventas para modificar los estados de los pedidos.
+    - Módulo de Clientes: Acceso a vistas públicas del catálogo, gestión del carrito de compras (agregar/quitar productos) con persistencia de 7 días mediante cookie de respaldo, actualización de datos de perfil, lista de favoritos y simulación de compra a través de una pasarela de pago artificial.
+    - Módulo de Administración: Panel privado con acceso restringido para clientes, operaciones CRUD (Altas, Bajas, Modificaciones y Consultas) de categorías y productos, un sistema de control de ventas para modificar los estados de los pedidos, generación de recibos en formato PDF, dashboard con KPIs y gestión de consultas.
     - Seguridad: Restricción estricta de accesos y filtrado de navegación de acuerdo al rol del usuario autenticado.
 - Fuera del alcance (funciones excluidas de esta versión)
     - Gestión de turnos o reservas: El sistema no incluirá agendas, calendarios ni reserva de citas para servicios estéticos (se contempla como una mejora prioritaria para futuras versiones).
@@ -64,19 +64,20 @@ Siguiendo el formato tradicional de ingeniería de software, se detallan las fun
     - **RF-05:** El sistema debe permitir al administrador actualizar los datos de los productos y darlos de baja (modificar/desactivar).
     - **RF-06:** El sistema no debe permitir al administrador eliminar/desactivar una categoría que tiene productos asociados o productos que estén asociados a una venta.
     - **RF-07:** El sistema debe permitir al administrador visualizar el historial técnico y el control de las ventas realizadas en la plataforma.
-    - **RF-08:** El sistema debe permitir al administrador cambiar el estado de una venta (ej. *Pendiente, En Preparación, Listo para retirar/enviar*).
-    - **RF-09:** El sistema debe permitir al administrador generar recibos/reportes de las ventas realizadas.
-    - **RF-10:** El sistema debe permitir al administrador realizar las respuestas de quejas/consultas de los usuarios realizada en la sección “Consultas”
+    - **RF-08:** El sistema debe permitir al administrador cambiar el estado de una venta (*Pendiente, En Preparación, Listo para retirar/enviar, Entregado*). El estado **"Entregado" (id=4) es definitivo e inmutable**: una vez aplicado, el sistema bloquea cualquier modificación posterior del estado de la venta.
+    - **RF-09:** El sistema debe permitir al administrador generar recibos de las ventas realizadas en formato PDF descargable, mediante el servicio `PdfService`.
+    - **RF-10:** El sistema debe permitir al administrador visualizar las consultas enviadas por los clientes desde la sección "Consultas" del panel administrativo.
 - Módulo de Clientes (Vistas Públicas)
-    - **RF-11:** El sistema debe permitir a cualquier usuario anónimo o registrado visualizar el catálogo público de productos y aplicar filtros por categorías.
-    - **RF-12:** El sistema debe permitir al cliente registrar una cuenta nueva e iniciar sesión de forma segura.
-    - **RF-13:** El sistema debe permitir al cliente agregar productos al carrito de compras desde el catálogo o la vista de detalle.
-    - **RF-14:** El sistema debe permitir al cliente visualizar y quitar productos de su carrito de compras, recalculando el monto total automáticamente.
-    - **RF-15:** El sistema debe permitir al cliente proceder al pago y finalizar la compra a través de la simulación de una pasarela de pago artificial.
-    - **RF-16:** El sistema debe permitir al cliente autenticado ingresar a su perfil para editar sus datos personales.
-    - **RF-17:** El sistema debe permitir al cliente ver el historial de compras y sus detalles ordenada de forma ascendente.
+    - **RF-11:** El sistema debe permitir a cualquier usuario anónimo o registrado visualizar el catálogo público de productos y aplicar filtros por categorías y búsqueda de texto.
+    - **RF-12:** El sistema debe permitir al cliente registrar una cuenta nueva (con activación por correo electrónico) e iniciar sesión de forma segura.
+    - **RF-13:** El sistema debe permitir al cliente agregar productos al carrito de compras desde el catálogo o la vista de detalle. El carrito persiste durante 7 días mediante un mecanismo de respaldo en cookie nativa del navegador, sobreviviendo al cierre de sesión.
+    - **RF-14:** El sistema debe permitir al cliente visualizar y quitar productos de su carrito de compras, recalculando el monto total automáticamente mediante AJAX.
+    - **RF-15:** El sistema debe permitir al cliente proceder al pago y finalizar la compra a través de la simulación de una pasarela de pago artificial, seleccionando método de pago y tipo de entrega (envío a domicilio o retiro en local).
+    - **RF-16:** El sistema debe permitir al cliente autenticado ingresar a su perfil para editar sus datos personales y cambiar su contraseña.
+    - **RF-17:** El sistema debe permitir al cliente ver el historial de compras y sus detalles, ordenado de forma descendente (más reciente primero), con opción de descargar recibo en PDF.
+    - **RF-18:** El sistema debe permitir al cliente gestionar una lista de productos favoritos mediante un botón de corazón disponible en el catálogo, detalle de producto y carrusel de inicio.
 
-### 2.2 Requerimientos No Funcionales (RNF)
+### 2.3 Requerimientos No Funcionales (RNF)
 
 Definen las propiedades, restricciones de calidad y el entorno tecnológico bajo el cual operará el software:
 
@@ -121,6 +122,7 @@ A nivel de infraestructura, "Estética - BV" implementa una arquitectura web cl�
 
 ### 3.5 Arquitectura de Directorio
 
+```
 estetica-bv/
 │
 ├── .opencode/                          <-- [CONFIG OPENCODE] Skills & Config MCP
@@ -131,30 +133,40 @@ estetica-bv/
 │           └── SKILL.md
 │
 ├── app/                                <-- [CAPA SERVIDOR] Núcleo de la aplicación (MVC)
-│   ├── Config/                         <-- Configuración (Rutas, BD, Filtros)
+│   ├── Config/                         <-- Configuración (Rutas, BD, Filtros, Email, Cookie)
 │   ├── Controllers/                    <-- Controladores
 │   │   ├── Admin/                      <-- Panel de administración
-│   │   │   ├── Dashboard.php           <-- Panel principal admin
 │   │   │   ├── Categoria.php           <-- CRUD Categorías
+│   │   │   ├── Consulta.php            <-- Visualización de consultas de clientes
+│   │   │   ├── Dashboard.php           <-- Panel principal con KPIs y estadísticas
+│   │   │   ├── Designer.php            <-- Gestión de banners del carrusel
 │   │   │   ├── Producto.php            <-- CRUD Productos
-│   │   │   ├── Usuario.php             <-- Gestión Usuarios
-│   │   │   └── Venta.php               <-- Gestión Ventas/Estados
+│   │   │   ├── Usuario.php             <-- Gestión de Usuarios/Clientes
+│   │   │   └── Venta.php               <-- Gestión Ventas/Estados/Recibos PDF
 │   │   ├── Auth/                       <-- Autenticación
-│   │   │   └── AuthController.php      <-- Login, Registro, Recuperación
-│   │   ├── BaseController.php          <-- Controlador base extendido
-│   │   └── Home.php                    <-- Página principal pública
+│   │   │   └── AuthController.php      <-- Login, Registro, Recuperación, Activación
+│   │   ├── BaseController.php          <-- Controlador base (sincronización carrito cookie)
+│   │   ├── Carrito.php                 <-- Carrito de compras (sesión + cookie, TTL 7 días)
+│   │   ├── Catalogo.php               <-- Catálogo público con filtros AJAX
+│   │   ├── FavoritoController.php      <-- Lista de favoritos (toggle AJAX)
+│   │   ├── Home.php                    <-- Página principal, páginas institucionales, consultas
+│   │   ├── MisCompras.php             <-- Historial de compras del cliente con recibos PDF
+│   │   └── Perfil.php                  <-- Perfil de usuario (datos personales, cambio clave)
 │   ├── Database/                       <-- Migraciones y Seeders
-│   │   ├── Migrations/                 <-- 10 migraciones (tablas BD)
-│   │   └── Seeds/                      <-- 6 Seeders (datos iniciales)
+│   │   ├── Migrations/                 <-- 11 migraciones (10 tablas + ALTER tipo_entrega)
+│   │   └── Seeds/                      <-- 5 Seeders (DatabaseSeeder + 4 individuales)
 │   ├── Filters/                        <-- Filtros de seguridad
-│   │   ├── AdminFilter.php             <-- Restringe acceso a admin
-│   │   └── CustomerFilter.php          <-- Restringe acceso a clientes autenticados
+│   │   ├── AdminFilter.php             <-- Restringe acceso a admin (id_rol=1)
+│   │   ├── CartFilter.php              <-- Restringe carrito a clientes autenticados (id_rol=2)
+│   │   └── CustomerFilter.php          <-- Restringe secciones de cliente autenticado
 │   ├── Helpers/                        <-- Funciones auxiliares globales
 │   ├── Language/                       <-- Internacionalización
 │   │   └── en/                         <-- Traducciones al inglés
 │   ├── Libraries/                      <-- Librerías personalizadas
-│   │   ├── EmailService.php            <-- Envío de correos (activación, recuperación)
-│   │   └── TokenService.php            <-- Creación y verificación de tokens
+│   │   ├── EmailService.php            <-- Envío de correos (activación, recuperación, estado pedido, consultas)
+│   │   ├── LinearNotionSkill.php       <-- Integración con Linear y Notion
+│   │   ├── PdfService.php              <-- Generación de recibos en PDF
+│   │   └── TokenService.php            <-- Creación y verificación de tokens JWT
 │   ├── Models/                         <-- 10 Modelos (Acceso a BD)
 │   │   ├── CategoriaModel.php
 │   │   ├── ConsultaModel.php
@@ -174,53 +186,67 @@ estetica-bv/
 │       │   │   └── sidebar.php         <-- Sidebar navegación admin
 │       │   ├── base.php                <-- Layout base público
 │       │   ├── footer.php              <-- Footer compartido
-│       │   └── navbar.php              <-- Navbar responsiva
+│       │   └── navbar.php              <-- Navbar responsiva (carrito badge, favoritos, menú usuario)
 │       ├── admin/                      <-- Vistas panel administración
-│       │   ├── categorias.php
-│       │   ├── clientes.php
-│       │   ├── productos.php
-│       │   └── ventas.php
+│       │   ├── categorias.php          <-- CRUD categorías
+│       │   ├── clientes.php            <-- Gestión de clientes
+│       │   ├── consultas.php           <-- Listado de consultas recibidas
+│       │   ├── dashboard.php           <-- Dashboard con gráficos y KPIs
+│       │   ├── designer.php            <-- Gestión visual de banners
+│       │   ├── productos.php           <-- CRUD productos
+│       │   └── ventas.php              <-- Control de ventas y estados
+│       ├── pdf/                        <-- Plantillas PDF
+│       │   └── recibo.php              <-- Plantilla de recibo/comprobante
 │       ├── public/                     <-- Vistas públicas
 │       │   ├── auth/                   <-- Autenticación
-│       │   │   ├── login.php
-│       │   │   ├── recuperar.php
-│       │   │   └── registro.php
-│       │   ├── comercializacion.php
-│       │   ├── contacto.php
-│       │   ├── quienes_somos.php
-│       │   └── terminos_uso.php
-│       ├── home.php                    <-- Vista principal home
+│       │   │   ├── login.php           <-- Inicio de sesión (toggle visibilidad clave)
+│       │   │   ├── recuperar.php       <-- Recuperación de contraseña (toggle visibilidad)
+│       │   │   └── registro.php        <-- Registro de cuenta nueva
+│       │   ├── carrito.php             <-- Vista del carrito de compras
+│       │   ├── catalogo.php            <-- Catálogo con filtros dinámicos
+│       │   ├── checkout.php            <-- Formulario de checkout (pago y entrega)
+│       │   ├── checkout_confirmacion.php <-- Confirmación post-compra
+│       │   ├── comercializacion.php    <-- Página institucional
+│       │   ├── consultas.php           <-- Formulario de contacto/consultas
+│       │   ├── contacto.php            <-- Datos de contacto
+│       │   ├── detalle_producto.php    <-- Vista individual de producto
+│       │   ├── mis_compras.php         <-- Historial de compras del cliente
+│       │   ├── mis_favoritos.php       <-- Lista de productos favoritos
+│       │   ├── perfil.php              <-- Perfil de usuario
+│       │   ├── quienes_somos.php       <-- Página institucional
+│       │   └── terminos_uso.php        <-- Términos y condiciones
+│       ├── home.php                    <-- Vista principal home (carrusel, productos destacados)
 │       └── welcome_message.php         <-- Vista por defecto CI4
 │
 ├── public/                             <-- [CAPA CLIENTE] Única carpeta accesible web
 │   ├── index.php                       <-- Front Controller (punto de entrada)
-│   ├── home.php                        <-- Página alternativa estática
 │   ├── favicon.ico
 │   ├── robots.txt
 │   ├── assets/                         <-- Recursos estáticos
 │   │   ├── css/
-│   │   │   └── base.css                <-- Estilos base (fuentes, botones, navbar, sidebar, print)
+│   │   │   └── base.css                <-- ÚNICA hoja de estilos (fuentes, botones, navbar, sidebar, print)
 │   │   ├── js/
+│   │   │   ├── instantpage.js          <-- Prefetch de páginas para navegación instantánea
 │   │   │   └── toast.js                <-- ToastHelper (notificaciones success/error/warning)
 │   │   └── images/                     <-- Imágenes optimizadas WebP
-│   │       ├── banners/                <-- 8 banners carrusel/hero
+│   │       ├── banners/                <-- 10 banners (bv, delivery, estetica, lavado-cabello, no_image, pay, productos-estetica, rule, shipment, user)
 │   │       ├── logos/                  <-- Logo-BV.webp
 │   │       └── team/                   <-- 2 imágenes equipo (estilista, devs)
 │   └── .htaccess                       <-- Reglas Apache (URLs amigables, seguridad)
 │
 ├── docs/                               <-- Documentación del proyecto
-│   ├── Doc-V 1.2.2.md                  <-- Este documento
+│   ├── Doc-V 1.3.4.md                  <-- Este documento (especificación del sistema)
 │   ├── img/                            <-- Diagramas y gráficos
-│       ├── Diagrama_de_Arquitectura.png
-│       ├── Diagrama_de_Arquitectura_de_despliegue.png
-│       └── Diagrama_Entidad_Relaciones.png
-│   └── reglas.md                       <-- Contexto y reglas de diseño, arquitectura y seguridad.
+│   │   ├── Diagrama_de_Arquitectura.png
+│   │   ├── Diagrama_de_Arquitectura_de_despliegue.png
+│   │   └── Diagrama_Entidad_Relaciones.png
+│   └── reglas.md                       <-- Contexto y reglas obligatorias de desarrollo
 │
-├── system/                             <-- Framework CodeIgniter 4 (No modificar)
 ├── tests/                              <-- Tests unitarios y de integración (PHPUnit)
 ├── vendor/                             <-- Dependencias Composer
-├── writable/                           <-- Logs, caché, sesiones, uploads, debugbar
+├── writable/                           <-- Logs, caché, sesiones, uploads, debugbar, banners.json
 ├── .env                                <-- Variables de entorno (credenciales DB)
+├── AGENTS.md                           <-- Contexto para asistentes de IA (harness engineering)
 ├── builds                              <-- Script toggle release/development CI4
 ├── composer.json                       <-- Dependencias PHP
 ├── composer.lock
@@ -235,7 +261,7 @@ estetica-bv/
 
 - **Seguridad:** El servidor Apache se configura para que su "Document Root" apunte exclusivamente a la carpeta `/public`. De esta manera, todo el código crítico (contraseñas en `.env`, lógica en `/app`, skills en `/.opencode`) queda protegido fuera del alcance de internet.
 - **Mantenibilidad:** Refleja con exactitud el patrón MVC, permitiendo al equipo de desarrollo localizar rápidamente dónde se gestionan las bases de datos (`Models`), la lógica de seguridad (`Controllers/Filters`) o el diseño de la pantalla (`Views/Layouts`).
-- **Escalabilidad Frontend:** Separación clara en `public/assets/` entre estilos base (`base.css`: tipografías Arimo/League Spartan, botones personalizados, navbar con blur, sidebar admin, estilos `@media print` para recibos) y scripts (`toast.js`: clase ToastHelper con notificaciones Bootstrap 5 tipadas success/error/warning + auto-disparo desde flash data CI4).
+- **Escalabilidad Frontend:** Separación clara en `public/assets/` entre estilos base (`base.css`: tipografías Arimo/League Spartan, botones personalizados, navbar con blur, sidebar admin, estilos `@media print` para recibos) y scripts (`toast.js`: clase ToastHelper con notificaciones Bootstrap 5 tipadas success/error/warning + auto-disparo desde flash data CI4; `instantpage.js`: prefetch de páginas para navegación instantánea).
 - **Integración MCP:** Carpeta `/.opencode/` con skills para automatización de issues (Linear) y tareas (Notion) usando servidores remotos OAuth (`mcp.linear.app`, `mcp.notion.com`), configurados en `opencode.json`.
 
 ---
@@ -304,12 +330,12 @@ Almacena el catálogo de artículos disponibles en la estética.
 
 #### Tabla: `estado_venta`
 
-Cataloga las diferentes fases de una transacción.
+Cataloga las diferentes fases de una transacción. El estado "Entregado" (id=4) es definitivo e inmutable.
 
 | Campo | Tipo de Dato | Llave | Nulo | Descripción |
 | --- | --- | --- | --- | --- |
 | `id_estado_venta` | INT | PK | NO | Identificador único del estado. |
-| `nombre_estado` | VARCHAR(100) | UQ | NO | Nombre del estado (Ej. Pendiente, Despachado). |
+| `nombre_estado` | VARCHAR(100) | UQ | NO | Nombre del estado. Valores: *Pendiente* (1), *En Preparación* (2), *Listo para retirar/enviar* (3), *Entregado* (4). |
 
 #### Tabla: `metodo_pago`
 
@@ -329,6 +355,7 @@ Registra la cabecera de las transacciones realizadas por los clientes.
 | `id_venta` | INT | PK | NO | Identificador único del comprobante. |
 | `total` | DECIMAL(10,2) | - | NO | Monto final a abonar (suma de los subtotales). |
 | `fecha_venta` | DATE | - | NO | Fecha en la que se realizó la operación. |
+| `tipo_entrega` | VARCHAR(50) | - | NO | Modalidad de entrega seleccionada: *"Envío a domicilio"* o *"Retiro en local"*. Valor por defecto: "Retiro en local". |
 | `id_estado_venta` | INT | FK | NO | Estado actual del pedido. Relación con `estado_venta`. |
 | `id_metodo_pago` | INT | FK | NO | Medio de pago utilizado. Relación con `metodo_pago`. |
 | `id_usuario` | INT | FK | NO | Cliente que realizó la compra. Relación con `usuario`. |
@@ -392,8 +419,8 @@ El entorno de trabajo para la construcción del software está compuesto por el 
 
 - **Entorno de Desarrollo Integrado (IDE):** Visual Studio Code.
 - **Control de Versiones:** Git y GitHub.
-- **Servidor Local:** Apache y MySQL ejecutándose de forma nativa en XAMPP mediante Windows.
-- **Gestión de Base de Datos:** Cliente SQL de escritorio interactuando directamente con el motor MySQL en WSL, prescindiendo de interfaces web pesadas.
+- **Servidor Local:** Apache y MySQL ejecutándose mediante **XAMPP** en Windows.
+- **Gestión de Base de Datos:** Cliente SQL de escritorio interactuando directamente con el motor MySQL local.
 - **Modelado y Diagramación:**
     - *ERDPlus:* Para el diseño y exportación del Diagrama de Entidad-Relación (DER).
     - *PlantUML y Mermaid:* Para la renderización de diagramas arquitectónicos y lógicos mediante código (como el esquema MVC y arquitecturas de red).
@@ -407,7 +434,7 @@ Considerando el ciclo de vida corto y la infraestructura del proyecto, se han id
 | Riesgo Identificado | Impacto | Estrategia de Mitigación y Contingencia |
 | --- | --- | --- |
 | **Pérdida de código fuente local** | Alto | Implementar una política de *commits* atómicos y frecuentes ("Push" constante a GitHub). No dejar código sin respaldar al finalizar la jornada de trabajo. |
-| **Corrupción o pérdida de datos en el entorno local (WSL/MySQL)** | Alto | Generar *dumps* (copias de seguridad) del esquema SQL y datos de prueba de forma periódica, almacenándolos en el repositorio del proyecto bajo control de versiones. |
+| **Corrupción o pérdida de datos en el entorno local (MySQL)** | Alto | Generar *dumps* (copias de seguridad) del esquema SQL y datos de prueba de forma periódica, almacenándolos en el repositorio del proyecto bajo control de versiones. |
 | **Incumplimiento del plazo de entrega (3 semanas)** | Medio | Aplicar una priorización estricta en el tablero Kanban, enfocándose en un Producto Mínimo Viable (MVP). Las funciones "agradables de tener" se desplazarán al final del backlog para garantizar que los Requerimientos Funcionales base estén operativos a tiempo. |
 
 ---
@@ -445,7 +472,9 @@ Para mantener un registro ordenado, se documentarán los escenarios críticos ba
 | **QA-03** | Control de Stock Post-Venta | 1. Verificar que el Producto X tiene stock 5. 2. Comprar 2 unidades del Producto X. 3. Revisar la tabla de productos. | El stock del Producto X debe actualizarse automáticamente a 3. | Pendiente |
 | **QA-04** | Restricción de Borrado | 1. Intentar eliminar una categoría que contiene productos asignados. | El sistema debe impedir la acción para mantener la integridad (RF-06) y mostrar una alerta. | Pendiente |
 | **QA-05** | Registro y Activación de Usuario | 1. Registrar un usuario nuevo. 2. Verificar el envío del correo de activación (EmailService). 3. Activar la cuenta con el token. 4. Iniciar sesión. | El sistema debe crear el usuario, enviar el correo de activación y permitir el ingreso solo tras activar la cuenta. | Pendiente |
-| **QA-06** | Historial de Compras | 1. Iniciar sesión como cliente. 2. Acceder al perfil. 3. Revisar el historial de ventas. | El sistema debe listar las compras del cliente en orden ascendente (RF-17) con sus detalles. | Pendiente |
+| **QA-06** | Historial de Compras | 1. Iniciar sesión como cliente. 2. Acceder a "Mis Compras". 3. Revisar el historial de ventas. | El sistema debe listar las compras del cliente en orden descendente (más reciente primero, RF-17) con sus detalles y opción de descarga PDF. | Pendiente |
+| **QA-07** | Persistencia del Carrito | 1. Iniciar sesión como cliente. 2. Agregar un producto al carrito. 3. Cerrar sesión. 4. Volver a iniciar sesión. | El carrito debe conservar los productos agregados gracias al respaldo en cookie (7 días). | Pendiente |
+| **QA-08** | Estado Entregado Inmutable | 1. Como admin, cambiar el estado de una venta a "Entregado". 2. Intentar cambiar el estado nuevamente. | El sistema debe bloquear la modificación y mostrar un mensaje informativo. | Pendiente |
 
 ### 6.3 Criterios de Aceptación (Definition of Done)
 
@@ -459,15 +488,15 @@ Una issue se considera completa únicamente cuando cumple simultáneamente:
 
 ### 6.4 Despliegue
 
-El sistema se desplegará en el entorno local de desarrollo sobre **Apache y MySQL** mediante XAMPP, conforme a la arquitectura de despliegue Cliente-Servidor descrita en las secciones **3.3** y **3.4**.
+El sistema se desplegará en el entorno local de desarrollo sobre **Apache y MySQL** mediante **XAMPP en Windows**, conforme a la arquitectura de despliegue Cliente-Servidor descrita en las secciones **3.3** y **3.4**.
 
 Procedimiento de puesta en funcionamiento:
 
 1. **Configurar el Document Root de Apache** para que apunte exclusivamente a la carpeta `public/`, garantizando que el código crítico (`app/`, `.env`) quede fuera del alcance web.
-2. **Configurar la base de datos** en el archivo `.env` (motor MySQLi, host `localhost`, puerto `3306`).
-3. **Ejecutar las migraciones** para crear las 10 tablas: `php spark migrate`.
-4. **Cargar los datos iniciales** con los Seeders: `php spark db:seed DatabaseSeeder`.
-5. **Arrancar los servicios** de manera manual (ej. `sudo service apache2 start` y `sudo service mysql start`).
-6. **Verificar el acceso** ingresando a `http://localhost/` y recorriendo los flujos principales del catálogo público y del panel de administración, comprobando que respondan sin errores.
+2. **Configurar la base de datos** en el archivo `.env` (motor MySQLi, host `localhost`, puerto `3306`, base de datos `estetica_bv`).
+3. **Ejecutar las migraciones** para crear las tablas: `php spark migrate` (11 migraciones).
+4. **Cargar los datos iniciales** con los Seeders: `php spark db:seed DatabaseSeeder` (invoca 4 seeders: Rol, EstadoVenta, MetodoPago, Usuario).
+5. **Arrancar los servicios** de Apache y MySQL desde el **panel de control de XAMPP**.
+6. **Verificar el acceso** ingresando a `http://localhost/` (o `http://localhost/E-commerce_Estetica-BV/public/` según configuración) y recorriendo los flujos principales del catálogo público y del panel de administración, comprobando que respondan sin errores.
 
 Requisitos de entorno: PHP 8.1+, CodeIgniter 4, Apache, MySQL (motor MySQLi), Git y Composer.

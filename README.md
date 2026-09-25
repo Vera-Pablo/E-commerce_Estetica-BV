@@ -1,184 +1,163 @@
-# Estética - BV 🌸
+# 🛍️ Estética BV - E-commerce
 
-![PHP Version](https://img.shields.io/badge/PHP-8.1+-blue.svg?logo=php)
-![CodeIgniter 4](https://img.shields.io/badge/CodeIgniter-4.x-EE4323.svg?logo=codeigniter&logoColor=white)
-![MySQL](https://img.shields.io/badge/MySQL-Database-4479A1.svg?logo=mysql&logoColor=white)
-![Apache](https://img.shields.io/badge/Apache-HTTP_Server-D22128.svg?logo=apache&logoColor=white)
-![Bootstrap 5](https://img.shields.io/badge/Bootstrap-5.3-7952B3.svg?logo=bootstrap&logoColor=white)
-![License](https://img.shields.io/badge/License-MIT-green.svg)
+Bienvenido al repositorio oficial del proyecto e-commerce **Estética BV**, una plataforma de venta de productos de belleza y cuidado personal desarrollada con CodeIgniter 4.
 
-**Estética BV** es una plataforma de comercio electrónico (*E-commerce*) desarrollada para la digitalización de un negocio real en el sector de la estética femenina. Su propósito es centralizar el catálogo de artículos, optimizar la gestión de inventario, automatizar el control de ventas y ofrecer a las clientas un canal web ágil, seguro e intuitivo para simular compras. Desarrollada con **CodeIgniter 4**, implementa una arquitectura MVC sólida, seguridad robusta y un diseño responsivo de alto rendimiento.
+## 📋 Descripción del Proyecto
 
----
+El sistema está diseñado para ofrecer una experiencia de compra fluida e intuitiva, permitiendo a los clientes explorar el catálogo, gestionar su carrito y realizar pedidos (checkout simulado). Además, incluye un robusto panel de administración para la gestión integral de productos, categorías, ventas, consultas de clientes y configuración de la tienda.
 
-## ✨ Características Principales
+## ⭐ Características Principales
 
-### 👩‍🦰 Para Clientes (Vistas Públicas)
-- **Catálogo Dinámico:** Navegación fluida por productos con filtros por categoría y búsqueda en tiempo real.
-- **Carrito de Compras:** Sistema reactivo para agregar, visualizar y eliminar artículos con recálculo automático de subtotales y total.
-- **Checkout Simulado:** Proceso de finalización de compra mediante una pasarela de pago artificial con fines académicos.
-- **Autenticación Completa:** Registro e inicio de sesión seguro (Bcrypt), autenticación federada con Google OAuth, y flujo de activación/recuperación de cuenta por correo electrónico.
-- **Panel de Usuario:** Gestión de perfil personal, lista de favoritos y consulta del historial de compras detallado ordenado cronológicamente.
-- **Sección de Contacto y Consultas:** Envío de inquietudes y consultas directas hacia la administración.
-- **Rendimiento Optimizado:** Imágenes en formato WebP con `loading="lazy"` y tipografías cargadas con `<link rel="preconnect">` para evitar el bloqueo del renderizado.
+### Para Clientes (Rol `Cliente` - id_rol: 2)
+- **Catálogo de Productos**: Búsqueda, filtros por categoría y visualización de detalles.
+- **Carrito Persistente**: Carrito de compras dual (sesión y cookie nativa con TTL de 7 días). El carrito persiste incluso tras el logout y no requiere estar autenticado para utilizarlo (solo la sección de checkout lo requiere).
+- **Favoritos**: Añadir/quitar productos a favoritos usando AJAX (con icono de corazón en la navegación, catálogo y detalles).
+- **Proceso de Checkout**: Confirmación de compra simulada con diferentes métodos de pago y de envío.
+- **Área Personal**: Gestión de perfil de usuario, historial de compras, descarga de recibos en formato PDF y revisión de productos favoritos.
+- **Consultas**: Envío de dudas o comentarios directos a la administración desde el portal web.
+- **Rendimiento**: Pre-carga instantánea de páginas (prefetching con `instantpage.js` y Speculation Rules API).
 
-### 🛡️ Para Administración (Panel Privado)
-- **Dashboard Protegido:** Acceso restringido exclusivamente a usuarios con rol Administrador (`id_rol = 1`) mediante filtros de seguridad (`AdminFilter`).
-- **Gestión de Inventario (CRUD):** Altas, bajas lógicas (`TINYINT(1)`), modificaciones y consultas de Categorías y Productos, con validaciones de integridad referencial.
-- **Control de Ventas:** Visualización del historial técnico de transacciones, actualización de estados de pedidos y generación de recibos/comprobantes listos para imprimir (`@media print`).
-- **Gestión de Clientes y Consultas:** Administración de cuentas de usuario y atención/respuesta a quejas y consultas recibidas.
+### Para Administración (Rol `Admin` - id_rol: 1)
+- **Dashboard y KPIs**: Panel con estadísticas de ventas comparativas mensuales, distribución de métodos de pago y tipos de entrega, alertas de bajo stock (<= 5), contador de clientes activos y ranking del top 10 de clientes.
+- **Gestión de Catálogo**: CRUD completo de Categorías y Productos.
+- **Gestión de Ventas**: Control de ventas y actualización de los estados (*Pendiente*, *En Preparación*, *Listo para retirar/enviar*, *Entregado*). El estado "Entregado" (id=4) es definitivo e inmutable.
+- **Gestión de Usuarios**: Visualización y control de cuentas de clientes.
+- **Diseñador (Designer)**: Gestión visual de los banners promocionales del inicio (modifica `writable/banners.json`).
+- **Atención al Cliente**: Bandeja de lectura y seguimiento de consultas enviadas por los usuarios.
+- **Recibos**: Generación y visualización de recibos en formato PDF mediante `PdfService`.
 
----
+*Nota: La autenticación mediante Google OAuth se encuentra en desarrollo (rutas existentes pero comentadas, implementación pendiente).*
 
-## 💻 Stack Tecnológico y Arquitectura
+## 💻 Tech Stack
 
-El sistema implementa una arquitectura **Cliente-Servidor** y respeta estrictamente el patrón **Modelo-Vista-Controlador (MVC)**:
+### Backend
+- **Framework**: CodeIgniter 4
+- **Lenguaje**: PHP 8.1+
+- **Base de Datos**: MySQL (MySQLi)
+- **Servidor**: Apache (entorno XAMPP en Windows)
+- **Autenticación**: Sesiones nativas de CI4 + encriptación bcrypt, validación/recuperación vía correo electrónico (usando `TokenService` y `EmailService`).
 
-- **Backend:** PHP 8.1+ y CodeIgniter 4.
-- **Base de Datos:** MySQL (MySQLi) relacional con integridad referencial y borrado lógico.
-- **Frontend:** HTML5, CSS3 (`base.css` como única hoja de estilos), Vanilla JS (`toast.js` ToastHelper), Bootstrap 5.3 y Font Awesome. Tipografías *Arimo* (texto) y *League Spartan* (títulos).
-- **Servidor Web y Entorno:** Servidor **Apache** y motor **MySQL** en entorno **XAMPP** (Windows).
-- **Servicios Integrados:** 
-  - `EmailService` y `TokenService` para flujos de activación y recuperación de contraseña.
-  - Soporte de OAuth para autenticación con Google.
-- **Seguridad:** Cifrado Bcrypt para contraseñas, escapado obligatorio de salida (`esc()`), protección CSRF en formularios de mutación y control de acceso basado en roles mediante filtros (`AdminFilter`, `CustomerFilter`).
-- **Integración MCP:** Automatización y sincronización de tareas/issues con Linear y Notion mediante Model Context Protocol (`.opencode/skills/`).
+### Frontend
+- **Maquetado y Estilos**: HTML5, CSS3, Vanilla JS, Bootstrap 5.3. CSS unificado en un solo archivo: `base.css`.
+- **Tipografía e Iconos**: Google Fonts (Arimo para textos, League Spartan para títulos), Font Awesome.
+- **Formatos y Optimización**: Todas las imágenes se sirven en formato `.webp` (banners/, logos/, team/) con procesamiento mediante Cloudinary.
 
----
+### Testing & Herramientas
+- **Testing**: PHPUnit con base de datos en memoria SQLite3 para el entorno de pruebas.
+- **Gestión de Proyecto**: Linear (Issue tracking) y Notion (Kanban). Integración con MCP (en `.opencode/skills/`).
+- **Debugging y Desarrollo**: Antigravity 2.0.
 
-## 🚀 Instalación y Despliegue Local (XAMPP / Windows)
+## 🚀 Instalación en Entorno Local (XAMPP/Windows)
 
-Para levantar el proyecto en un entorno local de desarrollo con **XAMPP**:
+### Requisitos Previos
+- XAMPP (con PHP 8.1+ y MySQL)
+- Composer instalado globalmente
+- Git
 
-### 1. Requisitos Previos
-- **XAMPP** con PHP 8.1+ y MySQL (asegurar extensiones `intl`, `mbstring`, `mysqli` y `curl` activas en `php.ini`).
-- **Composer** instalado globalmente.
-- **Git**.
+### Pasos de Instalación
 
-### 2. Clonar el Repositorio
-Clona el repositorio dentro de la carpeta `htdocs` de XAMPP (por ejemplo: `C:\xampp\htdocs\E-commerce_Estetica-BV`):
-```bash
-cd C:\xampp\htdocs
-git clone https://github.com/Vera-Pablo/Estetica.git E-commerce_Estetica-BV
-cd E-commerce_Estetica-BV
-composer install
-```
+1. **Clonar el repositorio**
+   Dentro del directorio de XAMPP `c:\xampp\htdocs\`:
+   ```bash
+   git clone <url-del-repositorio> E-commerce_Estetica-BV
+   cd E-commerce_Estetica-BV
+   ```
 
-### 3. Iniciar Servicios
-Inicia los módulos de **Apache** y **MySQL** desde el panel de control de XAMPP.
+2. **Instalar dependencias**
+   ```bash
+   composer install
+   ```
 
-### 4. Configuración del Entorno (`.env`)
-Copia o renombra el archivo `env` a `.env` y configura los parámetros de tu entorno local:
-```ini
-CI_ENVIRONMENT = development
+3. **Iniciar servicios**
+   Abre el panel de control de XAMPP e inicia los módulos **Apache** y **MySQL**.
 
-app.baseURL = 'http://localhost/E-commerce_Estetica-BV/public/'
+4. **Configuración del entorno**
+   Duplica el archivo `env` provisto y renómbralo a `.env`:
+   ```bash
+   cp env .env
+   ```
+   Edita el archivo `.env` para ajustar la conexión a la base de datos, entorno y la URL base:
+   ```env
+   CI_ENVIRONMENT = development
+   app.baseURL = 'http://localhost/E-commerce_Estetica-BV/public/'
+   
+   database.default.hostname = localhost
+   database.default.database = esteticabv
+   database.default.username = root
+   database.default.password = 
+   database.default.DBDriver = MySQLi
+   ```
+   *(Asegúrate de crear la base de datos `esteticabv` en tu phpMyAdmin antes de proceder).*
 
-database.default.hostname = localhost
-database.default.database = estetica_bv
-database.default.username = root
-database.default.password = 
-database.default.DBDriver = MySQLi
-database.default.port = 3306
-```
+5. **Migraciones y Seeders**
+   El proyecto incluye 11 migraciones y 5 seeders. Ejecuta los siguientes comandos para crear las tablas y poblar la base de datos con los datos iniciales (roles, estados, métodos de pago y usuarios por defecto):
+   ```bash
+   php spark migrate
+   php spark db:seed DatabaseSeeder
+   ```
 
-### 5. Base de Datos (Migraciones y Seeders)
-Crea la base de datos `estetica_bv` en MySQL y ejecuta en la terminal del proyecto:
-```bash
-# Ejecutar las 10 migraciones
-php spark migrate
+6. **Ejecución de Pruebas**
+   Para verificar la integridad del sistema usando PHPUnit y SQLite3 en memoria:
+   ```bash
+   composer test
+   # o en su defecto:
+   vendor\bin\phpunit
+   ```
 
-# Cargar los datos iniciales (Roles, Estados de Venta, Métodos de Pago y Usuario Admin)
-php spark db:seed DatabaseSeeder
-```
+7. **Acceso al proyecto**
+   Ingresa a través de tu navegador web a la siguiente dirección:
+   ```text
+   http://localhost/E-commerce_Estetica-BV/public/
+   ```
 
-### 6. Ejecución de Pruebas
-Para verificar la suite de tests automatizados (utilizando la base de datos SQLite en memoria para testing):
-```bash
-composer test
-# O directamente en Windows:
-vendor\bin\phpunit
-```
+## ⚡ Optimización para Producción
 
-### 7. Acceso a la Aplicación
-Abre tu navegador y accede a:
-`http://localhost/E-commerce_Estetica-BV/public/` (o a `http://localhost/` si configuraste un VirtualHost que apunte a `public/`).
+Antes de desplegar en un entorno de producción, es vital aplicar las siguientes optimizaciones:
 
----
+1. **Autoloading optimizado de Composer**
+   ```bash
+   composer dump-autoload -o
+   ```
 
-## ⚡ Optimización de Producción
+2. **Caché y Optimización de CodeIgniter**
+   Genera cachés de configuración y rutas precompiladas ejecutando:
+   ```bash
+   php spark optimize
+   ```
 
-Para entornos de producción se recomiendan los siguientes pasos de optimización del backend:
-
-### 1. Classmap de Composer Optimizado
-Genera el mapa de clases estático para eliminar búsquedas recursivas en disco:
-```bash
-composer dump-autoload -o
-```
-
-### 2. Compilación de Namespaces y Rutas (CodeIgniter 4)
-El comando `spark optimize` compila namespaces de servicios, rutas y configuraciones en un solo archivo, reduciendo el overhead de bootstrap:
-```bash
-php spark optimize
-```
-> **Nota:** Este comando genera/actualiza `writable/cache/optimize.php` y `writable/cache/routes.php`. Ejecútalo después de cada despliegue en producción.
-
-### 3. OPcache en php.ini (Producción)
-Asegúrate de que OPcache esté habilitado y configurado agresivamente:
-```ini
-opcache.enable=1
-opcache.enable_cli=0
-opcache.memory_consumption=256
-opcache.interned_strings_buffer=16
-opcache.max_accelerated_files=20000
-opcache.validate_timestamps=0
-opcache.save_comments=1
-opcache.fast_shutdown=1
-```
-Con `validate_timestamps=0`, los cambios en código requieren reiniciar Apache/opcache o ejecutar `php spark optimize` nuevamente.
-
----
+3. **Caché OPcache**
+   Asegúrate de tener habilitada y correctamente configurada la extensión OPcache en el `php.ini` del servidor en producción. Además, el proyecto hace uso del Page Caching nativo en las páginas estáticas.
 
 ## 📁 Estructura del Proyecto
 
 ```text
-estetica-bv/
-│
-├── .opencode/                  # Configuración MCP y Skills (Linear, Notion)
-├── app/                        # Núcleo de la aplicación (MVC)
-│   ├── Config/                 # Rutas, base de datos, filtros, email
-│   ├── Controllers/            # Controladores (Admin, Auth, Home)
-│   ├── Database/
-│   │   ├── Migrations/         # 10 migraciones de base de datos
-│   │   └── Seeds/              # Seeders de carga de datos iniciales
-│   ├── Filters/                # Filtros de seguridad (AdminFilter, CustomerFilter)
-│   ├── Libraries/              # EmailService, TokenService
-│   ├── Models/                 # 10 Modelos de acceso a datos (MySQLi)
-│   └── Views/
-│       ├── Layouts/            # Layouts base (público y admin, navbar, sidebar)
-│       ├── admin/              # Vistas privadas (categorías, clientes, productos, ventas)
-│       └── public/             # Vistas de catálogo, checkout, auth, legales e institucionales
-├── docs/                       # Documentación formal del sistema y diagramas
-│   ├── Doc-V 1.3.3.md          # Especificación completa del sistema
-│   ├── reglas.md               # Reglas obligatorias de desarrollo y estilos
-│   └── img/                    # Diagramas ER, MVC y arquitectura de despliegue
-├── public/                     # Única raíz web pública (Front Controller)
-│   ├── assets/
-│   │   ├── css/base.css        # ÚNICA hoja de estilos del proyecto
-│   │   ├── js/toast.js         # ToastHelper para notificaciones dinámicas
-│   │   └── images/             # Imágenes optimizadas en formato .webp
-│   └── index.php
-├── tests/                      # Pruebas unitarias e integrales (PHPUnit)
-├── .env                        # Variables de entorno locales
-├── composer.json               # Dependencias del proyecto
-└── README.md                   # Este archivo
+E-commerce_Estetica-BV/
+├── app/
+│   ├── Config/
+│   ├── Controllers/         # 15 Controladores en total
+│   │   ├── Admin/           # Categoria.php, Consulta.php, Dashboard.php, Designer.php, Producto.php, Usuario.php, Venta.php
+│   │   ├── Auth/            # AuthController.php
+│   │   └──                  # BaseController.php, Carrito.php, Catalogo.php, FavoritoController.php, Home.php, MisCompras.php, Perfil.php
+│   ├── Filters/             # AdminFilter, CustomerFilter, CartFilter
+│   ├── Libraries/           # EmailService, TokenService, PdfService, LinearNotionSkill
+│   ├── Models/              # CategoriaModel, ConsultaModel, EstadoVentaModel, FavoritoModel, MetodoPagoModel, ProductoModel, RolModel, UsuarioModel, VentaDetalleModel, VentaModel
+│   └── Views/               
+│       ├── Layouts/         # base.php, navbar.php, footer.php, admin/base_admin.php, admin/sidebar.php
+│       ├── admin/           # categorias, clientes, consultas, dashboard, designer, productos, ventas
+│       ├── public/          # carrito, catalogo, checkout, estáticas, mis_compras, mis_favoritos, perfil
+│       ├── public/auth/     # login, registro, recuperar
+│       └── pdf/             # recibo.php
+├── public/                  
+│   ├── assets/              
+│   │   ├── css/             # base.css
+│   │   └── js/              # toast.js, instantpage.js
+│   └── index.php            
+├── tests/                   # Pruebas PHPUnit
+├── writable/                # Sesiones, logs, cache, y banners.json (Designer)
+├── vendor/                  # Dependencias Composer
+└── .env                     # Variables de configuración
 ```
 
----
+## 🤝 Créditos
 
-## 👨‍💻 Créditos y Mantenimiento
-
-Proyecto desarrollado en el marco de la asignatura *Taller de Programación I* y mantenido por:
-**Vera Pablo G.** ([@Vera-Pablo](https://github.com/Vera-Pablo))
-
-> Las tareas y seguimiento de issues se gestionan mediante **Linear** y **Notion**, integrados en el flujo de trabajo mediante MCP.
+Desarrollo integral para Estética BV. Apoyado con Antigravity 2.0 como principal herramienta de depuración para asegurar un entorno libre de errores.
