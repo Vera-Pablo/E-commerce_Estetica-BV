@@ -8,19 +8,31 @@ class MisCompras extends BaseController{
         $idUsuario = (int)session()->get('id_usuario');
         $db = \Config\Database::connect();
 
-        $ventas = $db->table('venta v')
+        $fechaDesde = $this->request->getGet('fecha_desde');
+        $fechaHasta = $this->request->getGet('fecha_hasta');
+
+        $builder = $db->table('venta v')
             ->select('v.id_venta, v.total, v.fecha_venta, v.tipo_entrega, v.id_estado_venta,
                       ev.nombre_estado,
                       mp.nombre_metodo_pago')
             ->join('estado_venta ev', 'ev.id_estado_venta = v.id_estado_venta', 'left')
             ->join('metodo_pago mp', 'mp.id_metodo_pago = v.id_metodo_pago', 'left')
-            ->where('v.id_usuario', $idUsuario)
-            ->orderBy('v.fecha_venta', 'DESC')
-            ->get()->getResultArray();
+            ->where('v.id_usuario', $idUsuario);
+
+        if (!empty($fechaDesde)) {
+            $builder->where('v.fecha_venta >=', $fechaDesde);
+        }
+        if (!empty($fechaHasta)) {
+            $builder->where('v.fecha_venta <=', $fechaHasta);
+        }
+
+        $ventas = $builder->orderBy('v.fecha_venta', 'DESC')->get()->getResultArray();
 
         return view('public/mis_compras', [
-            'title'  => 'Mis Compras - Estética BV',
-            'ventas' => $ventas,
+            'title'       => 'Mis Compras - Estética BV',
+            'ventas'      => $ventas,
+            'fecha_desde' => $fechaDesde,
+            'fecha_hasta' => $fechaHasta,
         ]);
     }
 

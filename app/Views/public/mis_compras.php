@@ -26,6 +26,38 @@
             <p class="text-muted mb-0">Historial de pedidos (<?= count($listaVentas) ?>)</p>
         </div>
 
+        <!-- Filtro de Fechas -->
+        <div class="card mb-4 border-0 rounded-4 shadow-sm bg-white">
+            <div class="card-body">
+                <form action="<?= base_url('mis-compras') ?>" method="GET">
+                    <div class="row g-3 align-items-end">
+                        
+                        <div class="col-12 col-sm-6 col-md-4">
+                            <label for="fecha_desde" class="form-label fw-bold small text-dark mb-1">Fecha Desde</label>
+                            <input type="date" id="fecha_desde" name="fecha_desde" class="form-control rounded-3 border-secondary" value="<?= esc($fecha_desde ?? '') ?>">
+                        </div>
+                        
+                        <div class="col-12 col-sm-6 col-md-4">
+                            <label for="fecha_hasta" class="form-label fw-bold small text-dark mb-1">Fecha Hasta</label>
+                            <input type="date" id="fecha_hasta" name="fecha_hasta" class="form-control rounded-3 border-secondary" value="<?= esc($fecha_hasta ?? '') ?>">
+                        </div>
+
+                        <div class="col-12 col-md-4 d-flex gap-2">
+                            <button type="submit" class="btn btn-custom-nav rounded-3 flex-grow-1" title="Aplicar Filtros">
+                                <i class="fas fa-search me-1"></i> Buscar
+                            </button>
+                            <?php if(!empty($fecha_desde) || !empty($fecha_hasta)): ?>
+                                <a href="<?= base_url('mis-compras') ?>" class="btn btn-custom-back rounded-3 px-3" title="Limpiar Filtros">
+                                    <i class="fas fa-times"></i>
+                                </a>
+                            <?php endif; ?>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+        </div>
+
         <?php if (empty($listaVentas)): ?>
             <!-- Estado Vacío -->
             <div class="text-center py-5 bg-white rounded-4 shadow-sm border-0 mt-4">

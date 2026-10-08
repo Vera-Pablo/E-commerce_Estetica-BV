@@ -51,7 +51,7 @@ class Catalogo extends BaseController{
 
         // Query base: productos activos de categorías activas
         // Se devuelven solo los campos necesarios para renderizar las cards del catálogo
-        $builder = $this->productoModel->select('producto.id_producto, producto.nombre_producto, producto.precio, producto.imagen')
+        $builder = $this->productoModel->select('producto.id_producto, producto.nombre_producto, producto.precio, producto.imagen, producto.stock')
             ->join('categoria', 'categoria.id_categoria = producto.id_categoria')
             ->where('producto.estado_producto', 1)
             ->where('categoria.estado_categoria', 1);

@@ -95,27 +95,37 @@
                 <div class="modal-content rounded-4 border-0">
                     <div class="modal-header border-0">
                         <h5 class="modal-title font-spartan fw-bold" id="categoriaModalLabel">
-                            <i class="fas fa-plus-circle text-primary me-2"></i>Nueva Categoría
+                            <i class="fas fa-plus-circle text-dark me-2"></i>Nueva Categoría
                         </h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                     </div>
-                    <form id="categoriaForm" method="post" action="">
+                    <form id="categoriaForm" method="post" action="" novalidate>
+                        <?php $errorsForm = session()->getFlashdata('errors') ?? []; ?>
                         <?= csrf_field() ?>
                         <div class="modal-body">
                             <div class="mb-3">
                                 <label for="nombre_categoria" class="form-label fw-bold">Nombre</label>
-                                <input type="text" class="form-control rounded-3 border-secondary" id="nombre_categoria" name="nombre_categoria" maxlength="255" required>
+                                <input type="text" class="form-control rounded-3 border-secondary" id="nombre_categoria" name="nombre_categoria" value="<?= esc(old('nombre_categoria', '')) ?>" maxlength="100" required>
+                                <?php if (isset($errorsForm['nombre_categoria'])): ?>
+                                    <div class="text-danger small text-start mt-1">*<?= esc($errorsForm['nombre_categoria']) ?></div>
+                                <?php endif; ?>
                             </div>
                             <div class="mb-3">
                                 <label for="descripcion_categoria" class="form-label fw-bold">Descripción</label>
-                                <textarea class="form-control rounded-3 border-secondary" id="descripcion_categoria" name="descripcion_categoria" rows="3" maxlength="500"></textarea>
+                                <textarea class="form-control rounded-3 border-secondary" id="descripcion_categoria" name="descripcion_categoria" rows="3" maxlength="255"><?= esc(old('descripcion_categoria', '')) ?></textarea>
+                                <?php if (isset($errorsForm['descripcion_categoria'])): ?>
+                                    <div class="text-danger small text-start mt-1">*<?= esc($errorsForm['descripcion_categoria']) ?></div>
+                                <?php endif; ?>
                             </div>
                             <div class="mb-3">
                                 <label for="estado_categoria" class="form-label fw-bold">Estado</label>
                                 <select class="form-select rounded-3 border-secondary" id="estado_categoria" name="estado_categoria">
-                                    <option value="1">Activa</option>
-                                    <option value="0">Inactiva</option>
+                                    <option value="1" <?= old('estado_categoria', '') === '1' ? 'selected' : '' ?>>Activa</option>
+                                    <option value="0" <?= old('estado_categoria', '') === '0' ? 'selected' : '' ?>>Inactiva</option>
                                 </select>
+                                <?php if (isset($errorsForm['estado_categoria'])): ?>
+                                    <div class="text-danger small text-start mt-1">*<?= esc($errorsForm['estado_categoria']) ?></div>
+                                <?php endif; ?>
                             </div>
                         </div>
                         <div class="modal-footer border-0">
@@ -143,10 +153,16 @@
         const urlGuardar = '<?= base_url('admin/categoria/guardar') ?>';
         const urlEditarBase = '<?= base_url('admin/categoria/editar/') ?>';
 
+        function limpiarErroresModal() {
+            const errores = form.querySelectorAll('.text-danger');
+            errores.forEach(el => el.remove());
+        }
+
         function abrirModalCrear() {
+            limpiarErroresModal();
             // Resetear el formulario para el modo creación
             form.action = urlGuardar;
-            modalTitle.innerHTML = '<i class="fas fa-plus-circle text-primary me-2"></i>Nueva Categoría';
+            modalTitle.innerHTML = '<i class="fas fa-plus-circle text-dark me-2"></i>Nueva Categoría';
             
             inputNombre.value = '';
             inputDesc.value = '';
@@ -156,9 +172,10 @@
         }
 
         function abrirModalEditar(cat) {
+            limpiarErroresModal();
             // Configurar el formulario para el modo edición
             form.action = urlEditarBase + cat.id_categoria;
-            modalTitle.innerHTML = '<i class="fas fa-edit text-warning me-2"></i>Editar Categoría';
+            modalTitle.innerHTML = '<i class="fas fa-edit text-dark me-2"></i>Editar Categoría';
             
             inputNombre.value = cat.nombre_categoria || '';
             inputDesc.value = cat.descripcion_categoria || '';
@@ -166,5 +183,20 @@
             
             categoriaModal.show();
         }
+        document.addEventListener('DOMContentLoaded', function() {
+            <?php if (session()->getFlashdata('modal_open')): ?>
+                <?php $modalOpen = session()->getFlashdata('modal_open'); ?>
+                <?php if ($modalOpen === 'crear'): ?>
+                    form.action = urlGuardar;
+                    modalTitle.innerHTML = '<i class="fas fa-plus-circle text-dark me-2"></i>Nueva Categoría';
+                    categoriaModal.show();
+                <?php elseif (strpos($modalOpen, 'editar_') === 0): ?>
+                    <?php $idCatError = explode('_', $modalOpen)[1]; ?>
+                    form.action = urlEditarBase + '<?= $idCatError ?>';
+                    modalTitle.innerHTML = '<i class="fas fa-edit text-dark me-2"></i>Editar Categoría';
+                    categoriaModal.show();
+                <?php endif; ?>
+            <?php endif; ?>
+        });
     </script>
 <?= $this->endSection() ?>

@@ -23,7 +23,8 @@
 
         <div class="row justify-content-center">
             <div class="col-lg-8">
-                <form action="<?= base_url('consultas/enviar') ?>" method="post" class="bg-white p-4 p-md-5 rounded-4 shadow-sm border">
+                <form action="<?= base_url('consultas/enviar') ?>" method="post" class="bg-white p-4 p-md-5 rounded-4 shadow-sm border" novalidate>
+                    <?php $errorsForm = session()->getFlashdata('errors') ?? []; ?>
                     <?= csrf_field() ?>
 
                     <div class="mb-3">
@@ -31,7 +32,10 @@
                         <input type="text" class="form-control rounded-3 border-secondary" id="apellido_nombre" name="apellido_nombre"
                             value="<?= esc(!empty($usuario) ? $usuario['apellido_nombre'] : old('apellido_nombre', '')) ?>"
                             <?= (!empty($usuario) ? 'readonly' : '') ?>
-                            placeholder="Ingresa tu apellido y nombre" required minlength="3" maxlength="255">
+                            placeholder="Ingresa tu apellido y nombre">
+                        <?php if (isset($errorsForm['apellido_nombre'])): ?>
+                            <div class="text-danger small text-start mt-1">*<?= esc($errorsForm['apellido_nombre']) ?></div>
+                        <?php endif; ?>
                     </div>
 
                     <div class="mb-3">
@@ -39,24 +43,34 @@
                         <input type="email" class="form-control rounded-3 border-secondary" id="email" name="email"
                             value="<?= esc(!empty($usuario) ? $usuario['email'] : old('email', '')) ?>"
                             <?= (!empty($usuario) ? 'readonly' : '') ?>
-                            placeholder="tu@email.com" required>
+                            placeholder="tu@email.com">
+                        <?php if (isset($errorsForm['email'])): ?>
+                            <div class="text-danger small text-start mt-1">*<?= esc($errorsForm['email']) ?></div>
+                        <?php endif; ?>
                     </div>
 
                     <div class="mb-3">
                         <label for="asunto" class="form-label fw-bold font-spartan">Asunto <span class="text-danger">*</span></label>
-                        <select class="form-select rounded-3 border-secondary" id="asunto" name="asunto" required>
+                        <select class="form-select rounded-3 border-secondary" id="asunto" name="asunto">
                             <option value="">Selecciona un asunto</option>
                             <option value="pagina web" <?= (old('asunto') === 'pagina web') ? 'selected' : '' ?>>Página Web</option>
                             <option value="producto" <?= (old('asunto') === 'producto') ? 'selected' : '' ?>>Producto</option>
                             <option value="pago" <?= (old('asunto') === 'pago') ? 'selected' : '' ?>>Pago</option>
                             <option value="envio" <?= (old('asunto') === 'envio') ? 'selected' : '' ?>>Envío</option>
+                            <option value="otro" <?= (old('asunto') === 'otro') ? 'selected' : '' ?>>Otro</option>
                         </select>
+                        <?php if (isset($errorsForm['asunto'])): ?>
+                            <div class="text-danger small text-start mt-1">*<?= esc($errorsForm['asunto']) ?></div>
+                        <?php endif; ?>
                     </div>
 
                     <div class="mb-4">
                         <label for="consulta" class="form-label fw-bold font-spartan">Consulta <span class="text-danger">*</span></label>
                         <textarea class="form-control rounded-3 border-secondary" id="consulta" name="consulta" rows="6"
-                            placeholder="Escribe tu consulta aquí (mínimo 10 caracteres, máximo 500)" required minlength="10" maxlength="500"><?= esc(old('consulta', '')) ?></textarea>
+                            placeholder="Escribe tu consulta aquí (mínimo 10 caracteres, máximo 500)"><?= esc(old('consulta', '')) ?></textarea>
+                        <?php if (isset($errorsForm['consulta'])): ?>
+                            <div class="text-danger small text-start mt-1">*<?= esc($errorsForm['consulta']) ?></div>
+                        <?php endif; ?>
                     </div>
 
                     <div class="text-center">

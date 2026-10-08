@@ -26,13 +26,12 @@ class Venta extends BaseController{
     public function index(){
         $db = \Config\Database::connect();
 
-        // Parámetros de búsqueda y filtro desde GET
         $searchId    = $this->request->getGet('search_id');
         $filtroEstado = $this->request->getGet('estado');
         $filtroPago   = $this->request->getGet('metodo_pago');
-        $orden        = $this->request->getGet('orden') ?? 'desc';
+        $fechaDesde   = $this->request->getGet('fecha_desde');
+        $fechaHasta   = $this->request->getGet('fecha_hasta');
 
-        // Consulta relacional: venta + usuario + estado + método de pago
         $builder = $db->table('venta v')
             ->select('v.id_venta, v.total, v.fecha_venta, v.tipo_entrega, v.id_estado_venta, v.id_metodo_pago, v.id_usuario,
                       u.apellido_nombre, u.dni,
@@ -42,24 +41,29 @@ class Venta extends BaseController{
             ->join('estado_venta ev', 'ev.id_estado_venta = v.id_estado_venta', 'left')
             ->join('metodo_pago mp', 'mp.id_metodo_pago = v.id_metodo_pago', 'left');
 
-        // Búsqueda por ID exacto de venta
         if (!empty($searchId) && is_numeric($searchId)) {
             $builder->where('v.id_venta', (int)$searchId);
         }
 
-        // Filtro por estado de venta
         if (!empty($filtroEstado)) {
             $builder->where('v.id_estado_venta', $filtroEstado);
         }
 
-        // Filtro por método de pago
         if (!empty($filtroPago)) {
             $builder->where('v.id_metodo_pago', $filtroPago);
         }
 
-        // Ordenamiento por fecha (asc / desc)
-        $ordenDir = ($orden === 'asc') ? 'ASC' : 'DESC';
-        $builder->orderBy('v.fecha_venta', $ordenDir);
+        // Filtro de intervalo de fechas — reemplaza el selector de orden
+        if (!empty($fechaDesde)) {
+            $builder->where('v.fecha_venta >=', $fechaDesde);
+        }
+        if (!empty($fechaHasta)) {
+            $builder->where('v.fecha_venta <=', $fechaHasta);
+        }
+
+        // Siempre ordenar de más reciente a más antigua
+        $builder->orderBy('v.fecha_venta', 'DESC')
+                ->orderBy('v.id_venta', 'DESC');
 
         $ventas = $builder->get()->getResultArray();
 
@@ -75,7 +79,8 @@ class Venta extends BaseController{
             'search_id'   => $searchId,
             'estado'      => $filtroEstado,
             'metodo_pago' => $filtroPago,
-            'orden'       => $orden,
+            'fecha_desde' => $fechaDesde,
+            'fecha_hasta' => $fechaHasta,
         ]);
     }
 

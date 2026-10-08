@@ -103,6 +103,12 @@
                                         <div class="col-12 col-sm-6 col-md-4 col-xl-3">
                                             <div class="card h-100 border-0 rounded-4 card-hover position-relative" style="box-shadow: 0px 10px 7px rgba(0, 0, 0, 0.26);">
                                                 
+                                                <?php if ((int)($prod['stock'] ?? 0) <= 0): ?>
+                                                    <span class="badge bg-danger position-absolute top-0 start-0 m-2 px-2 py-1 shadow-sm font-spartan fw-bold" style="z-index: 10;">
+                                                        <i class="fas fa-ban me-1"></i>Sin Stock
+                                                    </span>
+                                                <?php endif; ?>
+
                                                 <!-- Botón Favorito -->
                                                 <?php $isFavorito = isset($favoritosIds) && in_array($prod['id_producto'], $favoritosIds); ?>
                                                 <button type="button" 
@@ -211,3 +217,4 @@
     <?= $this->include('Layouts/footer') ?>
 
 <?= $this->endSection() ?>
+

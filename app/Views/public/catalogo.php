@@ -76,6 +76,9 @@
                                 <div class="card-body text-center p-4 d-flex flex-column justify-content-between">
                                     <h5 class="card-title font-spartan fw-bold mb-3"><?= esc($prod['nombre_producto']) ?></h5>
                                     <p class="card-text text-dark fw-bold fs-5 mb-0">$ <?= number_format((float)$prod['precio'], 2, ',', '.') ?></p>
+                                    <?php if ((int)($prod['stock'] ?? 0) <= 0): ?>
+                                        <div class="mt-2 text-danger fw-bold small"><i class="fas fa-ban me-1"></i>Sin Stock</div>
+                                    <?php endif; ?>
                                 </div>
                             </a>
                         </div>
@@ -178,6 +181,11 @@ document.addEventListener('DOMContentLoaded', function() {
             const titleFav = isFav ? 'Quitar de favoritos' : 'Agregar a favoritos';
             const price = parseFloat(prod.precio).toLocaleString('es-AR', {minimumFractionDigits: 2});
             
+            const sinStock = parseInt(prod.stock) <= 0;
+            const sinStockText = sinStock
+                ? '<div class="mt-2 text-danger fw-bold small"><i class="fas fa-ban me-1"></i>Sin Stock</div>'
+                : '';
+            
             col.innerHTML = `
                 <div class="card h-100 border-0 rounded-4 card-hover position-relative" style="box-shadow: 0px 10px 7px rgba(0, 0, 0, 0.26);">
                     <button type="button" 
@@ -195,6 +203,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         <div class="card-body text-center p-4 d-flex flex-column justify-content-between">
                             <h5 class="card-title font-spartan fw-bold mb-3">${escapeHtml(prod.nombre_producto)}</h5>
                             <p class="card-text text-dark fw-bold fs-5 mb-0">$ ${price}</p>
+                            ${sinStockText}
                         </div>
                     </a>
                 </div>

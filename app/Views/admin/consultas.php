@@ -22,29 +22,42 @@
     <!-- Filter Bar -->
     <div class="card mb-4 border-0 rounded-4" style="box-shadow: 0px 10px 7px rgba(0, 0, 0, 0.26);">
         <div class="card-body">
-            <form action="<?= base_url('admin/consultas') ?>" method="GET" class="d-flex flex-wrap align-items-end gap-3">
-                <div>
-                    <label for="filter-fecha" class="form-label font-spartan fw-bold small text-muted mb-1">Filtrar por Fecha</label>
-                    <input id="filter-fecha" name="fecha" type="date" class="form-control rounded-3 border-secondary" value="<?= esc($fecha ?? '') ?>" />
-                </div>
+            <form action="<?= base_url('admin/consultas') ?>" method="GET">
+                <div class="row g-3 align-items-end">
 
-                <div>
-                    <label for="filter-orden" class="form-label font-spartan fw-bold small text-muted mb-1">Orden</label>
-                    <select id="filter-orden" name="orden" class="form-select rounded-3 border-secondary" style="min-width: 170px;">
-                        <option value="desc" <?= (isset($orden) && $orden === 'desc') ? 'selected' : '' ?>>Más recientes primero</option>
-                        <option value="asc" <?= (isset($orden) && $orden === 'asc') ? 'selected' : '' ?>>Más antiguas primero</option>
-                    </select>
-                </div>
+                    <!-- Fecha Desde -->
+                    <div class="col-12 col-sm-6 col-md-3">
+                        <label for="fecha_desde" class="form-label fw-bold small text-dark mb-1">Fecha Desde</label>
+                        <input type="date" id="fecha_desde" name="fecha_desde" class="form-control rounded-3 border-secondary" value="<?= esc($fecha_desde ?? '') ?>">
+                    </div>
 
-                <div class="d-flex align-items-center gap-2">
-                    <button type="submit" class="btn btn-custom-nav rounded-3 px-4 fw-bold font-spartan" title="Filtrar">
-                        <i class="fas fa-filter me-1"></i> Filtrar
-                    </button>
-                    <?php if(!empty($fecha) || (isset($orden) && $orden !== 'desc')): ?>
-                        <a href="<?= base_url('admin/consultas') ?>" class="btn btn-link text-muted text-decoration-none">
-                            <i class="fas fa-times-circle me-1"></i> Limpiar filtros
-                        </a>
-                    <?php endif; ?>
+                    <!-- Fecha Hasta -->
+                    <div class="col-12 col-sm-6 col-md-3">
+                        <label for="fecha_hasta" class="form-label fw-bold small text-dark mb-1">Fecha Hasta</label>
+                        <input type="date" id="fecha_hasta" name="fecha_hasta" class="form-control rounded-3 border-secondary" value="<?= esc($fecha_hasta ?? '') ?>">
+                    </div>
+
+                    <!-- Orden -->
+                    <div class="col-12 col-sm-6 col-md-3">
+                        <label for="filter-orden" class="form-label fw-bold small text-dark mb-1">Orden</label>
+                        <select id="filter-orden" name="orden" class="form-select rounded-3 border-secondary">
+                            <option value="desc" <?= (isset($orden) && $orden === 'desc') ? 'selected' : '' ?>>Más recientes primero</option>
+                            <option value="asc" <?= (isset($orden) && $orden === 'asc') ? 'selected' : '' ?>>Más antiguas primero</option>
+                        </select>
+                    </div>
+
+                    <!-- Botones -->
+                    <div class="col-12 col-sm-6 col-md-3 d-flex gap-2">
+                        <button type="submit" class="btn btn-custom-nav rounded-3 w-100" title="Aplicar Filtros">
+                            <i class="fas fa-search me-1"></i> Buscar
+                        </button>
+                        <?php if(!empty($fecha_desde) || !empty($fecha_hasta) || (isset($orden) && $orden !== 'desc')): ?>
+                            <a href="<?= base_url('admin/consultas') ?>" class="btn btn-custom-back rounded-3 px-3" title="Limpiar Filtros">
+                                <i class="fas fa-times"></i>
+                            </a>
+                        <?php endif; ?>
+                    </div>
+
                 </div>
             </form>
         </div>
@@ -188,3 +201,4 @@
         }
     </script>
 <?= $this->endSection() ?>
+

@@ -45,7 +45,11 @@ class Perfil extends BaseController{
         ];
 
         if (!$this->validate($rules)) {
-            return redirect()->back()->withInput()->with('errors', $this->validator->getErrors())->with('error', 'Por favor corrige los errores en el formulario.');
+            return redirect()->back()
+                             ->withInput()
+                             ->with('errors', $this->validator->getErrors())
+                             ->with('error', 'Por favor corrige los errores en el formulario.')
+                             ->with('modal_open', 'editar_datos');
         }
 
         $apellidoNombre = trim((string) $this->request->getPost('apellido_nombre'));
@@ -81,14 +85,21 @@ class Perfil extends BaseController{
         ];
 
         if (!$this->validate($rules)) {
-            return redirect()->back()->withInput()->with('errors', $this->validator->getErrors())->with('error', 'Por favor corrige los errores en el formulario.');
+            return redirect()->back()
+                             ->withInput()
+                             ->with('errors', $this->validator->getErrors())
+                             ->with('error', 'Por favor corrige los errores en el formulario.')
+                             ->with('modal_open', 'cambiar_password');
         }
 
         $usuario        = $this->usuarioModel->find($idUsuario);
         $passwordActual = (string) $this->request->getPost('password_actual');
 
         if (!$usuario || !password_verify($passwordActual, $usuario['password'])) {
-            return redirect()->back()->withInput()->with('error', 'La contraseña actual no es correcta.');
+            return redirect()->back()
+                             ->withInput()
+                             ->with('error', 'La contraseña actual no es correcta.')
+                             ->with('modal_open', 'cambiar_password');
         }
 
         $passwordNuevo = (string) $this->request->getPost('password_nuevo');

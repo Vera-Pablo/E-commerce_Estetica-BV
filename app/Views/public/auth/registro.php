@@ -4,19 +4,7 @@
 <?= $this->section('content') ?>
 <div class="d-flex align-items-center min-vh-100 py-4">
 
-    <!-- Flash Messages -->
-    <?php if (session()->getFlashdata('success')): ?>
-        <div id="flash-success" data-message="<?= esc(session()->getFlashdata('success')) ?>" style="display:none;"></div>
-    <?php endif; ?>
-    <?php if (session()->getFlashdata('error')): ?>
-        <div id="flash-error" data-message="<?= esc(session()->getFlashdata('error')) ?>" style="display:none;"></div>
-    <?php endif; ?>
-    <?php if (session()->getFlashdata('info')): ?>
-        <div id="flash-warning" data-message="<?= esc(session()->getFlashdata('info')) ?>" style="display:none;"></div>
-    <?php endif; ?>
-    <?php if (session()->getFlashdata('errors')): ?>
-        <div id="flash-warning" data-message="<?= esc(implode(' | ', session()->getFlashdata('errors'))) ?>" style="display:none;"></div>
-    <?php endif; ?>
+
 
     <div class="container">
         <div class="row justify-content-center">
@@ -27,7 +15,8 @@
                         <div class="card cascading-right bg-body-tertiary" style="backdrop-filter: blur(30px); z-index: 1;">
                             <div class="card-body p-4 p-md-5 text-center shadow-5">
                                 <h2 class="fw-bold mb-5">Crear Cuenta</h2>
-                                <form action="<?= base_url('registro') ?>" method="post">
+                                <form action="<?= base_url('registro') ?>" method="post" novalidate>
+                                    <?php $errorsForm = session()->getFlashdata('errors') ?? []; ?>
                                     <?= csrf_field() ?>
 
                                     <div class="mb-3">
@@ -35,6 +24,9 @@
                                             <input type="text" id="dni" name="dni" class="form-control" placeholder="DNI" value="<?= esc(old('dni')) ?>" maxlength="8" pattern="[0-9]{8}" inputmode="numeric" title="El DNI debe tener exactamente 8 números" required />
                                             <label for="dni">DNI</label>
                                         </div>
+                                        <?php if (isset($errorsForm['dni'])): ?>
+                                            <div class="text-danger small text-start mt-1">*<?= esc($errorsForm['dni']) ?></div>
+                                        <?php endif; ?>
                                     </div>
 
                                     <div class="mb-3">
@@ -42,6 +34,9 @@
                                             <input type="text" id="apellido_nombre" name="apellido_nombre" class="form-control" placeholder="Apellido y Nombre" value="<?= esc(old('apellido_nombre')) ?>" required />
                                             <label for="apellido_nombre">Apellido y Nombre</label>
                                         </div>
+                                        <?php if (isset($errorsForm['apellido_nombre'])): ?>
+                                            <div class="text-danger small text-start mt-1">*<?= esc($errorsForm['apellido_nombre']) ?></div>
+                                        <?php endif; ?>
                                     </div>
 
                                     <div class="mb-3">
@@ -49,6 +44,9 @@
                                             <input type="email" id="email" name="email" class="form-control" placeholder="Email" value="<?= esc(old('email')) ?>" required />
                                             <label for="email">Correo Electrónico</label>
                                         </div>
+                                        <?php if (isset($errorsForm['email'])): ?>
+                                            <div class="text-danger small text-start mt-1">*<?= esc($errorsForm['email']) ?></div>
+                                        <?php endif; ?>
                                     </div>
 
                                     <div class="mb-3">
@@ -56,6 +54,9 @@
                                             <input type="text" id="telefono" name="telefono" class="form-control" placeholder="Teléfono" value="<?= esc(old('telefono')) ?>" />
                                             <label for="telefono">Teléfono (Opcional)</label>
                                         </div>
+                                        <?php if (isset($errorsForm['telefono'])): ?>
+                                            <div class="text-danger small text-start mt-1">*<?= esc($errorsForm['telefono']) ?></div>
+                                        <?php endif; ?>
                                     </div>
 
                                     <div class="mb-3 position-relative">
@@ -66,6 +67,9 @@
                                         <button type="button" class="btn btn-link text-muted position-absolute top-50 end-0 translate-middle-y me-3 p-0 border-0 shadow-none" onclick="togglePassword('password', this)" tabindex="-1" style="z-index: 10;">
                                             <i class="fas fa-eye fs-5"></i>
                                         </button>
+                                        <?php if (isset($errorsForm['password'])): ?>
+                                            <div class="text-danger small text-start mt-1">*<?= esc($errorsForm['password']) ?></div>
+                                        <?php endif; ?>
                                     </div>
 
                                     <div class="mb-4 position-relative">
@@ -76,6 +80,9 @@
                                         <button type="button" class="btn btn-link text-muted position-absolute top-50 end-0 translate-middle-y me-3 p-0 border-0 shadow-none" onclick="togglePassword('passconf', this)" tabindex="-1" style="z-index: 10;">
                                             <i class="fas fa-eye fs-5"></i>
                                         </button>
+                                        <?php if (isset($errorsForm['passconf'])): ?>
+                                            <div class="text-danger small text-start mt-1">*<?= esc($errorsForm['passconf']) ?></div>
+                                        <?php endif; ?>
                                     </div>
 
                                     <!-- Submit button -->

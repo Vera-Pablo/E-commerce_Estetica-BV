@@ -26,7 +26,7 @@
         <div class="row g-5 mb-5">
 
             <!-- Columna Imagen -->
-            <div class="col-12 col-md-6">
+            <div class="col-12 col-md-6 position-relative">
                 <img src="<?= esc(cloudinary_thumb($producto['imagen'] ?? null, 600)) ?>"
                      alt="Imagen de <?= esc($producto['nombre_producto'] ?? '') ?>"
                      class="img-fluid rounded-4 w-100"
@@ -164,8 +164,9 @@
                                         <div class="col-12 col-sm-6 col-md-4 col-xl-3">
                                             <a href="<?= base_url('producto/' . esc($sim['id_producto'])) ?>"
                                                class="text-decoration-none text-dark">
-                                                <div class="card h-100 border-0 rounded-4 card-hover"
+                                                <div class="card h-100 border-0 rounded-4 card-hover position-relative"
                                                      style="box-shadow: 0px 10px 7px rgba(0, 0, 0, 0.26);">
+                                                     
                                                     <img src="<?= esc(cloudinary_thumb($sim['imagen'] ?? null)) ?>"
                                                          class="card-img-top product-img bg-light"
                                                          alt="Imagen de <?= esc($sim['nombre_producto']) ?>"
@@ -178,6 +179,9 @@
                                                         <p class="card-text text-dark fw-bold fs-5 mb-0">
                                                             $ <?= number_format((float)$sim['precio'], 2, ',', '.') ?>
                                                         </p>
+                                                        <?php if ((int)($sim['stock'] ?? 0) <= 0): ?>
+                                                            <div class="mt-2 text-danger fw-bold small"><i class="fas fa-ban me-1"></i>Sin Stock</div>
+                                                        <?php endif; ?>
                                                     </div>
                                                 </div>
                                             </a>
