@@ -13,17 +13,21 @@ class Consulta extends BaseController{
         $this->consultaModel = new ConsultaModel();
     }
 
-    //Muestra la lista de consultas. Soporta búsqueda por fecha y ordenamiento.
+    // Muestra la lista de consultas. Soporta bsqueda por rango de fechas y ordenamiento.
     public function index(){
 
-        $fecha = $this->request->getGet('fecha');
-        $orden = $this->request->getGet('orden') ?? 'desc';
+        $fechaDesde = $this->request->getGet('fecha_desde');
+        $fechaHasta = $this->request->getGet('fecha_hasta');
+        $orden      = $this->request->getGet('orden') ?? 'desc';
 
         $builder = $this->consultaModel->select('consulta.*, usuario.apellido_nombre, usuario.email, usuario.telefono, usuario.dni')
                                  ->join('usuario', 'usuario.id_usuario = consulta.id_usuario', 'left');
 
-        if (!empty($fecha)) {
-            $builder->where('consulta.fecha_consulta', $fecha);
+        if (!empty($fechaDesde)) {
+            $builder->where('consulta.fecha_consulta >=', $fechaDesde);
+        }
+        if (!empty($fechaHasta)) {
+            $builder->where('consulta.fecha_consulta <=', $fechaHasta);
         }
 
         if (in_array(strtolower($orden), ['asc', 'desc'], true)) {
@@ -37,10 +41,11 @@ class Consulta extends BaseController{
         $consultas = $builder->findAll();
 
         return view('admin/consultas', [
-            'title'     => 'Consultas - Panel Admin',
-            'consultas' => $consultas,
-            'fecha'     => $fecha,
-            'orden'     => $orden,
+            'title'       => 'Consultas - Panel Admin',
+            'consultas'   => $consultas,
+            'fecha_desde' => $fechaDesde,
+            'fecha_hasta' => $fechaHasta,
+            'orden'       => $orden,
         ]);
     }
 }

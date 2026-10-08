@@ -40,6 +40,12 @@
                     <div class="col-12 col-sm-6 col-md-4 col-xl-3" id="fav-card-<?= $prod['id_producto'] ?>">
                         <div class="card h-100 border-0 rounded-4 card-hover position-relative" style="box-shadow: 0px 10px 7px rgba(0, 0, 0, 0.26);">
                             
+                            <?php if ((int)($prod['stock'] ?? 0) <= 0): ?>
+                                <span class="badge bg-danger position-absolute top-0 start-0 m-2 px-2 py-1 shadow-sm font-spartan fw-bold" style="z-index: 10;">
+                                    <i class="fas fa-ban me-1"></i>Sin Stock
+                                </span>
+                            <?php endif; ?>
+
                             <!-- Botón Favorito Absoluto -->
                             <button type="button" 
                                     class="btn p-2 border-0 bg-transparent position-absolute top-0 end-0 m-2" 
@@ -71,9 +77,15 @@
                                         <?= csrf_field() ?>
                                         <input type="hidden" name="id_producto" value="<?= esc($prod['id_producto']) ?>">
                                         <input type="hidden" name="cantidad" value="1">
-                                        <button type="submit" class="btn btn-custom-nav px-4 py-2 w-100 fw-bold" <?= (int)($prod['stock'] ?? 0) === 0 ? 'disabled' : '' ?>>
-                                            <i class="fas fa-cart-shopping me-2"></i>Al Carrito
-                                        </button>
+                                        <?php if ((int)($prod['stock'] ?? 0) <= 0): ?>
+                                            <button type="submit" class="btn btn-secondary px-4 py-2 w-100 fw-bold" disabled>
+                                                <i class="fas fa-ban me-2"></i>Sin Stock
+                                            </button>
+                                        <?php else: ?>
+                                            <button type="submit" class="btn btn-custom-nav px-4 py-2 w-100 fw-bold">
+                                                <i class="fas fa-cart-shopping me-2"></i>Al Carrito
+                                            </button>
+                                        <?php endif; ?>
                                     </form>
                                 </div>
                             </div>

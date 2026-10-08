@@ -32,12 +32,23 @@ class AuthController extends BaseController{
     // Procesa el login del usuario.
     public function loginProcess(){
         $rules = [
-            'email'    => 'required|valid_email',
-            'password' => 'required',
+            'email' => [
+                'rules'  => 'required|valid_email',
+                'errors' => [
+                    'required'    => 'El correo electrónico es obligatorio.',
+                    'valid_email' => 'Debes ingresar un correo electrónico válido (@gmail.com - @hotmail.com).',
+                ],
+            ],
+            'password' => [
+                'rules'  => 'required',
+                'errors' => [
+                    'required' => 'La contraseña es obligatoria.',
+                ],
+            ],
         ];
 
         if (!$this->validate($rules)) {
-            return redirect()->back()->withInput()->with('error', 'Por favor ingresa un correo y contraseña válidos.');
+            return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
         }
 
         $email    = $this->request->getPost('email');
@@ -63,7 +74,8 @@ class AuthController extends BaseController{
         ]);
 
         if ((int) $user['id_rol'] === 1) {
-            return redirect()->to('/admin/dashboard');
+            return redirect()->to('/admin/dashboard')->with('success', 'Bienvenido Admin');
+
         }
 
         return redirect()->to('/')->with('success', 'Sesión iniciada correctamente');
@@ -132,7 +144,7 @@ class AuthController extends BaseController{
         ];
 
         if (!$this->validate($rules)) {
-            return redirect()->back()->withInput()->with('errors', $this->validator->getErrors())->with('error', 'Por favor corrige los errores en el formulario.');
+            return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
         }
 
         $dni            = $this->request->getPost('dni');
@@ -207,13 +219,31 @@ class AuthController extends BaseController{
     // Procesa la solicitud de recuperación de contraseña.
     public function recuperarProcess(){
         $rules = [
-            'email'            => 'required|valid_email',
-            'password'         => 'required|min_length[8]',
-            'confirm_password' => 'required|matches[password]',
+            'email' => [
+                'rules'  => 'required|valid_email',
+                'errors' => [
+                    'required'    => 'El correo electrónico es obligatorio.',
+                    'valid_email' => 'Debes ingresar un correo electrónico válido.',
+                ],
+            ],
+            'password' => [
+                'rules'  => 'required|min_length[8]',
+                'errors' => [
+                    'required'   => 'La nueva contraseña es obligatoria.',
+                    'min_length' => 'La contraseña debe tener al menos 8 caracteres.',
+                ],
+            ],
+            'confirm_password' => [
+                'rules'  => 'required|matches[password]',
+                'errors' => [
+                    'required' => 'Debes confirmar la contraseña.',
+                    'matches'  => 'Las contraseñas no coinciden.',
+                ],
+            ],
         ];
 
         if (!$this->validate($rules)) {
-            return redirect()->back()->withInput()->with('errors', $this->validator->getErrors())->with('error', 'Las contraseñas no coinciden o no cumplen con los requisitos.');
+            return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
         }
 
         $email    = $this->request->getPost('email');

@@ -1,20 +1,6 @@
 <?= $this->extend('Layouts/base') ?>
-
-
 <?= $this->section('content') ?>
 <div class="d-flex align-items-center min-vh-100 py-4">
-
-    <!-- Flash Messages -->
-    <?php if (session()->getFlashdata('success')): ?>
-        <div id="flash-success" data-message="<?= esc(session()->getFlashdata('success')) ?>" style="display:none;"></div>
-    <?php endif; ?>
-    <?php if (session()->getFlashdata('error')): ?>
-        <div id="flash-error" data-message="<?= esc(session()->getFlashdata('error')) ?>" style="display:none;"></div>
-    <?php endif; ?>
-    <?php if (session()->getFlashdata('warning')): ?>
-        <div id="flash-warning" data-message="<?= esc(session()->getFlashdata('warning')) ?>" style="display:none;"></div>
-    <?php endif; ?>
-
     <div class="container">
         <div class="row justify-content-center">
             <!-- Limita el ancho del formulario con la imagen en PC -->
@@ -24,13 +10,19 @@
                         <div class="card cascading-right bg-body-tertiary" style="backdrop-filter: blur(30px); z-index: 1;">
                             <div class="card-body p-4 p-md-5 text-center shadow-5">
                                 <h2 class="fw-bold mb-5">Iniciar Sesión</h2>
-                                <form action="<?= base_url('login') ?>" method="post">
+                                <form action="<?= base_url('login') ?>" method="post" novalidate>
+                                    <?php $errorsForm = session()->getFlashdata('errors') ?? []; ?>
                                     <?= csrf_field() ?>
 
                                     <!-- Email input -->
-                                    <div class="form-floating mb-4">
-                                        <input type="email" id="email" name="email" class="form-control" placeholder="nombre@ejemplo.com" value="<?= esc(old('email')) ?>" required />
-                                        <label for="email">Correo Electrónico</label>
+                                    <div class="mb-4">
+                                        <div class="form-floating">
+                                            <input type="email" id="email" name="email" class="form-control" placeholder="nombre@ejemplo.com" value="<?= esc(old('email')) ?>" required />
+                                            <label for="email">Correo Electrónico</label>
+                                        </div>
+                                        <?php if (isset($errorsForm['email'])): ?>
+                                            <div class="text-danger small text-start mt-1">*<?= esc($errorsForm['email']) ?></div>
+                                        <?php endif; ?>
                                     </div>
 
                                     <!-- Password input -->
@@ -42,6 +34,9 @@
                                         <button type="button" class="btn btn-link text-muted position-absolute top-50 end-0 translate-middle-y me-3 p-0 border-0 shadow-none" onclick="togglePassword('password', this)" tabindex="-1" style="z-index: 10;">
                                             <i class="fas fa-eye fs-5"></i>
                                         </button>
+                                        <?php if (isset($errorsForm['password'])): ?>
+                                            <div class="text-danger small text-start mt-1">*<?= esc($errorsForm['password']) ?></div>
+                                        <?php endif; ?>
                                     </div>
 
                                     <!-- Submit button -->

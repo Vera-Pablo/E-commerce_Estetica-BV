@@ -4,16 +4,7 @@
 <?= $this->section('content') ?>
 <div class="d-flex align-items-center min-vh-100 py-4">
 
-    <!-- Flash Messages -->
-    <?php if (session()->getFlashdata('success')): ?>
-        <div id="flash-success" data-message="<?= esc(session()->getFlashdata('success')) ?>" style="display:none;"></div>
-    <?php endif; ?>
-    <?php if (session()->getFlashdata('error')): ?>
-        <div id="flash-error" data-message="<?= esc(session()->getFlashdata('error')) ?>" style="display:none;"></div>
-    <?php endif; ?>
-    <?php if (session()->getFlashdata('errors')): ?>
-        <div id="flash-warning" data-message="<?= esc(implode(' | ', session()->getFlashdata('errors'))) ?>" style="display:none;"></div>
-    <?php endif; ?>
+
 
     <div class="container">
         <div class="row justify-content-center">
@@ -25,13 +16,19 @@
                             <div class="card-body p-4 p-md-5 text-center shadow-5">
                                 <h2 class="fw-bold mb-5">Recuperar Clave</h2>
                                 <p class="text-muted mb-4 small">Ingresa tu correo electrónico y la nueva contraseña que deseas usar.</p>
-                                <form action="<?= base_url('recuperar') ?>" method="post">
+                                <form action="<?= base_url('recuperar') ?>" method="post" novalidate>
+                                    <?php $errorsForm = session()->getFlashdata('errors') ?? []; ?>
                                     <?= csrf_field() ?>
 
                                     <!-- Email input -->
-                                    <div class="form-floating mb-4">
-                                        <input type="email" id="email" name="email" class="form-control" placeholder="nombre@ejemplo.com" value="<?= esc(old('email')) ?>" required />
-                                        <label for="email">Correo Electrónico</label>
+                                    <div class="mb-4">
+                                        <div class="form-floating">
+                                            <input type="email" id="email" name="email" class="form-control" placeholder="nombre@ejemplo.com" value="<?= esc(old('email')) ?>" required />
+                                            <label for="email">Correo Electrónico</label>
+                                        </div>
+                                        <?php if (isset($errorsForm['email'])): ?>
+                                            <div class="text-danger small text-start mt-1">*<?= esc($errorsForm['email']) ?></div>
+                                        <?php endif; ?>
                                     </div>
 
                                     <!-- Password input -->
@@ -43,6 +40,9 @@
                                         <button type="button" class="btn btn-link text-muted position-absolute top-50 end-0 translate-middle-y me-3 p-0 border-0 shadow-none" onclick="togglePassword('password', this)" tabindex="-1" style="z-index: 10;">
                                             <i class="fas fa-eye fs-5"></i>
                                         </button>
+                                        <?php if (isset($errorsForm['password'])): ?>
+                                            <div class="text-danger small text-start mt-1">*<?= esc($errorsForm['password']) ?></div>
+                                        <?php endif; ?>
                                     </div>
 
                                     <!-- Confirm Password input -->
@@ -54,6 +54,9 @@
                                         <button type="button" class="btn btn-link text-muted position-absolute top-50 end-0 translate-middle-y me-3 p-0 border-0 shadow-none" onclick="togglePassword('confirm_password', this)" tabindex="-1" style="z-index: 10;">
                                             <i class="fas fa-eye fs-5"></i>
                                         </button>
+                                        <?php if (isset($errorsForm['confirm_password'])): ?>
+                                            <div class="text-danger small text-start mt-1">*<?= esc($errorsForm['confirm_password']) ?></div>
+                                        <?php endif; ?>
                                     </div>
 
                                     <!-- Submit button -->

@@ -64,7 +64,10 @@
                                 </span>
                             </div>
                             
-                            <p class="text-muted small mb-2"><i class="fas fa-tag me-1"></i> <?= esc($prod['nombre_categoria'] ?? 'Sin Categoría') ?></p>
+                            <p class="text-muted small mb-2">
+                                <i class="fas fa-barcode me-1"></i> <?= esc($prod['codigo_producto'] ?? 'N/A') ?> &nbsp;|&nbsp; 
+                                <i class="fas fa-tag me-1"></i> <?= esc($prod['nombre_categoria'] ?? 'Sin Categoría') ?>
+                            </p>
 
                             <p class="card-text text-muted mb-3" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; height: 3em;">
                                 <?= esc($prod['descripcion_producto'] ?: 'Sin descripción asignada.') ?>
@@ -107,49 +110,80 @@
             <div class="modal-dialog modal-dialog-centered modal-lg">
                 <div class="modal-content rounded-4 border-0">
                     <div class="modal-header border-0">
-                        <h5 class="modal-title font-spartan fw-bold" id="productoModalLabel">Nuevo Producto</h5>
+                        <h5 class="modal-title font-spartan fw-bold" id="productoModalLabel"><i class="fas fa-plus-circle text-dark me-2"></i>Nuevo Producto</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                     </div>
-                    <form id="productoForm" method="post" action="">
+                    <form id="productoForm" method="post" action="" novalidate>
+                        <?php $errorsForm = session()->getFlashdata('errors') ?? []; ?>
                         <?= csrf_field() ?>
                         <div class="modal-body">
-                            <div class="mb-3">
-                                <label for="nombre_producto" class="form-label fw-bold">Nombre</label>
-                                <input type="text" class="form-control rounded-3 border-secondary" id="nombre_producto" name="nombre_producto" maxlength="255" required>
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <label for="codigo_producto" class="form-label fw-bold">Código</label>
+                                    <input type="text" class="form-control rounded-3 border-secondary" id="codigo_producto" name="codigo_producto" value="<?= esc(old('codigo_producto', '')) ?>" maxlength="50" required>
+                                    <?php if (isset($errorsForm['codigo_producto'])): ?>
+                                        <div class="text-danger small text-start mt-1">*<?= esc($errorsForm['codigo_producto']) ?></div>
+                                    <?php endif; ?>
+                                </div>
+                                <div class="col-md-8 mb-3">
+                                    <label for="nombre_producto" class="form-label fw-bold">Nombre</label>
+                                    <input type="text" class="form-control rounded-3 border-secondary" id="nombre_producto" name="nombre_producto" value="<?= esc(old('nombre_producto', '')) ?>" maxlength="255" required>
+                                    <?php if (isset($errorsForm['nombre_producto'])): ?>
+                                        <div class="text-danger small text-start mt-1">*<?= esc($errorsForm['nombre_producto']) ?></div>
+                                    <?php endif; ?>
+                                </div>
                             </div>
                             <div class="mb-3">
                                 <label for="id_categoria" class="form-label fw-bold">Categoría</label>
                                 <select class="form-select rounded-3 border-secondary" id="id_categoria" name="id_categoria" required>
                                     <option value="">Seleccione una categoría</option>
                                     <?php foreach($categorias as $c): ?>
-                                        <option value="<?= esc($c['id_categoria']) ?>"><?= esc($c['nombre_categoria']) ?></option>
+                                        <option value="<?= esc($c['id_categoria']) ?>" <?= old('id_categoria', '') == $c['id_categoria'] ? 'selected' : '' ?>><?= esc($c['nombre_categoria']) ?></option>
                                     <?php endforeach; ?>
                                 </select>
+                                <?php if (isset($errorsForm['id_categoria'])): ?>
+                                    <div class="text-danger small text-start mt-1">*<?= esc($errorsForm['id_categoria']) ?></div>
+                                <?php endif; ?>
                             </div>
                             <div class="mb-3">
                                 <label for="descripcion_producto" class="form-label fw-bold">Descripción</label>
-                                <textarea class="form-control rounded-3 border-secondary" id="descripcion_producto" name="descripcion_producto" rows="3" maxlength="500"></textarea>
+                                <textarea class="form-control rounded-3 border-secondary" id="descripcion_producto" name="descripcion_producto" rows="3" maxlength="500" required><?= esc(old('descripcion_producto', '')) ?></textarea>
+                                <?php if (isset($errorsForm['descripcion_producto'])): ?>
+                                    <div class="text-danger small text-start mt-1">*<?= esc($errorsForm['descripcion_producto']) ?></div>
+                                <?php endif; ?>
                             </div>
                             <div class="row">
                                 <div class="col-md-4 mb-3">
                                     <label for="precio" class="form-label fw-bold">Precio</label>
-                                    <input type="number" step="0.01" min="0" class="form-control rounded-3 border-secondary" id="precio" name="precio" required>
+                                    <input type="number" step="0.01" min="0" class="form-control rounded-3 border-secondary" id="precio" name="precio" value="<?= esc(old('precio', '')) ?>" required>
+                                    <?php if (isset($errorsForm['precio'])): ?>
+                                        <div class="text-danger small text-start mt-1">*<?= esc($errorsForm['precio']) ?></div>
+                                    <?php endif; ?>
                                 </div>
                                 <div class="col-md-4 mb-3">
                                     <label for="stock" class="form-label fw-bold">Stock</label>
-                                    <input type="number" min="0" class="form-control rounded-3 border-secondary" id="stock" name="stock" required>
+                                    <input type="number" min="0" class="form-control rounded-3 border-secondary" id="stock" name="stock" value="<?= esc(old('stock', '')) ?>" required>
+                                    <?php if (isset($errorsForm['stock'])): ?>
+                                        <div class="text-danger small text-start mt-1">*<?= esc($errorsForm['stock']) ?></div>
+                                    <?php endif; ?>
                                 </div>
                                 <div class="col-md-4 mb-3">
                                     <label for="estado_producto" class="form-label fw-bold">Estado</label>
                                     <select class="form-select rounded-3 border-secondary" id="estado_producto" name="estado_producto">
-                                        <option value="1">Activo</option>
-                                        <option value="0">Inactivo</option>
+                                        <option value="1" <?= old('estado_producto', '') === '1' ? 'selected' : '' ?>>Activo</option>
+                                        <option value="0" <?= old('estado_producto', '') === '0' ? 'selected' : '' ?>>Inactivo</option>
                                     </select>
+                                    <?php if (isset($errorsForm['estado_producto'])): ?>
+                                        <div class="text-danger small text-start mt-1">*<?= esc($errorsForm['estado_producto']) ?></div>
+                                    <?php endif; ?>
                                 </div>
                             </div>
                             <div class="mb-3">
                                 <label for="imagen" class="form-label fw-bold">Imagen (URL Cloudinary)</label>
-                                <input type="url" class="form-control rounded-3 border-secondary" id="imagen" name="imagen" maxlength="500">
+                                <input type="url" class="form-control rounded-3 border-secondary" id="imagen" name="imagen" value="<?= esc(old('imagen', '')) ?>" maxlength="500" required>
+                                <?php if (isset($errorsForm['imagen'])): ?>
+                                    <div class="text-danger small text-start mt-1">*<?= esc($errorsForm['imagen']) ?></div>
+                                <?php endif; ?>
                             </div>
                         </div>
                         <div class="modal-footer border-0">
@@ -170,6 +204,7 @@
         const form = document.getElementById('productoForm');
         const modalTitle = document.getElementById('productoModalLabel');
         
+        const inputCodigo = document.getElementById('codigo_producto');
         const inputNombre = document.getElementById('nombre_producto');
         const inputCategoria = document.getElementById('id_categoria');
         const inputDesc = document.getElementById('descripcion_producto');
@@ -181,11 +216,18 @@
         const urlGuardar = '<?= base_url('admin/producto/guardar') ?>';
         const urlEditarBase = '<?= base_url('admin/producto/editar/') ?>';
 
+        function limpiarErroresModal() {
+            const errores = form.querySelectorAll('.text-danger');
+            errores.forEach(el => el.remove());
+        }
+
         function abrirModalCrear() {
+            limpiarErroresModal();
             // Resetear el formulario para el modo creación
             form.action = urlGuardar;
             modalTitle.innerHTML = '<i class="fas fa-plus-circle text-dark me-2"></i>Nuevo Producto';
             
+            inputCodigo.value = '';
             inputNombre.value = '';
             inputCategoria.value = '';
             inputDesc.value = '';
@@ -198,10 +240,12 @@
         }
 
         function abrirModalEditar(prod) {
+            limpiarErroresModal();
             // Configurar el formulario para el modo edición
             form.action = urlEditarBase + prod.id_producto;
             modalTitle.innerHTML = '<i class="fas fa-edit text-dark me-2"></i>Editar Producto';
             
+            inputCodigo.value = prod.codigo_producto || '';
             inputNombre.value = prod.nombre_producto || '';
             inputCategoria.value = prod.id_categoria || '';
             inputDesc.value = prod.descripcion_producto || '';
@@ -212,5 +256,21 @@
             
             productoModal.show();
         }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            <?php if (session()->getFlashdata('modal_open')): ?>
+                <?php $modalOpen = session()->getFlashdata('modal_open'); ?>
+                <?php if ($modalOpen === 'crear'): ?>
+                    form.action = urlGuardar;
+                    modalTitle.innerHTML = '<i class="fas fa-plus-circle text-dark me-2"></i>Nuevo Producto';
+                    productoModal.show();
+                <?php elseif (strpos($modalOpen, 'editar_') === 0): ?>
+                    <?php $idProdError = explode('_', $modalOpen)[1]; ?>
+                    form.action = urlEditarBase + '<?= $idProdError ?>';
+                    modalTitle.innerHTML = '<i class="fas fa-edit text-dark me-2"></i>Editar Producto';
+                    productoModal.show();
+                <?php endif; ?>
+            <?php endif; ?>
+        });
     </script>
 <?= $this->endSection() ?>

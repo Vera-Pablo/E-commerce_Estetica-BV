@@ -203,3 +203,17 @@
     <?= $this->include('Layouts/footer') ?>
 
 <?= $this->endSection() ?>
+
+<?= $this->section('scripts') ?>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    <?php if (session()->getFlashdata('modal_open') === 'editar_datos'): ?>
+        var myModal = new bootstrap.Modal(document.getElementById('modalEditarDatos'));
+        myModal.show();
+    <?php elseif (session()->getFlashdata('modal_open') === 'cambiar_password'): ?>
+        var myModal = new bootstrap.Modal(document.getElementById('modalCambiarPassword'));
+        myModal.show();
+    <?php endif; ?>
+});
+</script>
+<?= $this->endSection() ?>

@@ -97,15 +97,42 @@ class Home extends BaseController{
         $session = session();
 
         $rules = [
-            'apellido_nombre' => 'required|min_length[3]|max_length[255]',
-            'email'           => 'required|valid_email',
-            'asunto'          => 'required|in_list[pagina web,producto,pago,envio]',
-            'consulta'        => 'required|min_length[10]|max_length[500]',
+            'apellido_nombre' => [
+                'rules'  => 'required|min_length[3]|max_length[255]',
+                'errors' => [
+                    'required'   => 'El nombre y apellido es obligatorio.',
+                    'min_length' => 'El nombre debe tener al menos 3 caracteres.',
+                    'max_length' => 'El nombre no puede exceder los 255 caracteres.',
+                ],
+            ],
+            'email' => [
+                'rules'  => 'required|valid_email',
+                'errors' => [
+                    'required'    => 'El correo electrónico es obligatorio.',
+                    'valid_email' => 'Debes ingresar un formato de correo electrónico válido.',
+                ],
+            ],
+            'asunto' => [
+                'rules'  => 'required|in_list[pagina web,producto,pago,envio,otro]',
+                'errors' => [
+                    'required' => 'Debes seleccionar un asunto.',
+                    'in_list'  => 'El asunto seleccionado no es válido.',
+                ],
+            ],
+            'consulta' => [
+                'rules'  => 'required|min_length[10]|max_length[500]',
+                'errors' => [
+                    'required'   => 'La consulta es obligatoria.',
+                    'min_length' => 'La consulta debe tener al menos 10 caracteres.',
+                    'max_length' => 'La consulta no puede exceder los 500 caracteres.',
+                ],
+            ],
         ];
 
         if (!$this->validate($rules)) {
-            $errors = implode('<br>', $this->validator->getErrors());
-            return redirect()->back()->withInput()->with('error', $errors);
+            return redirect()->back()
+                             ->withInput()
+                             ->with('errors', $this->validator->getErrors());
         }
 
         $data = [
