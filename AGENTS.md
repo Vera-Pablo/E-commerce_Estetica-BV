@@ -1,6 +1,6 @@
 # AGENTS.md — Estética BV
 
-Este archivo proporciona el contexto arquitectónico y de estado para agentes de IA que trabajan en el proyecto e-commerce Estética BV. Para una documentación completa, referirse a `docs/Doc-V 1.3.4.md`. Para directrices estrictas de desarrollo, consultar `docs/reglas.md`. En caso de conflicto, las reglas en `reglas.md` (Capítulo VII) prevalecen.
+Este archivo proporciona el contexto arquitectónico y de estado para agentes de IA que trabajan en el proyecto e-commerce Estética BV. Para una documentación completa, referirse a `docs/Doc-V 1.3.5.md`. Para directrices estrictas de desarrollo, consultar `docs/reglas.md`. En caso de conflicto, las reglas en `reglas.md` (Capítulo VII) prevalecen.
 
 ## Stack
 - **Backend:** PHP ^8.1, CodeIgniter 4, MySQL (MySQLi), Apache on XAMPP (Windows)
@@ -17,7 +17,7 @@ Este archivo proporciona el contexto arquitectónico y de estado para agentes de
 - `rol` (id_rol PK, nombre_rol UQ)
 - `usuario` (id_usuario PK, dni INT UQ, apellido_nombre, email UQ, password, telefono VARCHAR(20), estado_usuario TINYINT, id_rol FK)
 - `categoria` (id_categoria PK, nombre_categoria UQ, descripcion_categoria, estado_categoria TINYINT)
-- `producto` (id_producto PK, nombre_producto UQ, descripcion_prooducto, precio DECIMAL(10,2), stock INT, imagen, estado_producto TINYINT, id_categoria FK)
+- `producto` (id_producto PK, codigo_producto VARCHAR(50) UQ, nombre_producto UQ, descripcion_producto, precio DECIMAL(10,2), stock INT, imagen VARCHAR(500), estado_producto TINYINT, id_categoria FK)
 - `estado_venta` (id_estado_venta PK, nombre_estado UQ) — 4 estados: 1=Pendiente, 2=En Preparación, 3=Listo para retirar/enviar, 4=Entregado (INMUTABLE)
 - `metodo_pago` (id_metodo_pago PK, nombre_metodo_pago UQ)
 - `venta` (id_venta PK, total DECIMAL(10,2), fecha_venta DATE, tipo_entrega VARCHAR(50), id_estado_venta FK, id_metodo_pago FK, id_usuario FK)
@@ -31,7 +31,7 @@ Este archivo proporciona el contexto arquitectónico y de estado para agentes de
 
 ```bash
 composer install
-php spark migrate                 # Ejecuta las 11 migraciones (10 tablas + 1 ALTER tipo_entrega)
+php spark migrate                 # Ejecuta las 12 migraciones (10 tablas + ALTER tipo_entrega + ALTER codigo_producto)
 php spark db:seed DatabaseSeeder  # Invoca seeders: Rol, EstadoVenta, MetodoPago, Usuario
 composer test                     # Ejecuta phpunit
 vendor\bin\phpunit                # Para ejecutar pruebas en Windows

@@ -90,7 +90,7 @@ El sistema está diseñado para ofrecer una experiencia de compra fluida e intui
    *(Asegúrate de crear la base de datos `esteticabv` en tu phpMyAdmin antes de proceder).*
 
 5. **Migraciones y Seeders**
-   El proyecto incluye 11 migraciones y 5 seeders. Ejecuta los siguientes comandos para crear las tablas y poblar la base de datos con los datos iniciales (roles, estados, métodos de pago y usuarios por defecto):
+   El proyecto incluye 12 migraciones y 5 seeders. Ejecuta los siguientes comandos para crear las tablas y poblar la base de datos con los datos iniciales (roles, estados, métodos de pago y usuarios por defecto):
    ```bash
    php spark migrate
    php spark db:seed DatabaseSeeder

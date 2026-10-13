@@ -69,6 +69,12 @@ writable/debugbar/*
 php_errors.log
 
 #-------------------------
+# Debug / Error Artifacts
+#-------------------------
+# Páginas de error generadas por Debugbar/Kint. No son parte del proyecto.
+error.html
+
+#-------------------------
 # User Guide Temp Files
 #-------------------------
 user_guide_src/build/*

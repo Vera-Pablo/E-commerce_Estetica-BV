@@ -1,11 +1,11 @@
 # Documentación
-**Versión: 1.3.4**
+**Versión: 1.3.5**
 
-**Fecha: 24/9/2026**
+**Fecha: 13/10/2026**
 
 **Autor: Vera Pablo G.**
 
-**Cambios: Actualización completa del árbol de directorios (sección 3.5), nuevos controladores/vistas/filtros/librerías documentados, campo `tipo_entrega` en tabla `venta` (sección 4.2), estado "Entregado" inmutable (RF-08, sección 4.2), corrección de instrucciones de despliegue a XAMPP Windows (sección 6.4), corrección conteo migraciones y seeders, eliminación de referencias WSL.**
+**Cambios: Nuevo campo `codigo_producto` en tabla `producto` (sección 4.2) y corrección del typo `descripcion_prooducto` → `descripcion_producto`, ajuste de `imagen` a VARCHAR(500) con validación de URL Cloudinary, documentación del helper global `cloudinary_thumb()` (`app/Common.php`), actualización del árbol de directorios (12 migraciones y archivos de raíz), indicador "Sin Stock" en las vistas de producto (RF-11/RF-18), filtros por rango de fechas en Mis Compras, Ventas y Consultas (RF-07/RF-10/RF-17), validación de formularios con mensajes por campo y reapertura de modales (RF-19), y sidebar administrativo responsive (RNF-01).**
 ---
 
 ## Capítulo I: Generalidades del Proyecto
@@ -60,28 +60,29 @@ Siguiendo el formato tradicional de ingeniería de software, se detallan las fun
     - **RF-01:** El sistema debe restringir el acceso al panel administrativo, denegando el ingreso a usuarios con rol de cliente o usuarios no autenticados.
     - **RF-02:** El sistema debe permitir al administrador crear nuevas categorías de productos.
     - **RF-03:** El sistema debe permitir al administrador visualizar, modificar y eliminar/desactivar categorías existentes.
-    - **RF-04:** El sistema debe permitir al administrador registrar nuevos productos asociándolos a una categoría, especificando nombre, descripción, precio y stock.
+    - **RF-04:** El sistema debe permitir al administrador registrar nuevos productos asociándolos a una categoría, especificando código único, nombre, descripción, precio y stock.
     - **RF-05:** El sistema debe permitir al administrador actualizar los datos de los productos y darlos de baja (modificar/desactivar).
     - **RF-06:** El sistema no debe permitir al administrador eliminar/desactivar una categoría que tiene productos asociados o productos que estén asociados a una venta.
-    - **RF-07:** El sistema debe permitir al administrador visualizar el historial técnico y el control de las ventas realizadas en la plataforma.
+    - **RF-07:** El sistema debe permitir al administrador visualizar el historial técnico y el control de las ventas realizadas en la plataforma, con búsqueda por ID, filtros por estado y método de pago, y filtro por rango de fechas (desde/hasta).
     - **RF-08:** El sistema debe permitir al administrador cambiar el estado de una venta (*Pendiente, En Preparación, Listo para retirar/enviar, Entregado*). El estado **"Entregado" (id=4) es definitivo e inmutable**: una vez aplicado, el sistema bloquea cualquier modificación posterior del estado de la venta.
     - **RF-09:** El sistema debe permitir al administrador generar recibos de las ventas realizadas en formato PDF descargable, mediante el servicio `PdfService`.
-    - **RF-10:** El sistema debe permitir al administrador visualizar las consultas enviadas por los clientes desde la sección "Consultas" del panel administrativo.
+    - **RF-10:** El sistema debe permitir al administrador visualizar las consultas enviadas por los clientes desde la sección "Consultas" del panel administrativo, con filtro por rango de fechas y ordenamiento ascendente/descendente.
 - Módulo de Clientes (Vistas Públicas)
-    - **RF-11:** El sistema debe permitir a cualquier usuario anónimo o registrado visualizar el catálogo público de productos y aplicar filtros por categorías y búsqueda de texto.
+    - **RF-11:** El sistema debe permitir a cualquier usuario anónimo o registrado visualizar el catálogo público de productos y aplicar filtros por categorías y búsqueda de texto. Los productos sin unidades disponibles se identifican visualmente con el distintivo "Sin Stock".
     - **RF-12:** El sistema debe permitir al cliente registrar una cuenta nueva (con activación por correo electrónico) e iniciar sesión de forma segura.
     - **RF-13:** El sistema debe permitir al cliente agregar productos al carrito de compras desde el catálogo o la vista de detalle. El carrito persiste durante 7 días mediante un mecanismo de respaldo en cookie nativa del navegador, sobreviviendo al cierre de sesión.
     - **RF-14:** El sistema debe permitir al cliente visualizar y quitar productos de su carrito de compras, recalculando el monto total automáticamente mediante AJAX.
     - **RF-15:** El sistema debe permitir al cliente proceder al pago y finalizar la compra a través de la simulación de una pasarela de pago artificial, seleccionando método de pago y tipo de entrega (envío a domicilio o retiro en local).
     - **RF-16:** El sistema debe permitir al cliente autenticado ingresar a su perfil para editar sus datos personales y cambiar su contraseña.
-    - **RF-17:** El sistema debe permitir al cliente ver el historial de compras y sus detalles, ordenado de forma descendente (más reciente primero), con opción de descargar recibo en PDF.
-    - **RF-18:** El sistema debe permitir al cliente gestionar una lista de productos favoritos mediante un botón de corazón disponible en el catálogo, detalle de producto y carrusel de inicio.
+    - **RF-17:** El sistema debe permitir al cliente ver el historial de compras y sus detalles, ordenado de forma descendente (más reciente primero), con filtro por rango de fechas y opción de descargar recibo en PDF.
+    - **RF-18:** El sistema debe permitir al cliente gestionar una lista de productos favoritos mediante un botón de corazón disponible en el catálogo, detalle de producto y carrusel de inicio. En esta vista también se identifican los productos sin stock y se deshabilita el botón de agregar al carrito.
+    - **RF-19:** El sistema debe validar los formularios de autenticación, perfil, consultas y gestión administrativa del lado del servidor, devolviendo mensajes de error específicos por campo junto con los datos ingresados. En los formularios contenidos en modales, el sistema debe reabrir automáticamente el modal de origen para que el usuario corrija los errores.
 
 ### 2.3 Requerimientos No Funcionales (RNF)
 
 Definen las propiedades, restricciones de calidad y el entorno tecnológico bajo el cual operará el software:
 
-- **RNF-01 (Usabilidad / Adaptabilidad):** La interfaz del sistema debe ser completamente responsiva (*responsive design*), asegurando una correcta visualización y funcionamiento en teléfonos móviles, tablets y ordenadores.
+- **RNF-01 (Usabilidad / Adaptabilidad):** La interfaz del sistema debe ser completamente responsiva (*responsive design*), asegurando una correcta visualización y funcionamiento en teléfonos móviles, tablets y ordenadores. El panel de administración se adapta mediante un *offcanvas* lateral y una barra superior de navegación específicos para dispositivos móviles.
 - **RNF-02 (Rendimiento):** El sistema debe optimizar las consultas a la base de datos para responder de manera rápida y fluida durante la navegación por el catálogo y el procesamiento del carrito.
 - **RNF-03 (Seguridad de Datos):** Las contraseñas de los usuarios no deben almacenarse en texto plano bajo ninguna circunstancia. Deben ser procesadas mediante un algoritmo de protección irreversible antes de guardarse en la base de datos.
 - **RNF-04 (Stack Tecnológico del Backend):** El servidor debe ejecutar PHP en su versión 8.1 o superior, utilizando el framework CodeIgniter 4.
@@ -133,6 +134,7 @@ estetica-bv/
 │           └── SKILL.md
 │
 ├── app/                                <-- [CAPA SERVIDOR] Núcleo de la aplicación (MVC)
+│   ├── Common.php                      <-- Helpers globales (cloudinary_thumb para thumbnails de Cloudinary)
 │   ├── Config/                         <-- Configuración (Rutas, BD, Filtros, Email, Cookie)
 │   ├── Controllers/                    <-- Controladores
 │   │   ├── Admin/                      <-- Panel de administración
@@ -153,7 +155,7 @@ estetica-bv/
 │   │   ├── MisCompras.php             <-- Historial de compras del cliente con recibos PDF
 │   │   └── Perfil.php                  <-- Perfil de usuario (datos personales, cambio clave)
 │   ├── Database/                       <-- Migraciones y Seeders
-│   │   ├── Migrations/                 <-- 11 migraciones (10 tablas + ALTER tipo_entrega)
+│   │   ├── Migrations/                 <-- 12 migraciones (10 tablas + ALTER tipo_entrega + ALTER codigo_producto)
 │   │   └── Seeds/                      <-- 5 Seeders (DatabaseSeeder + 4 individuales)
 │   ├── Filters/                        <-- Filtros de seguridad
 │   │   ├── AdminFilter.php             <-- Restringe acceso a admin (id_rol=1)
@@ -235,7 +237,7 @@ estetica-bv/
 │   └── .htaccess                       <-- Reglas Apache (URLs amigables, seguridad)
 │
 ├── docs/                               <-- Documentación del proyecto
-│   ├── Doc-V 1.3.4.md                  <-- Este documento (especificación del sistema)
+│   ├── Doc-V 1.3.5.md                  <-- Este documento (especificación del sistema)
 │   ├── img/                            <-- Diagramas y gráficos
 │   │   ├── Diagrama_de_Arquitectura.png
 │   │   ├── Diagrama_de_Arquitectura_de_despliegue.png
@@ -246,10 +248,13 @@ estetica-bv/
 ├── vendor/                             <-- Dependencias Composer
 ├── writable/                           <-- Logs, caché, sesiones, uploads, debugbar, banners.json
 ├── .env                                <-- Variables de entorno (credenciales DB)
+├── .gitattributes                      <-- Reglas de normalización de Git (fins de línea, binarios)
 ├── AGENTS.md                           <-- Contexto para asistentes de IA (harness engineering)
+├── LICENSE                             <-- Licencia del proyecto
 ├── builds                              <-- Script toggle release/development CI4
 ├── composer.json                       <-- Dependencias PHP
 ├── composer.lock
+├── composer.phar                       <-- Binario de Composer (uso local en Windows)
 ├── opencode.json                       <-- Config OpenCode (MCP Linear/Notion remotos)
 ├── phpunit.xml.dist                    <-- Configuración PHPUnit
 ├── preload.php                         <-- Precarga OPCache
@@ -320,11 +325,12 @@ Almacena el catálogo de artículos disponibles en la estética.
 | Campo | Tipo de Dato | Llave | Nulo | Descripción |
 | --- | --- | --- | --- | --- |
 | `id_producto` | INT | PK | NO | Identificador único del producto. |
+| `codigo_producto` | VARCHAR(50) | UQ | NO | Código interno único del producto (`uq_codigo_producto`). Autogenerado en formato `PROD-0000` por la migración para registros preexistentes; en altas posteriores se ingresa manualmente. Solo admite letras, números, guiones y guiones bajos (mínimo 3, máximo 50 caracteres). |
 | `nombre_producto` | VARCHAR(255) | UQ | NO | Nombre del producto. |
-| `descripcion_prooducto` | VARCHAR(500) | - | SÍ | Características o modo de uso del producto. |
+| `descripcion_producto` | VARCHAR(500) | - | SÍ | Características o modo de uso del producto. |
 | `precio` | DECIMAL(10,2) | - | NO | Valor comercial actual del artículo. |
 | `stock` | INT | - | NO | Cantidad de unidades disponibles para la venta. |
-| `imagen` | VARCHAR(250) | - | SÍ | Ruta o nombre del archivo de la imagen del producto. |
+| `imagen` | VARCHAR(500) | - | SÍ | URL de Cloudinary de la imagen del producto. Se valida como URL válida (`valid_url`) y se optimiza al renderizar mediante el helper `cloudinary_thumb()`. |
 | `estado_producto` | TINYINT(1) | - | NO | Borrado lógico: 1 (Disponible), 0 (Desactivado). |
 | `id_categoria` | INT | FK | NO | Relación con la tabla `categoria`. |
 
@@ -494,7 +500,7 @@ Procedimiento de puesta en funcionamiento:
 
 1. **Configurar el Document Root de Apache** para que apunte exclusivamente a la carpeta `public/`, garantizando que el código crítico (`app/`, `.env`) quede fuera del alcance web.
 2. **Configurar la base de datos** en el archivo `.env` (motor MySQLi, host `localhost`, puerto `3306`, base de datos `estetica_bv`).
-3. **Ejecutar las migraciones** para crear las tablas: `php spark migrate` (11 migraciones).
+3. **Ejecutar las migraciones** para crear las tablas: `php spark migrate` (12 migraciones).
 4. **Cargar los datos iniciales** con los Seeders: `php spark db:seed DatabaseSeeder` (invoca 4 seeders: Rol, EstadoVenta, MetodoPago, Usuario).
 5. **Arrancar los servicios** de Apache y MySQL desde el **panel de control de XAMPP**.
 6. **Verificar el acceso** ingresando a `http://localhost/` (o `http://localhost/E-commerce_Estetica-BV/public/` según configuración) y recorriendo los flujos principales del catálogo público y del panel de administración, comprobando que respondan sin errores.
