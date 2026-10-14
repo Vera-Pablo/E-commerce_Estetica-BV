@@ -25,21 +25,16 @@
                     <div class="row g-3 align-items-end">
 
                         <!-- Buscar por ID -->
-                        <div class="col-12 col-sm-6 col-lg-3">
-                            <label for="search_id" class="form-label fw-bold small mb-1">Buscar por N° de Venta</label>
-                            <div class="input-group">
-                                <input id="search_id" name="search_id" type="number" min="1"
-                                       class="form-control rounded-start-3 border-secondary"
-                                       placeholder="Ej. 42"
-                                       value="<?= esc($search_id ?? '') ?>">
-                                <button type="submit" class="btn btn-custom-nav rounded-end-3 px-3" title="Buscar">
-                                    <i class="fas fa-search"></i>
-                                </button>
-                            </div>
+                        <div class="col-12 col-sm-6 col-lg-2">
+                            <label for="search_id" class="form-label fw-bold small mb-1">N° de Venta</label>
+                            <input id="search_id" name="search_id" type="number" min="1"
+                                   class="form-control rounded-3 border-secondary"
+                                   placeholder="Ej. 42"
+                                   value="<?= esc($search_id ?? '') ?>">
                         </div>
 
                         <!-- Filtro estado -->
-                        <div class="col-12 col-sm-6 col-lg-3">
+                        <div class="col-12 col-sm-6 col-lg-2">
                             <label for="filtro_estado" class="form-label fw-bold small mb-1">Estado de Venta</label>
                             <select name="estado" id="filtro_estado" class="form-select border-secondary rounded-3">
                                 <option value="">Todos los estados</option>
@@ -54,7 +49,7 @@
                         </div>
 
                         <!-- Filtro método de pago -->
-                        <div class="col-12 col-sm-6 col-lg-3">
+                        <div class="col-12 col-sm-6 col-lg-2">
                             <label for="filtro_pago" class="form-label fw-bold small mb-1">Método de Pago</label>
                             <select name="metodo_pago" id="filtro_pago" class="form-select border-secondary rounded-3">
                                 <option value="">Todos los métodos</option>
@@ -68,26 +63,29 @@
                             </select>
                         </div>
 
-                        <!-- Ordenamiento -->
+                        <!-- Fecha Desde -->
                         <div class="col-12 col-sm-6 col-lg-2">
-                            <label for="filtro_orden" class="form-label fw-bold small mb-1">Ordenar por Fecha</label>
-                            <select name="orden" id="filtro_orden" class="form-select border-secondary rounded-3">
-                                <option value="desc" <?= (($orden ?? 'desc') === 'desc') ? 'selected' : '' ?>>Más recientes</option>
-                                <option value="asc"  <?= (($orden ?? 'desc') === 'asc')  ? 'selected' : '' ?>>Más antiguas</option>
-                            </select>
+                            <label for="fecha_desde" class="form-label fw-bold small mb-1">Fecha Desde</label>
+                            <input type="date" id="fecha_desde" name="fecha_desde" class="form-control rounded-3 border-secondary" value="<?= esc($fecha_desde ?? '') ?>">
+                        </div>
+
+                        <!-- Fecha Hasta -->
+                        <div class="col-12 col-sm-6 col-lg-2">
+                            <label for="fecha_hasta" class="form-label fw-bold small mb-1">Fecha Hasta</label>
+                            <input type="date" id="fecha_hasta" name="fecha_hasta" class="form-control rounded-3 border-secondary" value="<?= esc($fecha_hasta ?? '') ?>">
                         </div>
 
                         <!-- Botones -->
-                        <div class="col-12 col-lg-1 d-flex gap-2">
-                            <button type="submit" class="btn btn-custom-nav rounded-3 w-100">
-                                <i class="fas fa-filter"></i>
+                        <div class="col-12 col-lg-2 d-flex gap-2">
+                            <button type="submit" class="btn btn-custom-nav rounded-3 w-100" title="Buscar">
+                                <i class="fas fa-search me-1"></i> Buscar
                             </button>
                             <?php 
                                 $filtro_est = $estado ?? null;
                                 $filtro_mp = $metodo_pago ?? null;
                             ?>
-                            <?php if(!empty($search_id) || !empty($filtro_est) || !empty($filtro_mp)): ?>
-                                <a href="<?= base_url('admin/ventas') ?>" class="btn btn-custom-back rounded-3" title="Limpiar">
+                            <?php if(!empty($search_id) || !empty($filtro_est) || !empty($filtro_mp) || !empty($fecha_desde) || !empty($fecha_hasta)): ?>
+                                <a href="<?= base_url('admin/ventas') ?>" class="btn btn-custom-back rounded-3 px-3" title="Limpiar Filtros">
                                     <i class="fas fa-times"></i>
                                 </a>
                             <?php endif; ?>
